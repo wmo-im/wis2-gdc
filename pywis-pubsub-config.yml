@@ -1,0 +1,11 @@
+
+broker: mqtts://localhost:1883
+
+topics:
+    - 'origin/a/wis2/+/+/metadata/#'
+
+verify_data: true
+
+validate_message: true
+
+hook: wis2_gdc.hook.DiscoveryMetadataHook

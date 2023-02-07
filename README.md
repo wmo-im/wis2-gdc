@@ -1,2 +1,3 @@
-# wis2-global-discovery-catalogue
-WIS 2.0 Global Discovery Catalogue
+# wis2-gdc
+
+wis2-gdc is a Reference Implementation of a WIS2 Global Discovery Catalogue.
