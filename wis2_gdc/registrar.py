@@ -23,12 +23,12 @@ import json
 import logging
 
 import click
-from owslib.ogcapi.records import Records
 
 from pywis_pubsub import cli_options
 from pywis_pubsub.subscribe import get_data
 
-from wis2_gdc.env import API_URL
+from wis2_gdc.backend import BACKENDS
+from wis2_gdc.env import BACKEND, CONNECTION
 
 LOGGER = logging.getLogger(__name__)
 
@@ -43,7 +43,9 @@ class Registrar:
             self.metadata = metadata
         elif 'version' in metadata:
             LOGGER.debug('Notification metadata detected')
-            self.metadata = get_data(metadata)
+            self.metadata = json.loads(get_data(metadata))
+
+        self._publish()
 
     def _run_ats(self):
         pass
@@ -52,24 +54,9 @@ class Registrar:
         pass
 
     def _publish(self):
-        oarec = Records(API_URL)
-        collection = 'discovery-metadata'
-        ttype = 'create'
+        backend = BACKENDS[BACKEND]({'connection': CONNECTION})
 
-        try:
-            _ = oarec.get_collection_item(self.metadata['id'])
-            ttype = 'update'
-        except Exception:
-            pass
-
-        payload = json.dumps(self.metadata)
-
-        if ttype == 'create':
-            LOGGER.debug('Adding new record to catalogue')
-            _ = oarec.get_collection_create(collection, payload)
-        elif ttype == 'update':
-            LOGGER.debug('Updating existing record in catalogue')
-            _ = oarec.get_collection_update(collection, payload)
+        backend.save(self.metadata)
 
 
 @click.command()

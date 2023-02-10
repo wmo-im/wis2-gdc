@@ -23,7 +23,7 @@ import logging
 
 from pywis_pubsub.hook import Hook
 
-from wis_gdc.registrar import Registrar
+from wis2_gdc.registrar import Registrar
 
 LOGGER = logging.getLogger(__name__)
 
