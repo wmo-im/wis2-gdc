@@ -55,8 +55,29 @@ class ElasticsearchBackend(Backend):
         self.url_parsed = urlparse(self.defs.get('connection'))
         self.index_name = self.url_parsed.path.lstrip('/')
 
-        es = Elasticsearch([self.url_parsed.netloc], timeout=30,
-                           max_retries=10, retry_on_timeout=True)
+        url2 = f'{self.url_parsed.scheme}://{self.url_parsed.netloc}'
+
+        if self.url_parsed.path.count('/') > 1:
+            LOGGER.debug('ES URL has a basepath')
+            basepath = self.url_parsed.path.split('/')[1]
+            self.index_name = self.url_parsed.path.split('/')[-1]
+            url2 = f'{url2}/{basepath}/'
+
+        print(f'ES URL: {url2}')
+        print(f'ES index: {self.index_name}')
+
+        settings = {
+            'hosts': [url2],
+            'retry_on_timeout': True,
+            'max_retries': 10,
+            'timeout': 30
+        }
+
+        if self.url_parsed.username and self.url_parsed.password:
+            settings['http_auth'] = (
+                self.url_parsed.username, self.url_parsed.password)
+
+        es = Elasticsearch(**settings)
 
         LOGGER.debug(record)
         es.index(index=self.index_name, id=record['id'], body=record)

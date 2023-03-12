@@ -45,6 +45,7 @@ class Registrar:
             LOGGER.debug('Notification metadata detected')
             self.metadata = json.loads(get_data(metadata))
 
+        LOGGER.debug(f'Publishing metadata to {BACKEND} ({CONNECTION})')
         self._publish()
 
     def _run_ats(self):
