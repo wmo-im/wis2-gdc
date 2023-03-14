@@ -1,7 +1,7 @@
 
 broker: mqtts://localhost:1883
 
-topics:
+subscribe_topics:
     - 'origin/a/wis2/+/+/metadata/#'
 
 verify_data: true
