@@ -58,7 +58,14 @@ pywis-pubsub schema sync
 # discovery metadata notifications will trigger wis2-gdc to validate and publish
 # WCMP2 to the GDC identified in local.env
 pywis-pubsub subscribe --config local.yml
+
+# loading metadata manually (single file)
+wis2-gdc register /path/to/wcmp2-file.json
+
+# loading metadata manually (directory of .json files)
+wis2-gdc register /path/to/dir/or/wcmp2-files
 ```
+
 
 ## Development
 

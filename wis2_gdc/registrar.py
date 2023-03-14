@@ -21,6 +21,7 @@
 
 import json
 import logging
+from pathlib import Path
 
 import click
 
@@ -62,13 +63,21 @@ class Registrar:
 
 @click.command()
 @click.pass_context
-@click.argument('metadata', type=click.File())
+@click.argument('path')
 @cli_options.OPTION_VERBOSITY
-def register(ctx, metadata, verbosity='NOTSET'):
+def register(ctx, path, verbosity='NOTSET'):
     """Register discovery metadata"""
 
-    m = json.load(metadata)
+    p = Path(path)
 
-    r = Registrar()
+    if p.is_file():
+        wcmp2s_to_process = [p]
+    else:
+        wcmp2s_to_process = p.rglob('*.json')
 
-    r.register(m)
+    for w2p in wcmp2s_to_process:
+        print(w2p)
+#        with w2p.open() as fh:
+#            m = json.load(fh)
+#            r = Registrar()
+#            r.register(m)
