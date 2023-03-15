@@ -83,6 +83,7 @@ class ElasticsearchBackend(BaseBackend):
                                 }
                             },
                             'wmo:dataPolicy': {
+                                'type': 'nested',
                                 'properties': {
                                     'name': {
                                         'type': 'text',
