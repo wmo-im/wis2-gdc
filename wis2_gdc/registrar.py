@@ -63,6 +63,17 @@ class Registrar:
 
 @click.command()
 @click.pass_context
+@cli_options.OPTION_VERBOSITY
+def setup(ctx, verbosity='NOTSET'):
+    """Create GDC backend"""
+
+    if click.confirm('Create GDC backends?  This will overwrte existing collections'):  # noqa
+        backend = BACKENDS[BACKEND]({'connection': CONNECTION})
+        backend.setup()
+
+
+@click.command()
+@click.pass_context
 @click.argument('path')
 @cli_options.OPTION_VERBOSITY
 def register(ctx, path, verbosity='NOTSET'):
@@ -76,8 +87,8 @@ def register(ctx, path, verbosity='NOTSET'):
         wcmp2s_to_process = p.rglob('*.json')
 
     for w2p in wcmp2s_to_process:
-        print(w2p)
-#        with w2p.open() as fh:
-#            m = json.load(fh)
-#            r = Registrar()
-#            r.register(m)
+        click.echo(f'Processing {w2p}')
+        with w2p.open() as fh:
+            m = json.load(fh)
+            r = Registrar()
+            r.register(m)
