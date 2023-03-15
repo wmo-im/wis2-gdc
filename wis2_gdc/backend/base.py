@@ -19,20 +19,34 @@
 #
 ###############################################################################
 
-import click
+from abc import ABC, abstractmethod
+import logging
 
-from wis2_gdc.registrar import register, setup
-
-__version__ = '0.1.dev0'
-
-
-@click.group()
-@click.version_option(version=__version__)
-def cli():
-    """WIS2 Global Discovery Catalogue"""
-
-    pass
+LOGGER = logging.getLogger(__name__)
 
 
-cli.add_command(register)
-cli.add_command(setup)
+class BaseBackend(ABC):
+    def __init__(self, defs):
+        self.defs = defs
+
+    @abstractmethod
+    def setup(self) -> None:
+        """
+        Setup a backend
+
+        :returns: `None`
+        """
+
+        raise NotImplementedError()
+
+    @abstractmethod
+    def save(self, record: dict) -> None:
+        """
+        Upsert a resource to a backend
+
+        :param payload: `dict` of resource
+
+        :returns: `None`
+        """
+
+        raise NotImplementedError()

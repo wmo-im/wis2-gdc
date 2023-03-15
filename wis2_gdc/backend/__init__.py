@@ -19,20 +19,11 @@
 #
 ###############################################################################
 
-import click
-
-from wis2_gdc.registrar import register, setup
-
-__version__ = '0.1.dev0'
+from wis2_gdc.backend.elastic import ElasticsearchBackend
+from wis2_gdc.backend.ogcapi_records import OGCAPIRecordsBackend
 
 
-@click.group()
-@click.version_option(version=__version__)
-def cli():
-    """WIS2 Global Discovery Catalogue"""
-
-    pass
-
-
-cli.add_command(register)
-cli.add_command(setup)
+BACKENDS = {
+    'Elasticsearch': ElasticsearchBackend,
+    'OGCAPIRecords': OGCAPIRecordsBackend
+}
