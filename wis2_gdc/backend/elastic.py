@@ -132,7 +132,7 @@ class ElasticsearchBackend(BaseBackend):
             LOGGER.debug(f'Deleting index {self.index_name}')
             self.es.indices.delete(index=self.index_name)
 
-        LOGGER.debug(f'Creatinge index {self.index_name}')
+        LOGGER.debug(f'Creating index {self.index_name}')
         self.es.indices.create(index=self.index_name, body=self.ES_SETTINGS)
 
     def save(self, record: dict) -> None:
