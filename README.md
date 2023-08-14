@@ -10,7 +10,7 @@ wis2-gdc is a Reference Implementation of a WIS2 Global Discovery Catalogue.
 
 - connects to a WIS2 Global Broker, subscribed to the following:
   - `origin/a/wis2/+/+/metadata/#`
-- on discovery metadata notifications, run the WCMP2 ATS via pywmp
+- on discovery metadata notifications, run the WCMP2 ATS via pywcmp
   - ATS
   - KPIs
 - publish to a WIS2 GDC (OGC API - Records) using [OGC API - Features - Part 4: Create, Replace, Update and Delete](http://docs.ogc.org/DRAFTS/20-002.html).
