@@ -13,7 +13,9 @@ wis2-gdc is a Reference Implementation of a WIS2 Global Discovery Catalogue.
 - on discovery metadata notifications, run the WCMP2 ATS via pywcmp
   - ATS
   - KPIs
-- publish to a WIS2 GDC (OGC API - Records) using [OGC API - Features - Part 4: Create, Replace, Update and Delete](http://docs.ogc.org/DRAFTS/20-002.html).
+- publish to a WIS2 GDC (OGC API - Records) using one of the supported transaction backends:
+  - [OGC API - Features - Part 4: Create, Replace, Update and Delete](https://docs.ogc.org/DRAFTS/20-002.html)
+  - Elasticsearch direct
 
 ## Installation
 
