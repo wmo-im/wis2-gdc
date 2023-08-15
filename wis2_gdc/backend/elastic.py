@@ -8,7 +8,7 @@
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
 #
-#   http://www.apache.org/licenses/LICENSE-2.0
+#   https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
@@ -58,6 +58,14 @@ class ElasticsearchBackend(BaseBackend):
                     },
                     'properties': {
                         'properties': {
+                            'type': {
+                                'type': 'text',
+                                'fields': {
+                                    'raw': {
+                                        'type': 'keyword'
+                                    }
+                                }
+                            },
                             'title': {
                                 'type': 'text',
                                 'fields': {
@@ -83,15 +91,10 @@ class ElasticsearchBackend(BaseBackend):
                                 }
                             },
                             'wmo:dataPolicy': {
-                                'type': 'nested',
-                                'properties': {
-                                    'name': {
-                                        'type': 'text',
-                                        'fields': {
-                                            'raw': {
-                                                'type': 'keyword'
-                                            }
-                                        }
+                                'type': 'text',
+                                'fields': {
+                                    'raw': {
+                                        'type': 'keyword'
                                     }
                                 }
                             }
