@@ -82,14 +82,6 @@ class ElasticsearchBackend(BaseBackend):
                                     }
                                 }
                             },
-                            'wmo:topicHierarchy': {
-                                'type': 'text',
-                                'fields': {
-                                    'raw': {
-                                        'type': 'keyword'
-                                    }
-                                }
-                            },
                             'wmo:dataPolicy': {
                                 'type': 'text',
                                 'fields': {

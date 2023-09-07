@@ -49,7 +49,7 @@ class Registrar:
         LOGGER.debug(f'Publishing metadata to {BACKEND} ({CONNECTION})')
         self._publish()
 
-    def _run_ats(self):
+    def _run_ets(self):
         pass
 
     def _run_kpi(self):
@@ -63,13 +63,18 @@ class Registrar:
 
 @click.command()
 @click.pass_context
+@click.option('--yes', '-y', 'bypass', is_flag=True, default=False,
+              help='Bypass permission prompts')
 @cli_options.OPTION_VERBOSITY
-def setup(ctx, verbosity='NOTSET'):
+def setup(ctx, bypass, verbosity='NOTSET'):
     """Create GDC backend"""
 
-    if click.confirm('Create GDC backends?  This will overwrte existing collections'):  # noqa
-        backend = BACKENDS[BACKEND]({'connection': CONNECTION})
-        backend.setup()
+    if not bypass:
+        if click.confirm('Create GDC backends?  This will overwrte existing collections', abort=True):  # noqa
+            return
+
+    backend = BACKENDS[BACKEND]({'connection': CONNECTION})
+    backend.setup()
 
 
 @click.command()
