@@ -131,6 +131,7 @@ class ElasticsearchBackend(BaseBackend):
             settings['http_auth'] = (
                 self.url_parsed.username, self.url_parsed.password)
 
+        LOGGER.debug(f'Settings: {settings}')
         self.es = Elasticsearch(**settings)
 
     def setup(self) -> None:

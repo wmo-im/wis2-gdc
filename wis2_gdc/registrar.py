@@ -69,6 +69,7 @@ def setup(ctx, bypass, verbosity='NOTSET'):
             return
 
     backend = BACKENDS[BACKEND]({'connection': CONNECTION})
+    LOGGER.debug(f'Backend: {backend}')
     backend.setup()
 
 
