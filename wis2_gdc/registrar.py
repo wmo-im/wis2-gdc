@@ -39,13 +39,8 @@ class Registrar:
         self.metadata = None
 
     def register(self, metadata: dict):
-        if 'conformsTo' in metadata:
-            LOGGER.debug('Discovery metadata detected')
-            self.metadata = metadata
-        elif 'version' in metadata:
-            LOGGER.debug('Notification metadata detected')
-            self.metadata = json.loads(get_data(metadata))
-
+        self.metadata = metadata
+        LOGGER.debug(f'Metadata: {self.metadata}')
         LOGGER.debug(f'Publishing metadata to {BACKEND} ({CONNECTION})')
         self._publish()
 
@@ -70,7 +65,7 @@ def setup(ctx, bypass, verbosity='NOTSET'):
     """Create GDC backend"""
 
     if not bypass:
-        if click.confirm('Create GDC backends?  This will overwrte existing collections', abort=True):  # noqa
+        if not click.confirm('Create GDC backends?  This will overwrite existing collections', abort=True):  # noqa
             return
 
     backend = BACKENDS[BACKEND]({'connection': CONNECTION})

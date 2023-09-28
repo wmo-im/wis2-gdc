@@ -45,14 +45,24 @@ class ElasticsearchBackend(BaseBackend):
             },
             'mappings': {
                 'properties': {
-                    'geometry': {
-                        'type': 'geo_shape'
-                    },
                     'id': {
                         'type': 'text',
                         'fields': {
                             'raw': {
                                 'type': 'keyword'
+                            }
+                        }
+                    },
+                    'geometry': {
+                        'type': 'geo_shape'
+                    },
+                    'time': {
+                        'properties': {
+                            'interval': {
+                                'type': 'date',
+                                'null_value': '1850',
+                                'format': 'year||year_month||year_month_day||date_time||t_time||t_time_no_millis',  # noqa
+                                'ignore_malformed': True
                             }
                         }
                     },
@@ -132,5 +142,5 @@ class ElasticsearchBackend(BaseBackend):
         self.es.indices.create(index=self.index_name, body=self.ES_SETTINGS)
 
     def save(self, record: dict) -> None:
-        LOGGER.debug(record)
+        LOGGER.debug(f'Indexing record')
         self.es.index(index=self.index_name, id=record['id'], body=record)
