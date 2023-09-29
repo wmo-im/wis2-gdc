@@ -1,3 +1,4 @@
+#!/bin/bash
 ###############################################################################
 #
 # Licensed to the Apache Software Foundation (ASF) under one
@@ -19,8 +20,15 @@
 #
 ###############################################################################
 
-import os
+# wis2-gdc entry script
 
-API_URL = os.environ.get('WIS2_GDC_API_URL')
-BACKEND_TYPE = os.environ.get('WIS2_GDC_BACKEND_TYPE')
-BACKEND_CONNECTION = os.environ.get('WIS2_GDC_BACKEND_CONNECTION')
+echo "START /entrypoint.sh"
+
+echo "Caching WCMP2 schemas"
+pywis-pubsub schema sync
+
+echo "Setting up discovery metadata backend"
+wis2-gdc setup --yes
+
+echo "END /entrypoint.sh"
+exec "$@"

@@ -29,7 +29,7 @@ from pywis_pubsub import cli_options
 from pywis_pubsub.subscribe import get_data
 
 from wis2_gdc.backend import BACKENDS
-from wis2_gdc.env import BACKEND, CONNECTION
+from wis2_gdc.env import BACKEND_TYPE, BACKEND_CONNECTION
 
 LOGGER = logging.getLogger(__name__)
 
@@ -39,37 +39,38 @@ class Registrar:
         self.metadata = None
 
     def register(self, metadata: dict):
-        if 'conformsTo' in metadata:
-            LOGGER.debug('Discovery metadata detected')
-            self.metadata = metadata
-        elif 'version' in metadata:
-            LOGGER.debug('Notification metadata detected')
-            self.metadata = json.loads(get_data(metadata))
-
-        LOGGER.debug(f'Publishing metadata to {BACKEND} ({CONNECTION})')
+        self.metadata = metadata
+        LOGGER.debug(f'Metadata: {self.metadata}')
+        LOGGER.debug(f'Publishing metadata to {BACKEND_TYPE} ({BACKEND_CONNECTION})')  # noqa
         self._publish()
 
-    def _run_ats(self):
+    def _run_ets(self):
         pass
 
     def _run_kpi(self):
         pass
 
     def _publish(self):
-        backend = BACKENDS[BACKEND]({'connection': CONNECTION})
+        backend = BACKENDS[BACKEND_TYPE]({'connection': BACKEND_CONNECTION})
 
         backend.save(self.metadata)
 
 
 @click.command()
 @click.pass_context
+@click.option('--yes', '-y', 'bypass', is_flag=True, default=False,
+              help='Bypass permission prompts')
 @cli_options.OPTION_VERBOSITY
-def setup(ctx, verbosity='NOTSET'):
+def setup(ctx, bypass, verbosity='NOTSET'):
     """Create GDC backend"""
 
-    if click.confirm('Create GDC backends?  This will overwrte existing collections'):  # noqa
-        backend = BACKENDS[BACKEND]({'connection': CONNECTION})
-        backend.setup()
+    if not bypass:
+        if not click.confirm('Create GDC backends?  This will overwrite existing collections', abort=True):  # noqa
+            return
+
+    backend = BACKENDS[BACKEND_TYPE]({'connection': BACKEND_CONNECTION})
+    LOGGER.debug(f'Backend: {backend}')
+    backend.setup()
 
 
 @click.command()

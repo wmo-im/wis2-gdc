@@ -19,8 +19,26 @@
 #
 ###############################################################################
 
-import os
+import click
 
-API_URL = os.environ.get('WIS2_GDC_API_URL')
-BACKEND_TYPE = os.environ.get('WIS2_GDC_BACKEND_TYPE')
-BACKEND_CONNECTION = os.environ.get('WIS2_GDC_BACKEND_CONNECTION')
+from pywis_pubsub import cli_options
+
+from wis2_gdc.harvester import HARVESTERS
+
+
+@click.command
+@click.argument('harvest_type')
+@cli_options.OPTION_VERBOSITY
+def sync(harvest_type, verbosity):
+    """Synchronization utilities"""
+
+    harvesters = list(HARVESTERS.keys())
+
+    if harvest_type not in harvesters:
+        msg = f'Invalid harvester (supported harvesters: {harvesters})'
+        raise click.ClickException(msg)
+
+    click.echo(f'Harvesting {harvest_type}')
+    harvester = HARVESTERS[harvest_type]()
+
+    harvester.sync()

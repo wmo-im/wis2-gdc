@@ -19,8 +19,26 @@
 #
 ###############################################################################
 
-import os
+DOCKER_COMPOSE_ARGS=--file docker/docker-compose.yml --file docker/docker-compose.override.yml
 
-API_URL = os.environ.get('WIS2_GDC_API_URL')
-BACKEND_TYPE = os.environ.get('WIS2_GDC_BACKEND_TYPE')
-BACKEND_CONNECTION = os.environ.get('WIS2_GDC_BACKEND_CONNECTION')
+build:
+	docker compose $(DOCKER_COMPOSE_ARGS) build
+
+up:
+	docker compose $(DOCKER_COMPOSE_ARGS) up --detach
+
+login:
+	docker exec -it wis2-gdc-management /bin/bash
+
+down:
+	docker compose $(DOCKER_COMPOSE_ARGS) down
+
+restart: down up
+
+force-build:
+	docker compose $(DOCKER_COMPOSE_ARGS) build --no-cache
+
+logs:
+	docker compose $(DOCKER_COMPOSE_ARGS) logs --follow
+
+.PHONY: build up down restart force-build

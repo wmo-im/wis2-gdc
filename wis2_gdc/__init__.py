@@ -22,6 +22,7 @@
 import click
 
 from wis2_gdc.registrar import register, setup
+from wis2_gdc.sync import sync
 
 __version__ = '0.1.dev0'
 
@@ -34,5 +35,6 @@ def cli():
     pass
 
 
+cli.add_command(sync)
 cli.add_command(register)
 cli.add_command(setup)

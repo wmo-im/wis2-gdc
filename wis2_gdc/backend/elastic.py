@@ -45,14 +45,24 @@ class ElasticsearchBackend(BaseBackend):
             },
             'mappings': {
                 'properties': {
-                    'geometry': {
-                        'type': 'geo_shape'
-                    },
                     'id': {
                         'type': 'text',
                         'fields': {
                             'raw': {
                                 'type': 'keyword'
+                            }
+                        }
+                    },
+                    'geometry': {
+                        'type': 'geo_shape'
+                    },
+                    'time': {
+                        'properties': {
+                            'interval': {
+                                'type': 'date',
+                                'null_value': '1850',
+                                'format': 'year||year_month||year_month_day||date_time||t_time||t_time_no_millis',  # noqa
+                                'ignore_malformed': True
                             }
                         }
                     },
@@ -82,14 +92,6 @@ class ElasticsearchBackend(BaseBackend):
                                     }
                                 }
                             },
-                            'wmo:topicHierarchy': {
-                                'type': 'text',
-                                'fields': {
-                                    'raw': {
-                                        'type': 'keyword'
-                                    }
-                                }
-                            },
                             'wmo:dataPolicy': {
                                 'type': 'text',
                                 'fields': {
@@ -108,6 +110,16 @@ class ElasticsearchBackend(BaseBackend):
         self.index_name = self.url_parsed.path.lstrip('/')
 
         url2 = f'{self.url_parsed.scheme}://{self.url_parsed.netloc}'
+
+        if self.url_parsed.port is None:
+            LOGGER.debug('No port found; trying autodetect')
+            port = None
+            if self.url_parsed.scheme == 'http':
+                port = 80
+            elif self.url_parsed.scheme == 'https':
+                port = 443
+            if port is not None:
+                url2 = f'{self.url_parsed.scheme}://{self.url_parsed.netloc}:{port}'  # noqa
 
         if self.url_parsed.path.count('/') > 1:
             LOGGER.debug('ES URL has a basepath')
@@ -129,6 +141,7 @@ class ElasticsearchBackend(BaseBackend):
             settings['http_auth'] = (
                 self.url_parsed.username, self.url_parsed.password)
 
+        LOGGER.debug(f'Settings: {settings}')
         self.es = Elasticsearch(**settings)
 
     def setup(self) -> None:
@@ -140,5 +153,5 @@ class ElasticsearchBackend(BaseBackend):
         self.es.indices.create(index=self.index_name, body=self.ES_SETTINGS)
 
     def save(self, record: dict) -> None:
-        LOGGER.debug(record)
+        LOGGER.debug(f"Indexing record {record['id']}")
         self.es.index(index=self.index_name, id=record['id'], body=record)

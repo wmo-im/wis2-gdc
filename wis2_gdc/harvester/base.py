@@ -19,8 +19,22 @@
 #
 ###############################################################################
 
-import os
+from abc import ABC, abstractmethod
+import logging
 
-API_URL = os.environ.get('WIS2_GDC_API_URL')
-BACKEND_TYPE = os.environ.get('WIS2_GDC_BACKEND_TYPE')
-BACKEND_CONNECTION = os.environ.get('WIS2_GDC_BACKEND_CONNECTION')
+LOGGER = logging.getLogger(__name__)
+
+
+class BaseHarvester(ABC):
+    def __init__(self):
+        pass
+
+    @abstractmethod
+    def sync(self) -> None:
+        """
+        Synchronize resource from a remote
+
+        :returns: `None`
+        """
+
+        raise NotImplementedError()
