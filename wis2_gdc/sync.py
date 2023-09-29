@@ -32,6 +32,12 @@ from wis2_gdc.harvester import HARVESTERS
 def sync(harvest_type, verbosity):
     """Synchronization utilities"""
 
+    harvesters = list(HARVESTERS.keys())
+
+    if harvest_type not in harvesters:
+        msg = f'Invalid harvester (supported harvesters: {harvesters})'
+        raise click.ClickException(msg)
+
     click.echo(f'Harvesting {harvest_type}')
     harvester = HARVESTERS[harvest_type]()
 
