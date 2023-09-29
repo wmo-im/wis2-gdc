@@ -29,7 +29,7 @@ from pywis_pubsub import cli_options
 from pywis_pubsub.subscribe import get_data
 
 from wis2_gdc.backend import BACKENDS
-from wis2_gdc.env import BACKEND, CONNECTION
+from wis2_gdc.env import BACKEND_TYPE, BACKEND_CONNECTION
 
 LOGGER = logging.getLogger(__name__)
 
@@ -41,7 +41,7 @@ class Registrar:
     def register(self, metadata: dict):
         self.metadata = metadata
         LOGGER.debug(f'Metadata: {self.metadata}')
-        LOGGER.debug(f'Publishing metadata to {BACKEND} ({CONNECTION})')
+        LOGGER.debug(f'Publishing metadata to {BACKEND_TYPE} ({BACKEND_CONNECTION})')  # noqa
         self._publish()
 
     def _run_ets(self):
@@ -51,7 +51,7 @@ class Registrar:
         pass
 
     def _publish(self):
-        backend = BACKENDS[BACKEND]({'connection': CONNECTION})
+        backend = BACKENDS[BACKEND_TYPE]({'connection': BACKEND_CONNECTION})
 
         backend.save(self.metadata)
 
@@ -68,7 +68,7 @@ def setup(ctx, bypass, verbosity='NOTSET'):
         if not click.confirm('Create GDC backends?  This will overwrite existing collections', abort=True):  # noqa
             return
 
-    backend = BACKENDS[BACKEND]({'connection': CONNECTION})
+    backend = BACKENDS[BACKEND_TYPE]({'connection': BACKEND_CONNECTION})
     LOGGER.debug(f'Backend: {backend}')
     backend.setup()
 

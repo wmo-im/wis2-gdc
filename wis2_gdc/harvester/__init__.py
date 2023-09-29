@@ -19,8 +19,8 @@
 #
 ###############################################################################
 
-import os
+from wis2_gdc.harvester.wis2box import Wis2boxHarvester
 
-API_URL = os.environ.get('WIS2_GDC_API_URL')
-BACKEND_TYPE = os.environ.get('WIS2_GDC_BACKEND_TYPE')
-BACKEND_CONNECTION = os.environ.get('WIS2_GDC_BACKEND_CONNECTION')
+HARVESTERS = {
+    'wis2box': Wis2boxHarvester
+}

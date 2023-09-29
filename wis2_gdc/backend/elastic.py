@@ -111,6 +111,16 @@ class ElasticsearchBackend(BaseBackend):
 
         url2 = f'{self.url_parsed.scheme}://{self.url_parsed.netloc}'
 
+        if self.url_parsed.port is None:
+            LOGGER.debug('No port found; trying autodetect')
+            port = None
+            if self.url_parsed.scheme == 'http':
+                port = 80
+            elif self.url_parsed.scheme == 'https':
+                port = 443
+            if port is not None:
+                url2 = f'{self.url_parsed.scheme}://{self.url_parsed.netloc}:{port}'  # noqa
+
         if self.url_parsed.path.count('/') > 1:
             LOGGER.debug('ES URL has a basepath')
             basepath = self.url_parsed.path.split('/')[1]
@@ -143,5 +153,5 @@ class ElasticsearchBackend(BaseBackend):
         self.es.indices.create(index=self.index_name, body=self.ES_SETTINGS)
 
     def save(self, record: dict) -> None:
-        LOGGER.debug(f'Indexing record')
+        LOGGER.debug(f"Indexing record {record['id']}")
         self.es.index(index=self.index_name, id=record['id'], body=record)
