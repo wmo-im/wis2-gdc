@@ -1,4 +1,4 @@
 click
-pywcmp @ git+https://github.com/wmo-im/pywcmp@master
+pywcmp
 pywis-pubsub
 unicodecsv

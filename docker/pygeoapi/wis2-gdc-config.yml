@@ -15,7 +15,7 @@ server:
       attribution: 'Map data &copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
     manager:
         name: TinyDB
-        connection: /tmp/pygeoapi-process-manager.db
+        connection: /tmp/wis2-gdc-process-manager.db
         output_dir: /tmp/
 
 logging:
@@ -24,18 +24,18 @@ logging:
 
 metadata:
     identification:
-        title: WIS2 Global Discovery Catalogue instance
-        description: WIS2 Global Discovery Catalogue instance
+        title: WMO WIS2 Global Discovery Catalogue instance
+        description: WMO WIS2 Global Discovery Catalogue instance
         keywords:
             - wmo
             - wis2
             - gdc
         keywords_type: theme
-        terms_of_service: https://creativecommons.org/licenses/by/4.0/
+        terms_of_service: https://creativecommons.org/licenses/by/4.0
         url: https://github.com/wmo-im/wis2-gdc
     license:
         name: CC-BY 4.0 license
-        url: https://creativecommons.org/licenses/by/4.0/
+        url: https://creativecommons.org/licenses/by/4.0
     provider:
         name: GDC provider name
         url: https://github.com/wmo-im/wis2-gdc
@@ -66,8 +66,8 @@ resources:
         links:
             - type: text/html
               rel: canonical
-              title: Water Level and Flow - Environment Canada
-              href: https://wateroffice.ec.gc.ca
+              title: WMO Information System (WIS) | World Meteorological Organization
+              href: https://community.wmo.int/en/activity-areas/wis
               hreflang: en-CA
         extents:
             spatial:
@@ -79,3 +79,13 @@ resources:
               data: ${WIS2_GDC_BACKEND_CONNECTION}
               id_field: id
               time_field: updated
+
+    pywcmp-wis2-wcmp2-ets:
+        type: process
+        processor:
+            name: pywcmp.pygeoapi_plugin.WCMP2ETSProcessor
+
+#    pywcmp-wis2-wcmp2-kpi:
+#        type: process
+#        processor:
+#            name: pywcmp.pygeoapi_plugin.WCMP2KPIProcessor
