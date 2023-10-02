@@ -73,6 +73,9 @@ wis2-gdc register /path/to/dir/or/wcmp2-files
 wis2-gdc sync wis2box
 ```
 
+### Docker
+
+Instructions to run wis2-gdc via Docker can be found the [`docker`](docker) directory.
 
 ## Development
 
