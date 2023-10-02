@@ -7,6 +7,7 @@ This Docker setup uses Docker and Docker Compose to manage the following service
 - **pygeoapi**: OGC API - Records metadata catalogue
 - **Elasticsearch**: GDC search engine backend
 - **wis2-gdc-management**: management service to ingest, validate and publish discovery metadata published from a WIS2 Global Broker instance
+  - the default Global Broker connection is to Météo-France.  This can be modified in `pywis-pubsub-config.local.yml` to point to an alternate Global Broker
 
 See [`default.env`](default.env) for default environment variable settings.
 

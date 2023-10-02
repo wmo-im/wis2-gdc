@@ -26,7 +26,6 @@ from pathlib import Path
 import click
 
 from pywis_pubsub import cli_options
-from pywis_pubsub.subscribe import get_data
 
 from wis2_gdc.backend import BACKENDS
 from wis2_gdc.env import BACKEND_TYPE, BACKEND_CONNECTION

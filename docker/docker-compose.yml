@@ -55,12 +55,12 @@ services:
     build:
       context: ..
     env_file:
-      - default.env
+      - wis2-gdc-config.local.env
     depends_on:
       elasticsearch:
         condition: service_healthy
     restart: always
-    command: ["pywis-pubsub", "subscribe", "--config", "/app/local.yml", "--verbosity", "DEBUG"]
+    command: ["pywis-pubsub", "subscribe", "--config", "/app/docker/pywis-pubsub-config.local.yml", "--verbosity", "DEBUG"]
     networks:
       - wis2-gdc-net
 
@@ -76,7 +76,7 @@ services:
       interval: 5s
       retries: 3
     env_file:
-      - default.env
+      - wis2-gdc-config.local.env
     restart: unless-stopped
     networks:
       - wis2-gdc-net

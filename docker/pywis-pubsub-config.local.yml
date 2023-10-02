@@ -1,0 +1,12 @@
+broker: mqtt://everyone:everyone@globalbroker.meteo.fr:8883
+
+subscribe_topics:
+    - 'origin/a/wis2/+/+/metadata/#'
+
+qos: 1
+
+verify_data: true
+
+validate_message: true
+
+hook: wis2_gdc.hook.DiscoveryMetadataHook
