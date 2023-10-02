@@ -41,4 +41,4 @@ force-build:
 logs:
 	docker compose $(DOCKER_COMPOSE_ARGS) logs --follow
 
-.PHONY: build up down restart force-build
+.PHONY: build up login down restart force-build logs
