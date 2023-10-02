@@ -27,7 +27,8 @@ from wis2_gdc.harvester import HARVESTERS
 
 
 @click.command
-@click.argument('harvest_type')
+@click.argument('harvest_type', nargs=1,
+                type=click.Choice(list(HARVESTERS.keys())))
 @cli_options.OPTION_VERBOSITY
 def sync(harvest_type, verbosity):
     """Synchronization utilities"""
