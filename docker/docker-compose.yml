@@ -50,6 +50,20 @@ services:
     networks:
       - wis2-gdc-net
 
+  wis2-gdc-management:
+    container_name: wis2-gdc-management
+    build:
+      context: ..
+    env_file:
+      - default.env
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    restart: always
+    command: ["pywis-pubsub", "subscribe", "--config", "/app/local.yml", "--verbosity", "DEBUG"]
+    networks:
+      - wis2-gdc-net
+
   pygeoapi:
     container_name: pygeoapi
     build:
@@ -64,21 +78,6 @@ services:
     env_file:
       - default.env
     restart: unless-stopped
-    expose:
-      - "80"
-    networks:
-      - wis2-gdc-net
-
-  wis2-gdc-management:
-    container_name: wis2-gdc-management
-    build:
-      context: ..
-    env_file:
-      - default.env
-    depends_on:
-      - elasticsearch
-    restart: always
-    command: ["pywis-pubsub", "subscribe", "--config", "/app/local.yml", "--verbosity", "DEBUG"]
     networks:
       - wis2-gdc-net
 

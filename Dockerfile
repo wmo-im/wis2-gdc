@@ -30,17 +30,17 @@ ENV TZ="Etc/UTC" \
 # copy the app
 COPY . /app
 
-# install dependencies
-RUN apt-get update -y && apt-get install -y ${DEBIAN_PACKAGES} \
-    && pip3 install --no-cache-dir -r /app/requirements.txt elasticsearch \
+RUN apt-get update -y && \
+    # install dependencies
+    apt-get install -y ${DEBIAN_PACKAGES} && \
+    pip3 install --no-cache-dir -r /app/requirements.txt elasticsearch && \
+    # install wis2-gdc
+    cd /app && \
+    pip3 install -e . && \
+    chmod +x /app/docker/entrypoint.sh && \
     # cleanup
-    && apt autoremove -y  \
-    && apt-get -q clean \
-    && rm -rf /var/lib/apt/lists/*
-
-# install wis2-gdc
-RUN cd /app \
-    && pip3 install -e . \
-    && chmod +x /app/docker/entrypoint.sh
+    apt autoremove -y && \
+    apt-get -q clean && \
+    rm -rf /var/lib/apt/lists/*
 
 ENTRYPOINT [ "/app/docker/entrypoint.sh" ]
