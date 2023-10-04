@@ -85,7 +85,7 @@ resources:
         processor:
             name: pywcmp.pygeoapi_plugin.WCMP2ETSProcessor
 
-#    pywcmp-wis2-wcmp2-kpi:
-#        type: process
-#        processor:
-#            name: pywcmp.pygeoapi_plugin.WCMP2KPIProcessor
+    pywcmp-wis2-wcmp2-kpi:
+        type: process
+        processor:
+            name: pywcmp.pygeoapi_plugin.WCMP2KPIProcessor
