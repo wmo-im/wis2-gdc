@@ -29,7 +29,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class DiscoveryMetadataHook(Hook):
-    def execute(self, msg_dict: dict) -> None:
+    def execute(self, topic: str, msg_dict: dict) -> None:
         LOGGER.debug('Discovery metadata hook execution begin')
         r = Registrar()
         r.register(msg_dict)
