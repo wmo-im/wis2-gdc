@@ -58,7 +58,7 @@ pywis-pubsub schema sync
 # connect to Global Broker
 # discovery metadata notifications will trigger wis2-gdc to validate and publish
 # WCMP2 to the GDC identified in wis2-gdc.env (WIS2_GDC_GB)
-pywis-pubsub subscribe --config pywis-pubsub-config.yml
+pywis-pubsub subscribe --config pywis-pubsub.yml
 
 # loading metadata manually (single file)
 wis2-gdc register /path/to/wcmp2-file.json
