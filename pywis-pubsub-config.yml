@@ -1,8 +1,8 @@
 
-broker: mqtts://localhost:1883
+broker: ${WIS2_GDC_GB}
 
 subscribe_topics:
-    - 'origin/a/wis2/+/+/metadata/#'
+    - ${WIS2_GDC_GB_TOPIC}
 
 verify_data: true
 

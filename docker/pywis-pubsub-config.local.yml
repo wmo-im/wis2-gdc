@@ -1,7 +1,7 @@
-broker: mqtt://everyone:everyone@globalbroker.meteo.fr:8883
+broker: ${WIS2_GDC_GB}
 
 subscribe_topics:
-    - 'origin/a/wis2/+/+/metadata/#'
+    - ${WIS2_GDC_GB_TOPIC}
 
 qos: 1
 
