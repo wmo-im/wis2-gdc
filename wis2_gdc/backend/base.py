@@ -40,6 +40,16 @@ class BaseBackend(ABC):
         raise NotImplementedError()
 
     @abstractmethod
+    def teardown(self) -> None:
+        """
+        Tear down a backend
+
+        :returns: `None`
+        """
+
+        raise NotImplementedError()
+
+    @abstractmethod
     def save(self, record: dict) -> None:
         """
         Upsert a resource to a backend

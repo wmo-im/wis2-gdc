@@ -145,12 +145,14 @@ class ElasticsearchBackend(BaseBackend):
         self.es = Elasticsearch(**settings)
 
     def setup(self) -> None:
+        self.teardown()
+        LOGGER.debug(f'Creating index {self.index_name}')
+        self.es.indices.create(index=self.index_name, body=self.ES_SETTINGS)
+
+    def teardown(self) -> None:
         if self.es.indices.exists(index=self.index_name):
             LOGGER.debug(f'Deleting index {self.index_name}')
             self.es.indices.delete(index=self.index_name)
-
-        LOGGER.debug(f'Creating index {self.index_name}')
-        self.es.indices.create(index=self.index_name, body=self.ES_SETTINGS)
 
     def save(self, record: dict) -> None:
         LOGGER.debug(f"Indexing record {record['id']}")
