@@ -33,7 +33,6 @@ COPY . /app
 RUN apt-get update -y && \
     # install dependencies
     apt-get install -y ${DEBIAN_PACKAGES} && \
-    pip3 install -U https://github.com/wmo-im/pywcmp/archive/master.zip && \
     pip3 install -U https://github.com/wmo-im/pywis-pubsub/archive/main.zip && \
     pip3 install --no-cache-dir -r /app/requirements.txt elasticsearch && \
     # install wis2-gdc
