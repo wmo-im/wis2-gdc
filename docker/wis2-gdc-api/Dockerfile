@@ -26,4 +26,4 @@ LABEL maintainer="Tom Kralidis <tomkralidis@gmail.com>"
 RUN pip3 install pywcmp && \
     pywcmp bundle sync
 
-COPY ./wis2-gdc-config.yml /pygeoapi/local.config.yml
+COPY ./wis2-gdc.yml /pygeoapi/local.config.yml
