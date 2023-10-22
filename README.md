@@ -15,9 +15,10 @@ wis2-gdc is a Reference Implementation of a WIS2 Global Discovery Catalogue.
 - on discovery metadata notifications, run the WCMP2 ATS via [pywcmp](https://github.com/wmo-im/pywcmp)
   - ETS
   - KPIs
+- publish ETS and KPI reports to local broker under `gdc-reports`
 - publish to a WIS2 GDC (OGC API - Records) using one of the supported transaction backends:
   - [OGC API - Features - Part 4: Create, Replace, Update and Delete](https://docs.ogc.org/DRAFTS/20-002.html)
-  - Elasticsearch direct
+  - Elasticsearch direct (default)
 
 ## Installation
 
@@ -54,6 +55,12 @@ source local.env
 
 # setup pywis-pubsub - sync WIS2 notification schema
 pywis-pubsub schema sync
+
+# setup backend
+wis2-gdc setup
+
+# teardown backend
+wis2-gdc teardown
 
 # connect to Global Broker
 # discovery metadata notifications will automatically trigger wis2-gdc to validate and publish

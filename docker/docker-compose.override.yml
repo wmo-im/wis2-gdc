@@ -20,9 +20,12 @@
 ###############################################################################
 
 services:
-  wis2-gdc-api:
-    ports:
-      - 80:80
   elasticsearch:
     ports:
       - 9200:9200
+  mosquitto:
+    ports:
+      - 1883:1883
+  wis2-gdc-api:
+    ports:
+      - 80:80

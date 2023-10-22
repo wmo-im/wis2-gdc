@@ -25,10 +25,12 @@ from pathlib import Path
 
 import click
 
+from pywcmp.wcmp2.ets import WMOCoreMetadataProfileTestSuite2
 from pywis_pubsub import cli_options
+from pywis_pubsub.mqtt import MQTTPubSubClient
 
 from wis2_gdc.backend import BACKENDS
-from wis2_gdc.env import BACKEND_TYPE, BACKEND_CONNECTION
+from wis2_gdc.env import BACKEND_TYPE, BACKEND_CONNECTION, BROKER_URL
 
 LOGGER = logging.getLogger(__name__)
 
@@ -36,22 +38,38 @@ LOGGER = logging.getLogger(__name__)
 class Registrar:
     def __init__(self):
         self.metadata = None
+        self.broker = MQTTPubSubClient(BROKER_URL)
 
     def register(self, metadata: dict):
         self.metadata = metadata
         LOGGER.debug(f'Metadata: {self.metadata}')
-        LOGGER.debug(f'Publishing metadata to {BACKEND_TYPE} ({BACKEND_CONNECTION})')  # noqa
+
+        ets_results = self._run_ets()
+        if ets_results['ets-report']['summary']['FAILED'] > 0:
+            LOGGER.debug('ETS errors; metadata not published')
+
+        LOGGER.info(f'Publishing metadata to {BACKEND_TYPE} ({BACKEND_CONNECTION})')  # noqa
         self._publish()
 
-    def _run_ets(self):
-        pass
+    def _run_ets(self) -> dict:
+        LOGGER.info('Running ETS')
+        ts = WMOCoreMetadataProfileTestSuite2(self.metadata)
+        try:
+            results = ts.run_tests(fail_on_schema_validation=True)
+            LOGGER.info('Publishing ETS report to broker')
+            topic = f"gdc-reports/ets/{self.metadata['id']}"
+            self.broker.pub(topic, json.dumps(results))
+            return results
+        except Exception as err:
+            LOGGER.error(err)
 
     def _run_kpi(self):
+        LOGGER.info('Running KPI')
         pass
 
     def _publish(self):
         backend = BACKENDS[BACKEND_TYPE]({'connection': BACKEND_CONNECTION})
-
+        LOGGER.info('Saving metadata to backend')
         backend.save(self.metadata)
 
 
@@ -64,12 +82,29 @@ def setup(ctx, bypass, verbosity='NOTSET'):
     """Create GDC backend"""
 
     if not bypass:
-        if not click.confirm('Create GDC backends?  This will overwrite existing collections', abort=True):  # noqa
+        if not click.confirm('Create GDC backend?  This will overwrite existing collections', abort=True):  # noqa
             return
 
     backend = BACKENDS[BACKEND_TYPE]({'connection': BACKEND_CONNECTION})
     LOGGER.debug(f'Backend: {backend}')
     backend.setup()
+
+
+@click.command()
+@click.pass_context
+@click.option('--yes', '-y', 'bypass', is_flag=True, default=False,
+              help='Bypass permission prompts')
+@cli_options.OPTION_VERBOSITY
+def teardown(ctx, bypass, verbosity='NOTSET'):
+    """Delete GDC backend"""
+
+    if not bypass:
+        if not click.confirm('Delete GDC backend?  This will remove existing collections', abort=True):  # noqa
+            return
+
+    backend = BACKENDS[BACKEND_TYPE]({'connection': BACKEND_CONNECTION})
+    LOGGER.debug(f'Backend: {backend}')
+    backend.teardown()
 
 
 @click.command()

@@ -24,3 +24,4 @@ import os
 API_URL = os.environ.get('WIS2_GDC_API_URL')
 BACKEND_TYPE = os.environ.get('WIS2_GDC_BACKEND_TYPE')
 BACKEND_CONNECTION = os.environ.get('WIS2_GDC_BACKEND_CONNECTION')
+BROKER_URL = os.environ.get('WIS2_GDC_BROKER_URL')

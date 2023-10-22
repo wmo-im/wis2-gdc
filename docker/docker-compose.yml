@@ -50,6 +50,16 @@ services:
     networks:
       - wis2-gdc-net
 
+  mosquitto:
+    container_name: mosquitto
+    restart: always
+    build:
+      context: ./mosquitto
+    env_file:
+      - wis2-gdc.env
+    networks:
+      - wis2-gdc-net
+
   wis2-gdc-management:
     container_name: wis2-gdc-management
     build:

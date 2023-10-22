@@ -24,8 +24,11 @@
 
 echo "START /entrypoint.sh"
 
-echo "Caching WCMP2 schemas"
+echo "Caching WNM schema"
 pywis-pubsub schema sync
+
+echo "Caching WCMP schemas"
+pywcmp bundle sync
 
 echo "Setting up discovery metadata backend"
 wis2-gdc setup --yes
