@@ -69,6 +69,11 @@ resources:
               title: WMO Information System (WIS) | World Meteorological Organization
               href: https://community.wmo.int/en/activity-areas/wis
               hreflang: en-CA
+            - type: application/zip
+              rel: archives
+              title: WIS2 discovery metadata archive (generated daily)
+              href: ${WIS2_GDC_API_URL}/wis2-discovery-metadata-archive.zip
+              hreflang: en-CA
         extents:
             spatial:
                 bbox: [-180, -90, 180, 90]

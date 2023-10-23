@@ -34,14 +34,14 @@ except ImportError:  # CORS needs to be handled by upstream server
     pass
 
 
-@app.route('/archive.zip')
+@app.route('/wis2-discovery-metadata-archive.zip')
 def archive():
 
     headers = {
         'Content-Type': 'application/zip'
     }
 
-    with open('/data/archive.zip') as fh:
+    with open('/data/wis2-discovery-metadata-archive.zip') as fh:
         response = make_response(fh.read(), 200)
         response.headers = headers
 
