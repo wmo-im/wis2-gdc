@@ -37,10 +37,24 @@ LOGGER = logging.getLogger(__name__)
 
 class Registrar:
     def __init__(self):
+        """
+        Initializer
+
+        :returns: `wis2_gdc.registrar.Registrar`
+        """
+
         self.metadata = None
         self.broker = MQTTPubSubClient(BROKER_URL)
 
-    def register(self, metadata: dict):
+    def register(self, metadata: dict) -> None:
+        """
+        Register a metadata document
+
+        :param metadata: `dict` of metadata document
+
+        :returns: `None`
+        """
+
         self.metadata = metadata
         LOGGER.debug(f'Metadata: {self.metadata}')
 
@@ -52,6 +66,12 @@ class Registrar:
         self._publish()
 
     def _run_ets(self) -> dict:
+        """
+        Helper function to run ETS
+
+        :returns: `dict` of ETS results
+        """
+
         LOGGER.info('Running ETS')
         ts = WMOCoreMetadataProfileTestSuite2(self.metadata)
         try:
@@ -64,10 +84,23 @@ class Registrar:
             LOGGER.error(err)
 
     def _run_kpi(self):
+        """
+        Helper function to run KPI
+
+        :returns: `dict` of KPI results
+        """
+
         LOGGER.info('Running KPI')
         pass
 
     def _publish(self):
+        """
+        Publish metadata from `wis2_gdc.registrar:Registrar.metadata`
+        to backend
+
+        :returns: `None`
+        """
+
         backend = BACKENDS[BACKEND_TYPE]({'connection': BACKEND_CONNECTION})
         LOGGER.info('Saving metadata to backend')
         backend.save(self.metadata)

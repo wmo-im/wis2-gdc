@@ -66,9 +66,13 @@ services:
       context: ..
     env_file:
       - wis2-gdc.env
+    environment:
+      - WIS2_GDC_API_URL_DOCKER=http://wis2-gdc-api
     depends_on:
       elasticsearch:
         condition: service_healthy
+    volumes:
+      - wis2-gdc-management-data:/data
     restart: always
     command: ["pywis-pubsub", "subscribe", "--config", "/app/docker/pywis-pubsub.yml", "--verbosity", "DEBUG"]
     networks:
@@ -81,6 +85,8 @@ services:
     image: geopython/pygeoapi:latest
     depends_on:
       - wis2-gdc-management
+    volumes:
+      - wis2-gdc-management-data:/data
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/conformance"]
       interval: 5s
@@ -93,6 +99,7 @@ services:
 
 volumes:
   es-data:
+  wis2-gdc-management-data:
 
 networks:
   wis2-gdc-net:

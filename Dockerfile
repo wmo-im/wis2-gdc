@@ -25,10 +25,13 @@ LABEL maintainer="tomkralidis@gmail.com"
 
 ENV TZ="Etc/UTC" \
     DEBIAN_FRONTEND="noninteractive" \
-    DEBIAN_PACKAGES="bash curl git python3-pip python3-setuptools vim"
+    DEBIAN_PACKAGES="bash cron curl git python3-pip python3-setuptools vim"
 
 # copy the app
 COPY . /app
+
+# add to crontab
+COPY ./docker/wis2-gdc-management.cron /etc/cron.d/wis2-gdc-management.cron
 
 RUN apt-get update -y && \
     # install dependencies
@@ -42,6 +45,8 @@ RUN apt-get update -y && \
     # cleanup
     apt autoremove -y && \
     apt-get -q clean && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    chmod 0644 /etc/cron.d/wis2-gdc-management.cron && \
+    crontab /etc/cron.d/wis2-gdc-management.cron
 
 ENTRYPOINT [ "/app/docker/entrypoint.sh" ]

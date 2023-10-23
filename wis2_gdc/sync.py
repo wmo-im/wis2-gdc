@@ -19,11 +19,84 @@
 #
 ###############################################################################
 
+import json
+import logging
+import zipfile
+
 import click
+import requests
+from typing import Union
 
 from pywis_pubsub import cli_options
+from pywis_pubsub.mqtt import MQTTPubSubClient
 
+from wis2_gdc.env import API_URL, API_URL_DOCKER, BROKER_URL
 from wis2_gdc.harvester import HARVESTERS
+
+LOGGER = logging.getLogger(__name__)
+
+
+def archive_metadata(url: str, archive_zipfile: str) -> None:
+    """
+    Archive all discovery metadata from a GDC to an archive zipfile
+
+    :param url: `str` of GDC API URL
+    :archive_zipfile: `str` of filename of zipfile
+
+    :returns: `None`
+    """
+
+    def _get_next_link(links) -> Union[str, None]:
+        """
+        Inner helper function to derive rel=next link from GDC response
+
+        :param links: `list` of links array
+
+        :returns: `str` of next link or `None`
+        """
+
+        for link in links:
+            if link['rel'] == 'next':
+                return link['href']
+
+        return None
+
+    end = False
+    gdc_items_url = f'{url}/collections/wis2-discovery-metadata/items'
+    response = None
+
+    with zipfile.ZipFile(archive_zipfile, 'w') as zf:
+        while not end:
+            if response is None:
+                gdc_items_url2 = gdc_items_url
+            else:
+                gdc_items_url2 = _get_next_link(response['links'])
+
+            LOGGER.info(f'Querying GDC with {gdc_items_url2}')
+            response = requests.get(gdc_items_url2).json()
+
+            for feature in response['features']:
+                LOGGER.debug(f"Saving {feature['id']} to archive")
+                filename = f"{feature['id']}.json"
+                zf.writestr(filename, json.dumps(feature))
+
+            if _get_next_link(response['links']) is None:
+                end = True
+
+    m = MQTTPubSubClient(BROKER_URL)
+    m.pub('gdc-reports/archive', f'Archive published at {API_URL}/archive.zip')
+    m.close()
+
+
+@click.command()
+@click.pass_context
+@click.argument('archive-zipfile')
+@cli_options.OPTION_VERBOSITY
+def archive(ctx, archive_zipfile, verbosity='NOTSET'):
+    """Archive discovery metadata records"""
+
+    click.echo(f'Achiving metadata from GDC {API_URL}')
+    archive_metadata(API_URL_DOCKER, archive_zipfile)
 
 
 @click.command

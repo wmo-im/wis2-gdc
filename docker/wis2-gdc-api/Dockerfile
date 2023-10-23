@@ -23,7 +23,16 @@ FROM geopython/pygeoapi:latest
 
 LABEL maintainer="Tom Kralidis <tomkralidis@gmail.com>"
 
+ENV PYGEOAPI_CONFIG=/pygeoapi/local.config.yml
+ENV PYGEOAPI_OPENAPI=/pygeoapi/local.openapi.yml
+
 RUN pip3 install pywcmp && \
     pywcmp bundle sync
 
 COPY ./wis2-gdc.yml /pygeoapi/local.config.yml
+COPY ./app.py /pygeoapi/pygeoapi/app.py
+COPY ./entrypoint.sh /app/docker/wis2-gdc-api/entrypoint.sh
+
+RUN chmod +x /app/docker/wis2-gdc-api/entrypoint.sh
+
+ENTRYPOINT [ "/app/docker/wis2-gdc-api/entrypoint.sh" ]

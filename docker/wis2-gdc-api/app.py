@@ -19,10 +19,32 @@
 #
 ###############################################################################
 
-import os
+from flask import Flask, make_response, redirect
+from pygeoapi.flask_app import BLUEPRINT as pygeoapi_blueprint
 
-API_URL = os.environ.get('WIS2_GDC_API_URL')
-API_URL_DOCKER = os.environ.get('WIS2_GDC_API_URL_DOCKER')
-BACKEND_TYPE = os.environ.get('WIS2_GDC_BACKEND_TYPE')
-BACKEND_CONNECTION = os.environ.get('WIS2_GDC_BACKEND_CONNECTION')
-BROKER_URL = os.environ.get('WIS2_GDC_BROKER_URL')
+app = Flask(__name__, static_url_path='/static')
+app.url_map.strict_slashes = False
+
+app.register_blueprint(pygeoapi_blueprint, url_prefix='/')
+
+try:
+    from flask_cors import CORS
+    CORS(app)
+except ImportError:  # CORS needs to be handled by upstream server
+    pass
+
+
+@app.route('/archive.zip')
+def archive():
+
+    headers = {
+        'Content-Type': 'application/zip'
+    }
+
+    with open('/data/archive.zip') as fh:
+        response = make_response(fh.read(), 200)
+        response.headers = headers
+
+        return response
+
+    return redirect('https://docs.wis2box.wis.wmo.int', code=302)

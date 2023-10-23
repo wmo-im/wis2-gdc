@@ -77,6 +77,9 @@ wis2-gdc register /path/to/dir/or/wcmp2-files
 
 # load from wis2box known deployments (https://demo.wis2box.wis.wmo.int)
 wis2-gdc sync wis2box
+
+# create an archive of metadata records to a zipfile
+wis2-gdc archive foo.zip
 ```
 
 ### Docker
