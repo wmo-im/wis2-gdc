@@ -70,7 +70,7 @@ resources:
               href: https://community.wmo.int/en/activity-areas/wis
               hreflang: en-CA
             - type: application/zip
-              rel: archives
+              rel: enclosure
               title: WIS2 discovery metadata archive (generated daily)
               href: ${WIS2_GDC_API_URL}/wis2-discovery-metadata-archive.zip
               hreflang: en-CA
