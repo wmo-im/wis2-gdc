@@ -5,8 +5,8 @@ subscribe_topics:
 
 qos: 1
 
-verify_data: true
+verify_data: false
 
-validate_message: true
+validate_message: false
 
 hook: wis2_gdc.hook.DiscoveryMetadataHook

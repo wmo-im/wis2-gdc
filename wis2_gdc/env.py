@@ -26,3 +26,14 @@ API_URL_DOCKER = os.environ.get('WIS2_GDC_API_URL_DOCKER')
 BACKEND_TYPE = os.environ.get('WIS2_GDC_BACKEND_TYPE')
 BACKEND_CONNECTION = os.environ.get('WIS2_GDC_BACKEND_CONNECTION')
 BROKER_URL = os.environ.get('WIS2_GDC_BROKER_URL')
+CENTRE_ID = os.environ.get('WIS2_GDC_CENTRE_ID')
+
+if None in [API_URL, API_URL_DOCKER, BACKEND_TYPE,
+            BACKEND_CONNECTION, BROKER_URL, CENTRE_ID]:
+    raise EnvironmentError('Environment variables not set!')
+
+GB_LINKS = []
+
+for key, value in os.environ.items():
+    if key.startswith('WIS2_GDC_GB_LINK'):
+        GB_LINKS.append(value.split(','))

@@ -41,7 +41,7 @@ def archive_metadata(url: str, archive_zipfile: str) -> None:
     Archive all discovery metadata from a GDC to an archive zipfile
 
     :param url: `str` of GDC API URL
-    :archive_zipfile: `str` of filename of zipfile
+    :param archive_zipfile: `str` of filename of zipfile
 
     :returns: `None`
     """
