@@ -20,6 +20,28 @@
 ###############################################################################
 
 import os
+from typing import Any
+
+
+def str2bool(value: Any) -> bool:
+    """
+    helper function to return Python boolean
+    type (source: https://stackoverflow.com/a/715468)
+
+    :param value: value to be evaluated
+
+    :returns: `bool` of whether the value is boolean-ish
+    """
+
+    value2 = False
+
+    if isinstance(value, bool):
+        value2 = value
+    else:
+        value2 = value.lower() in ('yes', 'true', 't', '1', 'on')
+
+    return value2
+
 
 API_URL = os.environ.get('WIS2_GDC_API_URL')
 API_URL_DOCKER = os.environ.get('WIS2_GDC_API_URL_DOCKER')
@@ -27,12 +49,13 @@ BACKEND_TYPE = os.environ.get('WIS2_GDC_BACKEND_TYPE')
 BACKEND_CONNECTION = os.environ.get('WIS2_GDC_BACKEND_CONNECTION')
 BROKER_URL = os.environ.get('WIS2_GDC_BROKER_URL')
 CENTRE_ID = os.environ.get('WIS2_GDC_CENTRE_ID')
-
-if None in [API_URL, API_URL_DOCKER, BACKEND_TYPE,
-            BACKEND_CONNECTION, BROKER_URL, CENTRE_ID]:
-    raise EnvironmentError('Environment variables not set!')
+PUBLISH_REPORTS = str2bool(os.environ.get('WIS2_GDC_PUBLISH_REPORTS', 'false'))
 
 GB_LINKS = []
+
+if None in [API_URL, API_URL_DOCKER, BACKEND_TYPE,
+            BACKEND_CONNECTION, BROKER_URL, CENTRE_ID, PUBLISH_REPORTS]:
+    raise EnvironmentError('Environment variables not set!')
 
 for key, value in os.environ.items():
     if key.startswith('WIS2_GDC_GB_LINK'):

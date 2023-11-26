@@ -33,7 +33,7 @@ from pywis_pubsub.mqtt import MQTTPubSubClient
 
 from wis2_gdc.backend import BACKENDS
 from wis2_gdc.env import (BACKEND_TYPE, BACKEND_CONNECTION, BROKER_URL,
-                          GB_LINKS)
+                          GB_LINKS, PUBLISH_REPORTS)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -46,8 +46,11 @@ class Registrar:
         :returns: `wis2_gdc.registrar.Registrar`
         """
 
+        self.broker = None
         self.metadata = None
-        self.broker = MQTTPubSubClient(BROKER_URL)
+
+        if PUBLISH_REPORTS:
+            self.broker = MQTTPubSubClient(BROKER_URL)
 
     def register(self, metadata: dict) -> None:
         """
@@ -67,8 +70,9 @@ class Registrar:
         LOGGER.info('Running ETS')
         ets_results = self._run_ets()
 
-        LOGGER.info('Publishing ETS report to broker')
-        self.broker.pub(topic, json.dumps(ets_results))
+        if self.broker is not None:
+            LOGGER.info('Publishing ETS report to broker')
+            self.broker.pub(topic, json.dumps(ets_results))
 
         try:
             if ets_results['ets-report']['summary']['FAILED'] > 0:
@@ -85,10 +89,12 @@ class Registrar:
         LOGGER.info(f'Publishing metadata to {BACKEND_TYPE} ({BACKEND_CONNECTION})')  # noqa
         self._publish()
 
-        LOGGER.info('Running ETS')
+        LOGGER.info('Running KPI')
         kpi_results = self._run_kpi()
-        LOGGER.info('Publishing KPI report to broker')
-        self.broker.pub(topic, json.dumps(kpi_results))
+
+        if self.broker is not None:
+            LOGGER.info('Publishing KPI report to broker')
+            self.broker.pub(topic, json.dumps(kpi_results))
 
     def _run_ets(self) -> dict:
         """
