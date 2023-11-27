@@ -156,7 +156,7 @@ class Registrar:
                 channel = value.get('wmo:topic', value.get('channel'))
 
                 new_link = value
-                del new_link['wmo:topic']
+                _ = new_link.pop('wmo:topic', None)
 
                 new_link['rel'] = 'items'
                 new_link['channel'] = channel.replace('origin', 'cache')
