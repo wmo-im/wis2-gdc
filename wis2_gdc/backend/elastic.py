@@ -157,3 +157,6 @@ class ElasticsearchBackend(BaseBackend):
     def save(self, record: dict) -> None:
         LOGGER.debug(f"Indexing record {record['id']}")
         self.es.index(index=self.index_name, id=record['id'], body=record)
+
+    def __repr__(self):
+        return '<ElasticsearchBackend>'

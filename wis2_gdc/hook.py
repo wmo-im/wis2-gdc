@@ -34,3 +34,6 @@ class DiscoveryMetadataHook(Hook):
         r = Registrar()
         r.register(msg_dict)
         LOGGER.debug('Discovery metadata hook execution end')
+
+    def __repr__(self):
+        return '<DiscoveryMetadataHook>'

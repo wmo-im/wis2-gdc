@@ -86,3 +86,6 @@ class Wis2boxHarvester(BaseHarvester):
 
                 LOGGER.debug(f"Saving {record['id']} to catalogue")
                 r.register(record)
+
+    def __repr__(self):
+        return '<Wis2boxHarvester>'

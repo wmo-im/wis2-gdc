@@ -173,6 +173,9 @@ class Registrar:
                     LOGGER.debug(f'Adding new link: {gb_link_to_add}')
                     self.metadata['links'].append(gb_link_to_add)
 
+    def __repr__(self):
+        return '<Registrar>'
+
 
 @click.command()
 @click.pass_context

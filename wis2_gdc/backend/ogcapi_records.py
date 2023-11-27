@@ -53,3 +53,6 @@ class OGCAPIRecordsBackend(BaseBackend):
         elif ttype == 'update':
             LOGGER.debug('Updating existing record in catalogue')
             _ = oarec.get_collection_update(collection, payload)
+
+    def __repr__(self):
+        return '<OGCAPIRecordsBackend>'

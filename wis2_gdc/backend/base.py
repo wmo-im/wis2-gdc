@@ -60,3 +60,6 @@ class BaseBackend(ABC):
         """
 
         raise NotImplementedError()
+
+    def __repr__(self):
+        return '<BaseBackend>'

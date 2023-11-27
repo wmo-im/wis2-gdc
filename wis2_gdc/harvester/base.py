@@ -38,3 +38,6 @@ class BaseHarvester(ABC):
         """
 
         raise NotImplementedError()
+
+    def __repr__(self):
+        return '<BaseHarvester>'
