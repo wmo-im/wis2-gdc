@@ -49,12 +49,16 @@ BACKEND_TYPE = os.environ.get('WIS2_GDC_BACKEND_TYPE')
 BACKEND_CONNECTION = os.environ.get('WIS2_GDC_BACKEND_CONNECTION')
 BROKER_URL = os.environ.get('WIS2_GDC_BROKER_URL')
 CENTRE_ID = os.environ.get('WIS2_GDC_CENTRE_ID')
+GB = os.environ.get('WIS2_GDC_GB')
+GB_TOPIC = os.environ.get('WIS2_GDC_GB_TOPIC')
+OPENMETRICS_FILE = os.environ.get('WIS2_GDC_OPENMETRICS_FILE')
 PUBLISH_REPORTS = str2bool(os.environ.get('WIS2_GDC_PUBLISH_REPORTS', 'false'))
 
 GB_LINKS = []
 
 if None in [API_URL, API_URL_DOCKER, BACKEND_TYPE,
-            BACKEND_CONNECTION, BROKER_URL, CENTRE_ID, PUBLISH_REPORTS]:
+            BACKEND_CONNECTION, BROKER_URL, CENTRE_ID,
+            GB, GB_TOPIC, OPENMETRICS_FILE, PUBLISH_REPORTS]:
     raise EnvironmentError('Environment variables not set!')
 
 for key, value in os.environ.items():

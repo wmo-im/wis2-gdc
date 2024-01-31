@@ -33,7 +33,8 @@ from pywis_pubsub.mqtt import MQTTPubSubClient
 
 from wis2_gdc.backend import BACKENDS
 from wis2_gdc.env import (BACKEND_TYPE, BACKEND_CONNECTION, BROKER_URL,
-                          GB_LINKS, PUBLISH_REPORTS)
+                          CENTRE_ID, GB_LINKS, PUBLISH_REPORTS)
+from wis2_gdc.monitor.metrics import Metrics
 
 LOGGER = logging.getLogger(__name__)
 
@@ -48,6 +49,7 @@ class Registrar:
 
         self.broker = None
         self.metadata = None
+        self.metrics = Metrics()
 
         if PUBLISH_REPORTS:
             self.broker = MQTTPubSubClient(BROKER_URL)
@@ -64,6 +66,7 @@ class Registrar:
         self.metadata = metadata
         self.centre_id = self.metadata['id'].split(':')[3]
         topic = f"report/a/wis2/{self.centre_id}"
+        centre_id_labels = [self.centre_id, CENTRE_ID]
 
         LOGGER.debug(f'Metadata: {self.metadata}')
 
@@ -79,9 +82,19 @@ class Registrar:
                 LOGGER.warning('ETS errors; metadata not published')
                 return
         except KeyError:  # validation error
-            pass
-            # LOGGER.debug('Validation errors; metadata not published')
-            # return
+            self.metrics.failed_total.labels(*centre_id_labels).inc()
+            # pass
+            LOGGER.debug('Validation errors; metadata not published')
+#            self.metrics.write()
+#            return
+
+        self.metrics.passed_total.labels(*centre_id_labels).inc()
+
+        data_policy = self.metadata['properties']['wmo:dataPolicy']
+        if data_policy == 'core':
+            self.metrics.core_total.labels(*centre_id_labels).inc()
+        elif data_policy == 'recommended':
+            self.metrics.recommended_total.labels(*centre_id_labels).inc()
 
         LOGGER.info('Updating links')
         self.update_record_links()
@@ -95,6 +108,8 @@ class Registrar:
         if self.broker is not None:
             LOGGER.info('Publishing KPI report to broker')
             self.broker.pub(topic, json.dumps(kpi_results))
+
+        self.metrics.write()
 
     def _run_ets(self) -> dict:
         """
