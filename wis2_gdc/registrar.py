@@ -25,6 +25,7 @@ import logging
 from pathlib import Path
 
 import click
+import requests
 
 from pywcmp.wcmp2.ets import WMOCoreMetadataProfileTestSuite2
 from pywcmp.wcmp2.kpi import WMOCoreMetadataProfileKeyPerformanceIndicators
@@ -54,6 +55,25 @@ class Registrar:
         if PUBLISH_REPORTS:
             self.broker = MQTTPubSubClient(BROKER_URL)
 
+    def get_wcmp2(self, wnm: dict) -> dict:
+        """
+        Helper function to fetch WCMP2 document from a WNM
+
+        :param wnm: `dict` of WNM
+
+        :returns: `dict` of WCMP2
+        """
+
+        try:
+            LOGGER.debug('Fetching canonical URL')
+            wcmp2_url = list(filter(lambda d: d['rel'] == 'canonical',
+                             wnm['links']))[0]
+        except (IndexError, KeyError):
+            LOGGER.error('No canonical link found')
+            raise
+
+        return requests.get(wcmp2_url).json()
+
     def register(self, metadata: dict) -> None:
         """
         Register a metadata document
@@ -64,6 +84,7 @@ class Registrar:
         """
 
         self.metadata = metadata
+
         self.centre_id = self.metadata['id'].split(':')[3]
         topic = f"report/a/wis2/{self.centre_id}"
         centre_id_labels = [self.centre_id, CENTRE_ID]

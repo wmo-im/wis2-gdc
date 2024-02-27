@@ -20,6 +20,7 @@
 ###############################################################################
 
 from datetime import datetime
+import logging
 from typing import Union
 
 import prometheus_client
@@ -30,6 +31,8 @@ from wis2_gdc.env import API_URL, CENTRE_ID, GB, GB_TOPIC, OPENMETRICS_FILE
 prometheus_client.REGISTRY.unregister(prometheus_client.GC_COLLECTOR)
 prometheus_client.REGISTRY.unregister(prometheus_client.PLATFORM_COLLECTOR)
 prometheus_client.REGISTRY.unregister(prometheus_client.PROCESS_COLLECTOR)
+
+LOGGER = logging.getLogger(__name__)
 
 # sets metrics as per https://github.com/wmo-im/wis2-metric-hierarchy/blob/main/metric-hierarchy/gdc.csv  # noqa
 
@@ -155,7 +158,7 @@ class Metrics:
         write_to_textfile(filename, self.registry)
 
     def __exit__(self, exc_type, exc_value, traceback):
-        print("EXITING")
+        LOGGER.debug('Exiting')
 
     def __repr__(self):
         return '<Metrics>'

@@ -1,4 +1,5 @@
 click
 pywcmp
 pywis-pubsub
+requests
 unicodecsv
