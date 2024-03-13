@@ -147,7 +147,7 @@ class Registrar:
             ts = WMOCoreMetadataProfileTestSuite2(self.metadata)
             return ts.run_tests(fail_on_schema_validation=True)
         except ValueError as err:
-            return {'description': f'Failed validation: {err}'}
+            return {'description': f'Failed ETS: {err}'}
 
     def _run_kpi(self) -> dict:
         """
@@ -160,7 +160,7 @@ class Registrar:
             kpis = WMOCoreMetadataProfileKeyPerformanceIndicators(self.metadata)  # noqa
             return kpis.evaluate()
         except Exception as err:
-            return {'description': f'Failed validation: {err}'}
+            return {'description': f'Failed KPI: {err}'}
 
     def _publish(self):
         """
