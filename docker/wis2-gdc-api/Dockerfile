@@ -30,7 +30,7 @@ RUN pip3 install "pywcmp>=0.7" && \
     pywcmp --version && \
     pywcmp bundle sync
 
-COPY ./wis2-gdc.yml /pygeoapi/local.config.yml
+COPY ./wis2-gdc-api.yml /pygeoapi/local.config.yml
 COPY ./app.py /pygeoapi/pygeoapi/app.py
 COPY ./entrypoint.sh /app/docker/wis2-gdc-api/entrypoint.sh
 
