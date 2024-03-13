@@ -74,6 +74,7 @@ resources:
               title: WIS2 discovery metadata archive (generated daily)
               href: ${WIS2_GDC_API_URL}/wis2-discovery-metadata-archive.zip
               hreflang: en-CA
+              length: -1
         extents:
             spatial:
                 bbox: [-180, -90, 180, 90]

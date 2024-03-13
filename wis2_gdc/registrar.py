@@ -34,7 +34,8 @@ from pywis_pubsub.mqtt import MQTTPubSubClient
 
 from wis2_gdc.backend import BACKENDS
 from wis2_gdc.env import (BACKEND_TYPE, BACKEND_CONNECTION, BROKER_URL,
-                          CENTRE_ID, GB_LINKS, PUBLISH_REPORTS)
+                          CENTRE_ID, GB_LINKS, PUBLISH_REPORTS,
+                          REJECT_ON_FAILING_ETS, RUN_KPI)
 from wis2_gdc.monitor.metrics import Metrics
 
 LOGGER = logging.getLogger(__name__)
@@ -67,11 +68,12 @@ class Registrar:
         try:
             LOGGER.debug('Fetching canonical URL')
             wcmp2_url = list(filter(lambda d: d['rel'] == 'canonical',
-                             wnm['links']))[0]
+                             wnm['links']))[0]['href']
         except (IndexError, KeyError):
             LOGGER.error('No canonical link found')
             raise
 
+        LOGGER.debug(f'Fetching {wcmp2_url}')
         return requests.get(wcmp2_url).json()
 
     def register(self, metadata: dict) -> None:
@@ -89,7 +91,7 @@ class Registrar:
         topic = f"report/a/wis2/{self.centre_id}"
         centre_id_labels = [self.centre_id, CENTRE_ID]
 
-        LOGGER.debug(f'Metadata: {self.metadata}')
+        LOGGER.debug(f'Metadata: {json.dumps(self.metadata, indent=4)}')
 
         LOGGER.info('Running ETS')
         ets_results = self._run_ets()
@@ -98,19 +100,20 @@ class Registrar:
             LOGGER.info('Publishing ETS report to broker')
             self.broker.pub(topic, json.dumps(ets_results))
 
-        try:
-            if ets_results['ets-report']['summary']['FAILED'] > 0:
-                LOGGER.warning('ETS errors; metadata not published')
+        if REJECT_ON_FAILING_ETS:
+            try:
+                if ets_results['ets-report']['summary']['FAILED'] > 0:
+                    LOGGER.warning('ETS errors; metadata not published')
+                    return
+            except KeyError:  # validation error
+                self.metrics.failed_total.labels(*centre_id_labels).inc()
+                LOGGER.debug('Validation errors; metadata not published')
+                self.metrics.write()
                 return
-        except KeyError:  # validation error
-            self.metrics.failed_total.labels(*centre_id_labels).inc()
-            # pass
-            LOGGER.debug('Validation errors; metadata not published')
-#            self.metrics.write()
-#            return
 
         self.metrics.passed_total.labels(*centre_id_labels).inc()
 
+        # TODO: remove following wis2box b7 updates
         data_policy = self.metadata['properties']['wmo:dataPolicy']
         if data_policy == 'core':
             self.metrics.core_total.labels(*centre_id_labels).inc()
@@ -123,12 +126,13 @@ class Registrar:
         LOGGER.info(f'Publishing metadata to {BACKEND_TYPE} ({BACKEND_CONNECTION})')  # noqa
         self._publish()
 
-        LOGGER.info('Running KPI')
-        kpi_results = self._run_kpi()
+        if RUN_KPI:
+            LOGGER.info('Running KPI')
+            kpi_results = self._run_kpi()
 
-        if self.broker is not None:
-            LOGGER.info('Publishing KPI report to broker')
-            self.broker.pub(topic, json.dumps(kpi_results))
+            if self.broker is not None:
+                LOGGER.info('Publishing KPI report to broker')
+                self.broker.pub(topic, json.dumps(kpi_results))
 
         self.metrics.write()
 
