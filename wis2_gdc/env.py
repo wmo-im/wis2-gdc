@@ -65,4 +65,4 @@ if None in [API_URL, API_URL_DOCKER, BACKEND_TYPE,
 
 for key, value in os.environ.items():
     if key.startswith('WIS2_GDC_GB_LINK'):
-        GB_LINKS.append(value.split(','))
+        GB_LINKS.append(value.rsplit(',', 1))
