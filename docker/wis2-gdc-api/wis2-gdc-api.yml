@@ -75,6 +75,12 @@ resources:
               href: ${WIS2_GDC_API_URL}/wis2-discovery-metadata-archive.zip
               hreflang: en-CA
               length: -1
+            - type: text/plain
+              rel: related
+              title: WIS2 Global Discovery Catalogue metrics
+              href: ${WIS2_GDC_API_URL}/{WIS2_GDC_OPENMETRICS_FILE}
+              hreflang: en-CA
+        extents:
         extents:
             spatial:
                 bbox: [-180, -90, 180, 90]

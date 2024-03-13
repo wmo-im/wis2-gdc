@@ -71,6 +71,10 @@ services:
     depends_on:
       elasticsearch:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://elasticsearch:9200/wis2-discovery-metadata"]
+      interval: 5s
+      retries: 3
     volumes:
       - wis2-gdc-management-data:/data
     restart: always
@@ -84,7 +88,8 @@ services:
       context: wis2-gdc-api/
     image: geopython/pygeoapi:latest
     depends_on:
-      - wis2-gdc-management
+      wis2-gdc-management:
+        condition: service_healthy
     volumes:
       - wis2-gdc-management-data:/data
     healthcheck:

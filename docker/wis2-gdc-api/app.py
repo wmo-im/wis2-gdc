@@ -19,7 +19,9 @@
 #
 ###############################################################################
 
-from flask import Flask, make_response, redirect
+import os
+
+from flask import Flask, send_file
 from pygeoapi.flask_app import BLUEPRINT as pygeoapi_blueprint
 
 app = Flask(__name__, static_url_path='/static')
@@ -37,14 +39,15 @@ except ImportError:  # CORS needs to be handled by upstream server
 @app.route('/wis2-discovery-metadata-archive.zip')
 def archive():
 
-    headers = {
-        'Content-Type': 'application/zip'
-    }
+    zip_file = os.environ.get('WIS2_GDC_METADATA_ARCHIVE_ZIPFILE')
 
-    with open('/data/wis2-discovery-metadata-archive.zip') as fh:
-        response = make_response(fh.read(), 200)
-        response.headers = headers
+    return send_file(zip_file, mimetype='application/zip', add_etags=True)
 
-        return response
 
-    return redirect('https://docs.wis2box.wis.wmo.int', code=302)
+@app.route('/wis2-gdc-metrics.txt')
+def metrics():
+
+    metrics_file = os.environ.get('WIS2_GDC_OPENMETRICS_FILE')
+
+    return send_file(metrics_file, mimetype='text/plain',
+                     add_etags=True)
