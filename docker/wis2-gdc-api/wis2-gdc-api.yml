@@ -78,7 +78,7 @@ resources:
             - type: text/plain
               rel: related
               title: WIS2 Global Discovery Catalogue metrics
-              href: ${WIS2_GDC_API_URL}/{WIS2_GDC_OPENMETRICS_FILE}
+              href: ${WIS2_GDC_API_URL}/${WIS2_GDC_OPENMETRICS_FILE}
               hreflang: en-CA
         extents:
         extents:
