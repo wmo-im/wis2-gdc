@@ -88,7 +88,7 @@ class Registrar:
         self.metadata = metadata
 
         self.centre_id = self.metadata['id'].split(':')[3]
-        topic = f"report/a/wis2/{self.centre_id}"
+        topic = f'monitor/a/wis2/{CENTRE_ID}/{self.centre_id}'
         centre_id_labels = [self.centre_id, CENTRE_ID]
 
         LOGGER.debug(f'Metadata: {json.dumps(self.metadata, indent=4)}')
@@ -96,7 +96,7 @@ class Registrar:
         LOGGER.info('Running ETS')
         ets_results = self._run_ets()
 
-        if self.broker is not None:
+        if PUBLISH_REPORTS:
             LOGGER.info('Publishing ETS report to broker')
             self.broker.pub(topic, json.dumps(ets_results))
 
@@ -129,8 +129,9 @@ class Registrar:
         if RUN_KPI:
             LOGGER.info('Running KPI')
             kpi_results = self._run_kpi()
+            LOGGER.info(f'RESULTS {kpi_results}')
 
-            if self.broker is not None:
+            if PUBLISH_REPORTS:
                 LOGGER.info('Publishing KPI report to broker')
                 self.broker.pub(topic, json.dumps(kpi_results))
 
