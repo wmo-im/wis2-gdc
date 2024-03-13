@@ -129,7 +129,6 @@ class Registrar:
         if RUN_KPI:
             LOGGER.info('Running KPI')
             kpi_results = self._run_kpi()
-            LOGGER.info(f'RESULTS {kpi_results}')
 
             if PUBLISH_REPORTS:
                 LOGGER.info('Publishing KPI report to broker')
