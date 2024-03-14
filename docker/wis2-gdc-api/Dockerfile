@@ -26,8 +26,9 @@ LABEL maintainer="Tom Kralidis <tomkralidis@gmail.com>"
 ENV PYGEOAPI_CONFIG=/pygeoapi/local.config.yml
 ENV PYGEOAPI_OPENAPI=/pygeoapi/local.openapi.yml
 
-RUN pip3 install "pywcmp>=0.7" && \
-    pywcmp --version && \
+RUN apt-get update && \
+    apt-get install -y curl && \
+    pip3 install pywcmp && \
     pywcmp bundle sync
 
 COPY ./wis2-gdc-api.yml /pygeoapi/local.config.yml
