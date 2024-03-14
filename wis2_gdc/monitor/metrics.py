@@ -127,7 +127,7 @@ class Metrics:
         """
 
         getattr(self, metric).labels(*labels).inc()
-        getattr(self, metric).labels(*labels)._timestamp = time.time()
+        getattr(self, metric).labels(*labels)._timestamp = time()
 
     def set(self, metric: str, labels: list,
             value: Union[int, float, str]) -> None:
@@ -142,7 +142,7 @@ class Metrics:
         """
 
         getattr(self, metric).labels(*labels).set(value)
-        getattr(self, metric).labels(*labels)._timestamp = time.time()
+        getattr(self, metric).labels(*labels)._timestamp = time()
 
     def write(self) -> None:
         """
