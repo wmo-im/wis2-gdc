@@ -84,7 +84,7 @@ def archive_metadata(url: str, archive_zipfile: str) -> None:
                 end = True
 
     m = MQTTPubSubClient(BROKER_URL)
-    m.pub('gdc-reports/archive', f'Archive published at {API_URL}/wis2-discovery-metadata-archive.zip')  # noqa
+    m.pub('gdc-reports/archive', f'Archive published at {API_URL}/wis2-gdc-archive.zip')  # noqa
     m.close()
 
 
