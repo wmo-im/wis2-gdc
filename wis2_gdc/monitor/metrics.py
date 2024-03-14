@@ -20,6 +20,7 @@
 ###############################################################################
 
 import logging
+from time import time
 from typing import Union
 
 import prometheus_client
@@ -126,6 +127,7 @@ class Metrics:
         """
 
         getattr(self, metric).labels(*labels).inc()
+        getattr(self, metric).labels(*labels)._timestamp = time.time()
 
     def set(self, metric: str, labels: list,
             value: Union[int, float, str]) -> None:
@@ -140,6 +142,7 @@ class Metrics:
         """
 
         getattr(self, metric).labels(*labels).set(value)
+        getattr(self, metric).labels(*labels)._timestamp = time.time()
 
     def write(self) -> None:
         """
