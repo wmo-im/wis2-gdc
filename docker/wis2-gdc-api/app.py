@@ -41,7 +41,10 @@ def archive():
 
     zip_file = os.environ.get('WIS2_GDC_METADATA_ARCHIVE_ZIPFILE')
 
-    return send_file(zip_file, mimetype='application/zip', add_etags=True)
+    try:
+        return send_file(zip_file, mimetype='application/zip')
+    except FileNotFoundError:
+        return 'Not Found', 404
 
 
 @app.route('/wis2-gdc-metrics.txt')
@@ -49,5 +52,7 @@ def metrics():
 
     metrics_file = os.environ.get('WIS2_GDC_OPENMETRICS_FILE')
 
-    return send_file(metrics_file, mimetype='text/plain',
-                     add_etags=True)
+    try:
+        return send_file(metrics_file, mimetype='text/plain')
+    except FileNotFoundError:
+        return 'Not Found', 404
