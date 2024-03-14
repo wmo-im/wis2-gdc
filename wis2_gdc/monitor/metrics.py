@@ -19,7 +19,6 @@
 #
 ###############################################################################
 
-from datetime import datetime
 import logging
 from typing import Union
 
@@ -39,7 +38,6 @@ LOGGER = logging.getLogger(__name__)
 
 class Metrics:
     def __init__(self):
-        self.data = OPENMETRICS_FILE
         self.registry = CollectorRegistry()
 
         self.info = Info(
@@ -150,12 +148,7 @@ class Metrics:
         :returns: `None`
         """
 
-        today = datetime.now()
-
-        name, suffix = self.data.rsplit('.', 1)
-        filename = f'{name}.{today.year}-{today.month}.{suffix}'
-
-        write_to_textfile(filename, self.registry)
+        write_to_textfile(OPENMETRICS_FILE, self.registry)
 
     def __exit__(self, exc_type, exc_value, traceback):
         LOGGER.debug('Exiting')
