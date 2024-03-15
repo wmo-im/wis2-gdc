@@ -64,11 +64,6 @@ resources:
         crs:
             - CRS84
         links:
-            - type: text/html
-              rel: canonical
-              title: WMO Information System (WIS) | World Meteorological Organization
-              href: https://community.wmo.int/en/activity-areas/wis
-              hreflang: en-CA
             - type: application/zip
               rel: enclosure
               title: WIS2 discovery metadata archive (generated daily)
@@ -80,7 +75,11 @@ resources:
               title: WIS2 Global Discovery Catalogue metrics
               href: ${WIS2_GDC_API_URL}/wis2-gdc-metrics.txt
               hreflang: en-CA
-        extents:
+            - type: text/html
+              rel: canonical
+              title: WMO Information System (WIS) | World Meteorological Organization
+              href: https://community.wmo.int/en/activity-areas/wis
+              hreflang: en-CA
         extents:
             spatial:
                 bbox: [-180, -90, 180, 90]

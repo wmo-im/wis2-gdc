@@ -23,7 +23,8 @@ import click
 
 from wis2_gdc.registrar import register, setup, teardown
 from wis2_gdc.monitor import monitor
-from wis2_gdc.sync import archive, sync
+from wis2_gdc.archive import archive
+from wis2_gdc.sync import sync
 
 __version__ = '0.1.dev0'
 

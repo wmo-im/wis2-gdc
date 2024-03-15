@@ -10,15 +10,15 @@ wis2-gdc is a Reference Implementation of a WIS2 Global Discovery Catalogue.
 
 ## Workflow
 
-- connects to a WIS2 Global Broker, subscribed to the following:
+- connects to a WIS2 Global Broker, subscribed to the following topic:
   - `origin/a/wis2/+/metadata/#`
-- on discovery metadata notifications, run the WCMP2 ATS via [pywcmp](https://github.com/wmo-im/pywcmp)
-  - ETS
-  - KPIs
-- publish ETS and KPI reports to local broker under `gdc-reports`
+- on discovery metadata notifications, run the WCMP2 ETS and KPIs via [pywcmp](https://github.com/wmo-im/pywcmp)
+- publish ETS and KPI reports to local broker under `monitor/a/wis2/$WIS2_GDC_CENTRE_ID/centre-id`
 - publish to a WIS2 GDC (OGC API - Records) using one of the supported transaction backends:
   - [OGC API - Features - Part 4: Create, Replace, Update and Delete](https://docs.ogc.org/DRAFTS/20-002.html)
   - Elasticsearch direct (default)
+- collect real-time and offline GDC metrics and make them available as [OpenMetrics](https://openmetrics.io)
+- produce a metadata zipfile for download (daily)
 
 ## Installation
 
