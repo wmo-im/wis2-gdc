@@ -95,6 +95,8 @@ class Registrar:
 
         LOGGER.info('Running ETS')
         ets_results = self._run_ets()
+        ets_results['report-by'] = CENTRE_ID
+        ets_results['centre-id'] = self.centre_id
 
         if PUBLISH_REPORTS:
             LOGGER.info('Publishing ETS report to broker')
@@ -129,6 +131,8 @@ class Registrar:
         if RUN_KPI:
             LOGGER.info('Running KPI')
             kpi_results = self._run_kpi()
+            kpi_results['report-by'] = CENTRE_ID
+            kpi_results['centre-id'] = self.centre_id
 
             if PUBLISH_REPORTS:
                 LOGGER.info('Publishing KPI report to broker')
@@ -253,7 +257,8 @@ def teardown(ctx, bypass, verbosity='NOTSET'):
 
 @click.command()
 @click.pass_context
-@click.argument('path')
+@click.argument(
+    'path', type=click.Path(exists=True, dir_okay=True, file_okay=True))
 @cli_options.OPTION_VERBOSITY
 def register(ctx, path, verbosity='NOTSET'):
     """Register discovery metadata"""
