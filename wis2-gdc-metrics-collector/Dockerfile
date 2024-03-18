@@ -24,8 +24,6 @@ FROM python:3-alpine
 COPY . /app
 RUN pip install -r /app/requirements.txt
 
-EXPOSE 8001
-
 ENV PYTHONUNBUFFERED="true"
 
 ENTRYPOINT [ "python3","-u","/app/metrics_collector.py" ]

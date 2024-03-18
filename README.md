@@ -40,7 +40,7 @@ source bin/activate
 
 # clone codebase and install
 git clone https://github.com/wmo-im/wis2-gdc.git
-cd wis2-gdc
+cd wis2-gdc-management
 python3 setup.py install
 ```
 
@@ -97,6 +97,34 @@ To adjust service ports, edit [`docker-compose.override.yml`](docker-compose.ove
 
 The [`Makefile`](Makefile) in the root directory provides options to manage the Docker Compose setup.
 
+```bash
+# build all images
+make build
+
+# build all images (no cache)
+make force-build
+
+# start all containers
+make up
+
+# start all containers in dev mode
+make dev
+
+# view all container logs in realtime
+make logs
+
+# login to the wis2-gdc-management container
+make login
+
+# restart all containers
+make restart
+
+# shutdown all containers
+make down
+
+# remove all volumes
+make rm
+```
 
 ## Development
 
