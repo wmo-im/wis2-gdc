@@ -36,7 +36,6 @@ from wis2_gdc.backend import BACKENDS
 from wis2_gdc.env import (BACKEND_TYPE, BACKEND_CONNECTION, BROKER_URL,
                           CENTRE_ID, GB_LINKS, PUBLISH_REPORTS,
                           REJECT_ON_FAILING_ETS, RUN_KPI)
-from wis2_gdc.monitor.metrics import Metrics
 
 LOGGER = logging.getLogger(__name__)
 
@@ -51,7 +50,6 @@ class Registrar:
 
         self.broker = None
         self.metadata = None
-        self.metrics = Metrics()
 
         if PUBLISH_REPORTS:
             self.broker = MQTTPubSubClient(BROKER_URL)
@@ -108,19 +106,18 @@ class Registrar:
                     LOGGER.warning('ETS errors; metadata not published')
                     return
             except KeyError:  # validation error
-                self.metrics.failed_total.labels(*centre_id_labels).inc()
                 LOGGER.debug('Validation errors; metadata not published')
-                self.metrics.write()
+                self.broker.pub('wis2-gdc/metrics/failed_total',
+                                json.dumps(centre_id_labels))
                 return
 
-        self.metrics.passed_total.labels(*centre_id_labels).inc()
+        self.broker.pub('wis2-gdc/metrics/passed_total',
+                        json.dumps(centre_id_labels))
 
-        # TODO: remove following wis2box b7 updates
         data_policy = self.metadata['properties']['wmo:dataPolicy']
-        if data_policy == 'core':
-            self.metrics.core_total.labels(*centre_id_labels).inc()
-        elif data_policy == 'recommended':
-            self.metrics.recommended_total.labels(*centre_id_labels).inc()
+
+        self.broker.pub(f'wis2-gdc/metrics/{data_policy}_total',
+                        json.dumps(centre_id_labels))
 
         LOGGER.info('Updating links')
         self.update_record_links()
@@ -137,8 +134,6 @@ class Registrar:
             if PUBLISH_REPORTS:
                 LOGGER.info('Publishing KPI report to broker')
                 self.broker.pub(topic, json.dumps(kpi_results))
-
-        self.metrics.write()
 
     def _run_ets(self) -> dict:
         """

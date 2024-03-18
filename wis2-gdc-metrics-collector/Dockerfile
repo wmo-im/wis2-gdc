@@ -19,32 +19,13 @@
 #
 ###############################################################################
 
-DOCKER_COMPOSE_ARGS=--project-name wis2-gdc --file docker-compose.yml --file docker-compose.override.yml
+FROM python:3-alpine
 
-build:
-	docker compose $(DOCKER_COMPOSE_ARGS) build
+COPY . /app
+RUN pip install -r /app/requirements.txt
 
-up:
-	docker compose $(DOCKER_COMPOSE_ARGS) up --detach
+EXPOSE 8001
 
-dev:
-	docker compose $(DOCKER_COMPOSE_ARGS) --file docker-compose.dev.yml up --detach
+ENV PYTHONUNBUFFERED="true"
 
-login:
-	docker exec -it wis2-gdc-management /bin/bash
-
-down:
-	docker compose $(DOCKER_COMPOSE_ARGS) down
-
-restart: down up
-
-force-build:
-	docker compose $(DOCKER_COMPOSE_ARGS) build --no-cache
-
-logs:
-	docker compose $(DOCKER_COMPOSE_ARGS) logs --follow
-
-rm:
-	docker volume rm $(shell docker volume ls --filter name=wis2-gdc -q)
-
-.PHONY: build up dev login down restart force-build logs rm
+ENTRYPOINT [ "python3","-u","/app/metrics_collector.py" ]
