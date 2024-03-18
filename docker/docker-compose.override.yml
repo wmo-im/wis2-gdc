@@ -22,7 +22,8 @@
 services:
   mosquitto:
     ports:
-      - 1883:1883
+      - 1883:1883  # default
+      - 1884:1884  # websockets
   wis2-gdc-api:
     ports:
       - 80:80
