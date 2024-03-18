@@ -19,7 +19,7 @@
 #
 ###############################################################################
 
-DOCKER_COMPOSE_ARGS=--project-name wis2-gdc --file docker/docker-compose.yml --file docker/docker-compose.override.yml
+DOCKER_COMPOSE_ARGS=--project-name wis2-gdc --file docker-compose.yml --file docker-compose.override.yml
 
 build:
 	docker compose $(DOCKER_COMPOSE_ARGS) build
@@ -28,7 +28,7 @@ up:
 	docker compose $(DOCKER_COMPOSE_ARGS) up --detach
 
 dev:
-	docker compose $(DOCKER_COMPOSE_ARGS) --file docker/docker-compose.dev.yml up --detach
+	docker compose $(DOCKER_COMPOSE_ARGS) --file docker-compose.dev.yml up --detach
 
 login:
 	docker exec -it wis2-gdc-management /bin/bash
