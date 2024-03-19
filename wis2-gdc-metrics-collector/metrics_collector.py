@@ -109,9 +109,9 @@ METRIC_SEARCH_TERMS = Gauge(
 )
 
 METRIC_INFO.info({
-    'centre-id': CENTRE_ID,
+    'centre_id': CENTRE_ID,
     'url': API_URL,
-    'subscribed-to': f'{GB.scheme}://{GB.hostname}:{GB.port} (topic: {GB_TOPIC})'  # noqa
+    'subscribed_to': f'{GB.scheme}://{GB.hostname}:{GB.port} (topic: {GB_TOPIC})'  # noqa
 })
 
 
