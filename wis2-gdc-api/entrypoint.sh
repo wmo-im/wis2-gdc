@@ -71,7 +71,8 @@ case ${entry_cmd} in
                 --bind ${CONTAINER_HOST}:${CONTAINER_PORT} \
                 --reload \
                 --reload-extra-file ${PYGEOAPI_CONFIG} \
-                pygeoapi.app:app
+                pygeoapi.app:app \
+                --access-logfile '-'
       ;;
     *)
       error "unknown command arg: must be run (default)"
