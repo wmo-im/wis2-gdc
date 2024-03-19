@@ -132,3 +132,6 @@ test-data/WIGOS_0-454-2-AWSCHIKANGAWA_20221109T135500.bufr4
 # wis2-gdc
 local.env
 local.yml
+
+# architecture diagram backups
+*.bkp
