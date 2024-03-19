@@ -28,7 +28,7 @@ ENV PYGEOAPI_OPENAPI=/pygeoapi/local.openapi.yml
 
 RUN apt-get update && \
     apt-get install -y curl && \
-    pip3 install pywcmp && \
+    pip3 install -r requirements.txt && \
     pywcmp bundle sync
 
 COPY ./wis2-gdc-api.yml /pygeoapi/local.config.yml

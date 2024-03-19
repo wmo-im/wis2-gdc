@@ -21,8 +21,9 @@
 
 import os
 
-from flask import Flask, send_file
+from flask import Flask, Response, send_file
 from pygeoapi.flask_app import BLUEPRINT as pygeoapi_blueprint
+import requests
 
 app = Flask(__name__, static_url_path='/static')
 app.url_map.strict_slashes = False
@@ -50,9 +51,10 @@ def archive():
 @app.route('/wis2-gdc-metrics.txt')
 def metrics():
 
-    metrics_file = os.environ.get('WIS2_GDC_OPENMETRICS_FILE')
+    collector_url = os.environ.get('WIS2_GDC_COLLECTOR_URL')
 
     try:
-        return send_file(metrics_file, mimetype='text/plain')
-    except FileNotFoundError:
-        return 'Not Found', 404
+        response = requests.get(collector_url).text
+        return Response(response, mimetype='text/plain')
+    except Exception:
+        return 'Internal Server Error', 500
