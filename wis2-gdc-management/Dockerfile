@@ -28,7 +28,7 @@ ENV TZ="Etc/UTC" \
     DEBIAN_PACKAGES="bash cron curl git python3-pip python3-setuptools vim"
 
 # copy the app
-COPY . /app
+COPY ./ /app
 
 # add to crontab
 COPY ./docker/wis2-gdc-management.cron /etc/cron.d/wis2-gdc-management.cron

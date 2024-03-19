@@ -27,14 +27,15 @@ ENV PYGEOAPI_CONFIG=/pygeoapi/local.config.yml
 ENV PYGEOAPI_OPENAPI=/pygeoapi/local.openapi.yml
 
 RUN apt-get update && \
-    apt-get install -y curl && \
-    pip3 install -r requirements.txt && \
-    pywcmp bundle sync
+    apt-get install -y curl
 
-COPY ./wis2-gdc-api.yml /pygeoapi/local.config.yml
 COPY ./app.py /pygeoapi/pygeoapi/app.py
-COPY ./entrypoint.sh /app/docker/wis2-gdc-api/entrypoint.sh
+COPY ./docker/wis2-gdc-api.yml /pygeoapi/local.config.yml
+COPY ./requirements.txt /app/docker/wis2-gdc-api/requirements.txt
+COPY ./docker/entrypoint.sh /app/docker/wis2-gdc-api/entrypoint.sh
 
-RUN chmod +x /app/docker/wis2-gdc-api/entrypoint.sh
+RUN pip3 install -r /app/docker/wis2-gdc-api/requirements.txt && \
+    pywcmp bundle sync && \
+    chmod +x /app/docker/wis2-gdc-api/entrypoint.sh
 
 ENTRYPOINT [ "/app/docker/wis2-gdc-api/entrypoint.sh" ]

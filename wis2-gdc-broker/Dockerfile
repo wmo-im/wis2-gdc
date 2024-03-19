@@ -21,8 +21,8 @@
 
 FROM eclipse-mosquitto:latest
 
-COPY mosquitto.conf /mosquitto/config/mosquitto.conf
-COPY acl.conf /mosquitto/config/acl.conf
-COPY entrypoint.sh /docker-entrypoint.sh
+COPY ./docker/mosquitto.conf /mosquitto/config/mosquitto.conf
+COPY ./docker/acl.conf /mosquitto/config/acl.conf
+COPY ./docker/entrypoint.sh /docker-entrypoint.sh
 
 RUN chmod +x /docker-entrypoint.sh

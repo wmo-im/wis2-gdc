@@ -21,7 +21,9 @@
 
 FROM python:3-alpine
 
-COPY . /app
+COPY ./metrics_collector.py /app/metrics_collector.py
+COPY ./requirements.txt /app/requirements.txt
+
 RUN pip install -r /app/requirements.txt
 
 ENV PYTHONUNBUFFERED="true"

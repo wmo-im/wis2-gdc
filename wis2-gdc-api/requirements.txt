@@ -1,2 +1,2 @@
-pywis-pubsub
+pywcmp
 requests
