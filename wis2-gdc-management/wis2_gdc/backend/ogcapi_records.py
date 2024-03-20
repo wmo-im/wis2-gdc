@@ -22,7 +22,7 @@
 import logging
 import json
 
-from owslib.ogcapi import Records
+from owslib.ogcapi.records import Records
 
 from wis2_gdc import env
 from wis2_gdc.backend.base import BaseBackend

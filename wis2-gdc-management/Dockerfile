@@ -37,7 +37,7 @@ RUN apt-get update -y && \
     # install dependencies
     apt-get install -y ${DEBIAN_PACKAGES} && \
     pip3 install -U https://github.com/wmo-im/pywis-pubsub/archive/main.zip && \
-    pip3 install --no-cache-dir -r /app/requirements.txt elasticsearch && \
+    pip3 install --no-cache-dir -r /app/requirements-backend.txt && \
     # install wis2-gdc
     cd /app && \
     pip3 install -e . && \
