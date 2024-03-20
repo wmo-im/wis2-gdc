@@ -78,7 +78,7 @@ METRIC_RECOMMENDED_TOTAL = Counter(
     ['centre_id', 'report_by']
 )
 
-METRIC_KPI_PERCENTAGE_TOTAL = Counter(
+METRIC_KPI_PERCENTAGE_TOTAL = Gauge(
     'wmo_wis2_gdc_kpi_percentage_total',
     'KPI percentage for a single metadata record (metadata_id equals WCMP2 id)',  # noqa
     ['metadata_id', 'centre_id', 'report_by']
@@ -90,13 +90,13 @@ METRIC_KPI_PERCENTAGE_AVERAGE = Gauge(
     ['centre_id', 'report_by']
 )
 
-METRIC_KPI_PERCENTAGE_OVER80_TOTAL = Counter(
+METRIC_KPI_PERCENTAGE_OVER80_TOTAL = Gauge(
     'wmo_wis2_gdc_kpi_percentage_over80_total',
     'Number of metadata records with KPI percentage over 80',
     ['centre_id', 'report_by']
 )
 
-METRIC_SEARCH_TOTAL = Counter(
+METRIC_SEARCH_TOTAL = Gauge(
     'wmo_wis2_gdc_search_total',
     'Number of search requests (during last monitoring period)',
     ['centre_id', 'report_by']
@@ -129,9 +129,12 @@ def collect_metrics() -> None:
     def _sub_message(client, userdata, msg):
         LOGGER.debug('Processing message')
         topic = msg.topic
-        labels = json.loads(msg.payload)
+        payload = json.loads(msg.payload)
+        labels = payload['labels']
+        value = payload.get('value')
         LOGGER.debug(f'Topic: {topic}')
-        LOGGER.debug(f'Labels: {labels}')
+        LOGGER.debug(f"Labels: {payload['labels']}")
+        LOGGER.debug(f"Value: {payload.get('labels')}")
 
         if topic == 'wis2-gdc/metrics/passed_total':
             METRIC_PASSED_TOTAL.labels(*labels).inc()
@@ -141,6 +144,8 @@ def collect_metrics() -> None:
             METRIC_CORE_TOTAL.labels(*labels).inc()
         elif topic == 'wis2-gdc/metrics/recommended_total':
             METRIC_RECOMMENDED_TOTAL.labels(*labels).inc()
+        elif topic == 'wis2-gdc/metrics/kpi_percentage_total':
+            METRIC_KPI_PERCENTAGE_TOTAL.labels(*labels).set(value)
 
     url = urlparse(BROKER_URL)
 

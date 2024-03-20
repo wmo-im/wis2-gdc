@@ -23,6 +23,7 @@ from copy import deepcopy
 import json
 import logging
 from pathlib import Path
+from typing import Union
 
 import click
 import requests
@@ -137,24 +138,43 @@ class Registrar:
                 LOGGER.info('Publishing KPI report to broker')
                 self.broker.pub(topic, json.dumps(kpi_results))
 
+                kpi_labels = [self.metadata['id']] + centre_id_labels
+
+                self._process_record_metric(
+                    self.metadata['id'], 'kpi_percentage_total',
+                    kpi_labels, kpi_results['summary']['percentage'])
+
     def _process_record_metric(self, identifier: str, metric_name: str,
-                               labels: list) -> None:
+                               labels: list,
+                               value: Union[str, int, float] = None) -> None:
         """
         Helper function to process record metric
 
         :param identifier: identifier of metadata record
         :param metric_name: `str` of name of metric
         :param labels: `list` of labels to apply
+        :param value: optional value(s) to set
 
         :returns: `None`
         """
 
-        if self.backend.exists(identifier):
-            LOGGER.debug('Record exists; publishing metric')
-        else:
-            LOGGER.debug('Record does not exist; not publishing metric')
+        publish_metric = True
+
+        message_payload = {
+            'labels': labels
+        }
+
+        if value is not None:
+            message_payload['value'] = value
+
+        if self.backend.exists(identifier) and len(labels) == 2:
+            LOGGER.debug('Record exists; not publishing metric')
+            publish_metric = False
+
+        if publish_metric:
+            LOGGER.debug('Record does not exist; publishing metric')
             self.broker.pub(f'wis2-gdc/metrics/{metric_name}',
-                            json.dumps(labels))
+                            json.dumps(message_payload))
 
     def _run_ets(self) -> dict:
         """
