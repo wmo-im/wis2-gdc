@@ -1,5 +1,4 @@
 click
-prometheus-client
 pywcmp
 pywis-pubsub
 requests

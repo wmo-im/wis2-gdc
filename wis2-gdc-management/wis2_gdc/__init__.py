@@ -22,7 +22,6 @@
 import click
 
 from wis2_gdc.registrar import register, setup, teardown
-from wis2_gdc.monitor import monitor
 from wis2_gdc.archive import archive
 from wis2_gdc.sync import sync
 
@@ -41,5 +40,4 @@ cli.add_command(setup)
 cli.add_command(teardown)
 cli.add_command(register)
 cli.add_command(sync)
-cli.add_command(monitor)
 cli.add_command(archive)
