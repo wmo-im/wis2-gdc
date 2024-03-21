@@ -61,5 +61,17 @@ class BaseBackend(ABC):
 
         raise NotImplementedError()
 
+    @abstractmethod
+    def exists(self, identifier: str) -> bool:
+        """
+        Querying whether a record exists in a backend
+
+        :param identifier: `str` of record identifier
+
+        :returns: `bool` of whether record exists in backend
+        """
+
+        raise NotImplementedError()
+
     def __repr__(self):
         return '<BaseBackend>'

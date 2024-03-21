@@ -23,6 +23,7 @@ from copy import deepcopy
 import json
 import logging
 from pathlib import Path
+from typing import Union
 
 import click
 import requests
@@ -50,6 +51,8 @@ class Registrar:
 
         self.broker = None
         self.metadata = None
+        self.backend = BACKENDS[BACKEND_TYPE](
+                    {'connection': BACKEND_CONNECTION})
 
         if PUBLISH_REPORTS:
             self.broker = MQTTPubSubClient(BROKER_URL)
@@ -105,24 +108,24 @@ class Registrar:
                 if ets_results['ets-report']['summary']['FAILED'] > 0:
                     LOGGER.warning('ETS errors; metadata not published')
                     return
-            except KeyError:  # validation error
+            except KeyError:
                 LOGGER.debug('Validation errors; metadata not published')
-                self.broker.pub('wis2-gdc/metrics/failed_total',
-                                json.dumps(centre_id_labels))
+                self._process_record_metric(
+                    self.metadata['id'], 'failed_total', centre_id_labels)
                 return
 
-        self.broker.pub('wis2-gdc/metrics/passed_total',
-                        json.dumps(centre_id_labels))
+        self._process_record_metric(
+            self.metadata['id'], 'passed_total', centre_id_labels)
 
         data_policy = self.metadata['properties']['wmo:dataPolicy']
 
-        self.broker.pub(f'wis2-gdc/metrics/{data_policy}_total',
-                        json.dumps(centre_id_labels))
+        self._process_record_metric(
+            self.metadata['id'], f'{data_policy}_total', centre_id_labels)
 
         LOGGER.info('Updating links')
         self.update_record_links()
 
-        LOGGER.info(f'Publishing metadata to {BACKEND_TYPE} ({BACKEND_CONNECTION})')  # noqa
+        LOGGER.info('Publishing metadata to backend')
         self._publish()
 
         if RUN_KPI:
@@ -134,6 +137,44 @@ class Registrar:
             if PUBLISH_REPORTS:
                 LOGGER.info('Publishing KPI report to broker')
                 self.broker.pub(topic, json.dumps(kpi_results))
+
+                kpi_labels = [self.metadata['id']] + centre_id_labels
+
+                self._process_record_metric(
+                    self.metadata['id'], 'kpi_percentage_total',
+                    kpi_labels, kpi_results['summary']['percentage'])
+
+    def _process_record_metric(self, identifier: str, metric_name: str,
+                               labels: list,
+                               value: Union[str, int, float] = None) -> None:
+        """
+        Helper function to process record metric
+
+        :param identifier: identifier of metadata record
+        :param metric_name: `str` of name of metric
+        :param labels: `list` of labels to apply
+        :param value: optional value(s) to set
+
+        :returns: `None`
+        """
+
+        publish_metric = True
+
+        message_payload = {
+            'labels': labels
+        }
+
+        if value is not None:
+            message_payload['value'] = value
+
+        if self.backend.exists(identifier) and len(labels) == 2:
+            LOGGER.debug('Record exists; not publishing metric')
+            publish_metric = False
+
+        if publish_metric:
+            LOGGER.debug('Record does not exist; publishing metric')
+            self.broker.pub(f'wis2-gdc/metrics/{metric_name}',
+                            json.dumps(message_payload))
 
     def _run_ets(self) -> dict:
         """
@@ -169,9 +210,8 @@ class Registrar:
         :returns: `None`
         """
 
-        backend = BACKENDS[BACKEND_TYPE]({'connection': BACKEND_CONNECTION})
-        LOGGER.info('Saving metadata to backend')
-        backend.save(self.metadata)
+        LOGGER.info(f'Saving to {BACKEND_TYPE} ({BACKEND_CONNECTION})')
+        self.backend.save(self.metadata)
 
     def update_record_links(self) -> None:
         """

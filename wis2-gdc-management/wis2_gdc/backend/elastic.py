@@ -22,7 +22,7 @@
 import logging
 from urllib.parse import urlparse
 
-from elasticsearch import Elasticsearch
+from elasticsearch import Elasticsearch, NotFoundError
 
 from wis2_gdc.backend.base import BaseBackend
 
@@ -157,6 +157,14 @@ class ElasticsearchBackend(BaseBackend):
     def save(self, record: dict) -> None:
         LOGGER.debug(f"Indexing record {record['id']}")
         self.es.index(index=self.index_name, id=record['id'], body=record)
+
+    def exists(self, identifier: str) -> bool:
+        LOGGER.debug(f'Querying GDC for id {identifier}')
+        try:
+            _ = self.es.get(index=self.index_name, id=identifier)
+            return True
+        except NotFoundError:
+            return False
 
     def __repr__(self):
         return '<ElasticsearchBackend>'
