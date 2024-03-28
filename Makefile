@@ -44,7 +44,11 @@ force-build:
 logs:
 	docker compose $(DOCKER_COMPOSE_ARGS) logs --follow
 
+clean:
+	docker system prune -f
+	docker volume prune -f
+
 rm:
 	docker volume rm $(shell docker volume ls --filter name=wis2-gdc -q)
 
-.PHONY: build up dev login down restart force-build logs rm
+.PHONY: build up dev login down restart force-build logs rm clean
