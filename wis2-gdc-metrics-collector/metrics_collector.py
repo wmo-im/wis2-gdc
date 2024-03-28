@@ -19,6 +19,7 @@
 #
 ###############################################################################
 
+import csv
 import json
 import logging
 import os
@@ -38,6 +39,7 @@ REGISTRY.unregister(PROCESS_COLLECTOR)
 API_URL = os.environ['WIS2_GDC_API_URL']
 BROKER_URL = os.environ['WIS2_GDC_BROKER_URL']
 CENTRE_ID = os.environ['WIS2_GDC_CENTRE_ID']
+CENTRE_ID_CSV = os.environ['WIS2_GDC_CENTRE_ID_CSV']
 GB = urlparse(os.environ['WIS2_GDC_GB'])
 GB_TOPIC = os.environ['WIS2_GDC_GB_TOPIC']
 HTTP_PORT = 8006
@@ -73,7 +75,7 @@ METRIC_CORE_TOTAL = Counter(
 )
 
 METRIC_RECOMMENDED_TOTAL = Counter(
-    'wmo_wis2_gdc_recommendedcore_total',
+    'wmo_wis2_gdc_recommended_total',
     'Number of recommended metadata records',
     ['centre_id', 'report_by']
 )
@@ -108,11 +110,44 @@ METRIC_SEARCH_TERMS = Gauge(
     ['top', 'centre_id', 'report_by']
 )
 
-METRIC_INFO.info({
-    'centre_id': CENTRE_ID,
-    'url': API_URL,
-    'subscribed_to': f'{GB.scheme}://{GB.hostname}:{GB.port} (topic: {GB_TOPIC})'  # noqa
-})
+METRIC_CONNECTED_FLAG = Gauge(
+    'wmo_wis2_gdc_connected_flag',
+    'Connection status from GDC to to centre',
+    ['centre_id', 'report_by']
+)
+
+METRIC_DOWNLOADED_ERRORS_TOTAL = Gauge(
+    'wmo_wis2_gdc_downloaded_errors_total',
+    'Number of metadata download errors',
+    ['centre_id', 'report_by']
+)
+
+
+def init_metrics() -> None:
+    """
+    Initializes metrics on startup
+
+    :returns: `None`
+    """
+
+    METRIC_INFO.info({
+        'centre_id': CENTRE_ID,
+        'url': API_URL,
+        'subscribed_to': f'{GB.scheme}://{GB.hostname}:{GB.port} (topic: {GB_TOPIC})'  # noqa
+    })
+
+    METRIC_CONNECTED_FLAG.labels(
+        centre_id=GB.hostname, report_by=CENTRE_ID).inc(1)
+
+    with open(CENTRE_ID_CSV) as fh:
+        reader = csv.DictReader(fh)
+        for row in reader:
+            labels = [row['Name'], CENTRE_ID]
+
+            METRIC_PASSED_TOTAL.labels(*labels).inc(0)
+            METRIC_FAILED_TOTAL.labels(*labels).inc(0)
+            METRIC_CORE_TOTAL.labels(*labels).inc(0)
+            METRIC_RECOMMENDED_TOTAL.labels(*labels).inc(0)
 
 
 def collect_metrics() -> None:
@@ -167,4 +202,5 @@ def collect_metrics() -> None:
 if __name__ == '__main__':
     LOGGER.info(f'Starting metrics collector server on port {HTTP_PORT}')
     start_http_server(HTTP_PORT)
+    init_metrics()
     collect_metrics()

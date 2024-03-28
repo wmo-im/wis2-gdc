@@ -75,6 +75,17 @@ class Registrar:
             raise
 
         LOGGER.debug(f'Fetching {wcmp2_url}')
+
+        try:
+            r = requests.get(wcmp2_url)
+            r.raise_for_status()
+            return r.json()
+        except requests.exceptions.HTTPError as err:
+            LOGGER.warning(err)
+            self._process_record_metric(
+                self.metadata['id'], 'downloaded_errors_total',
+                [BROKER_URL, CENTRE_ID])
+
         return requests.get(wcmp2_url).json()
 
     def register(self, metadata: dict) -> None:
