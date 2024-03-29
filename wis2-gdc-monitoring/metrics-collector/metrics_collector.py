@@ -40,7 +40,7 @@ API_URL = os.environ['WIS2_GDC_API_URL']
 BROKER_URL = os.environ['WIS2_GDC_BROKER_URL']
 CENTRE_ID = os.environ['WIS2_GDC_CENTRE_ID']
 CENTRE_ID_CSV = os.environ['WIS2_GDC_CENTRE_ID_CSV']
-GB = urlparse(os.environ['WIS2_GDC_GB'])
+GB = os.environ['WIS2_GDC_GB']
 GB_TOPIC = os.environ['WIS2_GDC_GB_TOPIC']
 HTTP_PORT = 8006
 LOGGING_LEVEL = os.environ['WIS2_GDC_LOGGING_LEVEL']
@@ -123,6 +123,20 @@ METRIC_DOWNLOADED_ERRORS_TOTAL = Gauge(
 )
 
 
+def get_gb_centre_id() -> str:
+    """
+    Derive GB centre id from WIS2_GDC_GB_LINK environment variables
+
+    :returns: centre-id of matching GB
+    """
+
+    for key, value in os.environ.items():
+        if key.startswith('WIS2_GDC_GB_LINK'):
+            centre_id, url, title = value.split(',', 2)
+            if GB == url:
+                return centre_id
+
+
 def init_metrics() -> None:
     """
     Initializes metrics on startup
@@ -130,14 +144,16 @@ def init_metrics() -> None:
     :returns: `None`
     """
 
+    gb_centre_id = get_gb_centre_id()
+
     METRIC_INFO.info({
         'centre_id': CENTRE_ID,
         'url': API_URL,
-        'subscribed_to': f'{GB.scheme}://{GB.hostname}:{GB.port} (topic: {GB_TOPIC})'  # noqa
+        'subscribed_to': f'{gb_centre_id}'
     })
 
     METRIC_CONNECTED_FLAG.labels(
-        centre_id=GB.hostname, report_by=CENTRE_ID).inc(1)
+        centre_id=gb_centre_id, report_by=CENTRE_ID).inc(1)
 
     with open(CENTRE_ID_CSV) as fh:
         reader = csv.DictReader(fh)

@@ -27,3 +27,6 @@ services:
   wis2-gdc-api:
     ports:
       - 80:80
+  grafana:
+    ports:
+      - 3000:3000

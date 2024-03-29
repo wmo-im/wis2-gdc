@@ -16,7 +16,8 @@ wis2-gdc is a Reference Implementation of a WIS2 Global Discovery Catalogue.
   - [OGC API - Features - Part 4: Create, Replace, Update and Delete](https://docs.ogc.org/DRAFTS/20-002.html)
   - Elasticsearch direct (default)
 - collect real-time and offline GDC metrics and make them available as [OpenMetrics](https://openmetrics.io)
-- produce a metadata zipfile for download (daily)
+- provide analytics and visualization via [Prometheus](https://prometheus.io) and [Grafana](https://grafana.com)
+- produce a metadata zipfile archive for download (daily)
 
 ## Installation
 
@@ -85,7 +86,10 @@ wis2-gdc archive foo.zip
 The Docker setup uses Docker and Docker Compose to manage the following services:
 
 - **wis2-gdc-api**: GDC API powered by [pygeoapi](https://pygeoapi.io)
-- **wis2-gdc-metrics-collector**: GDC metrics collector
+- **wis2-gdc-monitoring**: GDC monitoring
+  - **metrics-collector**: GDC metrics collector
+  - **prometheus**: metrics scraper
+  - **grafana**: analytics and visualization
 - **wis2-gdc-broker**: MQTT broker
 - **wis2-gdc-management**: management service to ingest, validate and publish discovery metadata published from a WIS2 Global Broker instance
   - the default Global Broker connection is to Météo-France.  This can be modified in `wis2-gdc.env` to point to a different Global Broker

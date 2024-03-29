@@ -50,6 +50,7 @@ BACKEND_CONNECTION = os.environ.get('WIS2_GDC_BACKEND_CONNECTION')
 BROKER_URL = os.environ.get('WIS2_GDC_BROKER_URL')
 CENTRE_ID = os.environ.get('WIS2_GDC_CENTRE_ID')
 GB = os.environ.get('WIS2_GDC_GB')
+GB_CENTRE_ID = None
 GB_TOPIC = os.environ.get('WIS2_GDC_GB_TOPIC')
 PUBLISH_REPORTS = str2bool(os.environ.get('WIS2_GDC_PUBLISH_REPORTS', 'false'))
 REJECT_ON_FAILING_ETS = str2bool(os.environ.get('WIS2_GDC_REJECT_ON_FAILING_ETS', 'true'))  # noqa
@@ -63,4 +64,7 @@ if None in [API_URL, API_URL_DOCKER, BACKEND_TYPE, BACKEND_CONNECTION,
 
 for key, value in os.environ.items():
     if key.startswith('WIS2_GDC_GB_LINK'):
-        GB_LINKS.append(value.rsplit(',', 1))
+        centre_id, url, title = value.rsplit(',', 2)
+        if GB == url:
+            GB_CENTRE_ID = centre_id
+        GB_LINKS.append(value.split(',', 2))

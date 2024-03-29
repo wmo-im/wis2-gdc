@@ -50,6 +50,36 @@ services:
     networks:
       - wis2-gdc-net
 
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./wis2-gdc-monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - wis2-gdc-net
+
+  grafana:
+    image: grafana/grafana-oss
+    container_name: grafana
+    env_file:
+      - wis2-gdc.env
+    networks:
+      - wis2-gdc-net
+    volumes:
+      - ./wis2-gdc-monitoring/grafana/datasource.yml:/etc/grafana/provisioning/datasources/grafana-datasource.yml
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_HIDE_VERSION=true
+      - GF_ANALYTICS_CHECK_FOR_UPDATES=false
+      - GF_USERS_VIEWERS_CAN_EDIT=true
+      - GF_UNIFIED_ALERTING_ENABLED=false
+      - GF_ALERTING_ENABLED=true
+      - GF_USERS_DEFAULT_THEME=dark
+      - GF_DISABLE_SIGNOUT_MENU=true
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+
   wis2-gdc-broker:
     container_name: wis2-gdc-broker
     restart: always
@@ -64,7 +94,7 @@ services:
     container_name: wis2-gdc-metrics-collector
     restart: unless-stopped
     build:
-      context: ./wis2-gdc-metrics-collector/
+      context: ./wis2-gdc-monitoring/metrics-collector/
     env_file:
       - wis2-gdc.env
     networks:

@@ -28,7 +28,7 @@ up:
 	docker compose $(DOCKER_COMPOSE_ARGS) up --detach
 
 dev:
-	docker compose $(DOCKER_COMPOSE_ARGS) --file docker-compose.dev.yml up --detach
+	docker compose $(DOCKER_COMPOSE_ARGS) --file docker-compose.dev.yml up
 
 login:
 	docker exec -it wis2-gdc-management /bin/bash

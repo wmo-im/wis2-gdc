@@ -256,7 +256,7 @@ class Registrar:
 
                 for gb_link in GB_LINKS:
                     gb_link_to_add = deepcopy(new_link)
-                    title = f'Notifications from {gb_link[0]} Global Broker'
+                    title = f'Notifications from {gb_link[2]} ({gb_link[0]})'
                     gb_link_to_add['title'] = title
                     gb_link_to_add['href'] = gb_link[1]
 
