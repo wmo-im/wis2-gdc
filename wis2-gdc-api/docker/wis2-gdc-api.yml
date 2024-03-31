@@ -19,7 +19,7 @@ server:
         output_dir: /tmp/
 
 logging:
-    level: ERROR
+    level: ${WIS2_GDC_LOGGING_LEVEL}
     #logfile: /tmp/pygeoapi.log
 
 metadata:
