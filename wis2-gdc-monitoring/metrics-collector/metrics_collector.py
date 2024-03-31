@@ -92,7 +92,7 @@ METRIC_KPI_PERCENTAGE_AVERAGE = Gauge(
     ['centre_id', 'report_by']
 )
 
-METRIC_KPI_PERCENTAGE_OVER80_TOTAL = Gauge(
+METRIC_KPI_PERCENTAGE_OVER80_TOTAL = Counter(
     'wmo_wis2_gdc_kpi_percentage_over80_total',
     'Number of metadata records with KPI percentage over 80',
     ['centre_id', 'report_by']
@@ -116,7 +116,7 @@ METRIC_CONNECTED_FLAG = Gauge(
     ['centre_id', 'report_by']
 )
 
-METRIC_DOWNLOADED_ERRORS_TOTAL = Gauge(
+METRIC_DOWNLOADED_ERRORS_TOTAL = Counter(
     'wmo_wis2_gdc_downloaded_errors_total',
     'Number of metadata download errors',
     ['centre_id', 'report_by']
@@ -155,6 +155,8 @@ def init_metrics() -> None:
     METRIC_CONNECTED_FLAG.labels(
         centre_id=gb_centre_id, report_by=CENTRE_ID).inc(1)
 
+    METRIC_DOWNLOADED_ERRORS_TOTAL.labels(gb_centre_id, CENTRE_ID).inc(0)
+
     with open(CENTRE_ID_CSV) as fh:
         reader = csv.DictReader(fh)
         for row in reader:
@@ -164,6 +166,7 @@ def init_metrics() -> None:
             METRIC_FAILED_TOTAL.labels(*labels).inc(0)
             METRIC_CORE_TOTAL.labels(*labels).inc(0)
             METRIC_RECOMMENDED_TOTAL.labels(*labels).inc(0)
+            METRIC_KPI_PERCENTAGE_OVER80_TOTAL.labels(*labels).inc(0)
 
 
 def collect_metrics() -> None:
