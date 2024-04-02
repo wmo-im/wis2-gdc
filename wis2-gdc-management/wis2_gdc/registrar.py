@@ -133,8 +133,9 @@ class Registrar:
         self._process_record_metric(
             self.metadata['id'], f'{data_policy}_total', centre_id_labels)
 
-        LOGGER.info('Updating links')
-        self.update_record_links()
+        if self.metadata['properties']['wmo:dataPolicy'] == 'core':
+            LOGGER.info('Core data detected: updating links')
+            self.update_record_links()
 
         LOGGER.info('Publishing metadata to backend')
         self._publish()
