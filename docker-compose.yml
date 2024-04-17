@@ -20,8 +20,8 @@
 ###############################################################################
 
 services:
-  elasticsearch:
-    container_name: elasticsearch
+  wis2-gdc-backend:
+    container_name: wis2-gdc-backend
     image: docker.elastic.co/elasticsearch/elasticsearch:8.6.2
     restart: always
     environment:
@@ -35,7 +35,7 @@ services:
     mem_limit: 1.5g
     memswap_limit: 1.5g
     volumes:
-      - es-data:/usr/share/elasticsearch/data:rw
+      - wis2-gdc-backend-data:/usr/share/elasticsearch/data:rw
     # ulimits:
     #   nofile:
     #     soft: 524288
@@ -112,10 +112,10 @@ services:
     environment:
       - WIS2_GDC_API_URL_DOCKER=http://wis2-gdc-api
     depends_on:
-      elasticsearch:
+      wis2-gdc-backend:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://elasticsearch:9200/wis2-discovery-metadata"]
+      test: ["CMD", "curl", "-f", "http://wis2-gdc-backend:9200/wis2-discovery-metadata"]
       interval: 5s
       retries: 3
     volumes:
@@ -146,7 +146,7 @@ services:
       - wis2-gdc-net
 
 volumes:
-  es-data:
+  wis2-gdc-backend-data:
   wis2-gdc-management-data:
 
 networks:
