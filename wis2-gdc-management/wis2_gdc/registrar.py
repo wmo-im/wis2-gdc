@@ -146,7 +146,7 @@ class Registrar:
             kpi_results['report-by'] = CENTRE_ID
             kpi_results['centre-id'] = self.centre_id
 
-            if PUBLISH_REPORTS:
+            if PUBLISH_REPORTS and 'summary' in kpi_results:
                 LOGGER.info('Publishing KPI report to broker')
                 self.broker.pub(topic, json.dumps(kpi_results))
 
