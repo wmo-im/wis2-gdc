@@ -35,11 +35,10 @@ from wis2_gdc.env import API_URL, API_URL_DOCKER, BROKER_URL, CENTRE_ID
 LOGGER = logging.getLogger(__name__)
 
 
-def archive_metadata(url: str, archive_zipfile: str) -> None:
+def archive_metadata(archive_zipfile: str) -> None:
     """
     Archive all discovery metadata from a GDC to an archive zipfile
 
-    :param url: `str` of GDC API URL
     :param archive_zipfile: `str` of filename of zipfile
 
     :returns: `None`
@@ -61,7 +60,7 @@ def archive_metadata(url: str, archive_zipfile: str) -> None:
         return None
 
     end = False
-    gdc_items_url = f'{url}/collections/wis2-discovery-metadata/items'
+    gdc_items_url = f'{API_URL_DOCKER}/collections/wis2-discovery-metadata/items'  # noqa
     response = None
 
     with zipfile.ZipFile(archive_zipfile, 'w') as zf:
@@ -71,6 +70,8 @@ def archive_metadata(url: str, archive_zipfile: str) -> None:
             else:
                 gdc_items_url2 = _get_next_link(response['links'])
 
+            LOGGER.info('Replacing with Docker internal hostname')
+            gdc_items_url2 = gdc_items_url2.replace(API_URL, API_URL_DOCKER)
             LOGGER.info(f'Querying GDC with {gdc_items_url2}')
             response = requests.get(gdc_items_url2).json()
 
@@ -99,5 +100,5 @@ def archive_metadata(url: str, archive_zipfile: str) -> None:
 def archive(ctx, archive_zipfile, verbosity='NOTSET'):
     """Archive discovery metadata records"""
 
-    click.echo(f'Achiving metadata from GDC {API_URL}')
-    archive_metadata(API_URL_DOCKER, archive_zipfile)
+    click.echo(f'Archiving metadata from GDC {API_URL}')
+    archive_metadata(archive_zipfile)
