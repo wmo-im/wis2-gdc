@@ -66,14 +66,19 @@ resources:
         links:
             - type: application/zip
               rel: enclosure
-              title: WIS2 discovery metadata archive (generated daily)
+              title: Metadata archive (generated daily)
               href: ${WIS2_GDC_API_URL}/wis2-discovery-metadata-archive.zip
               hreflang: en-CA
               length: -1
             - type: text/plain
               rel: related
-              title: WIS2 Global Discovery Catalogue metrics
+              title: OpenMetrics
               href: ${WIS2_GDC_API_URL}/wis2-gdc-metrics.txt
+              hreflang: en-CA
+            - type: text/html
+              rel: related
+              title: Analytics and monitoring dashboard
+              href: ${WIS2_GDC_API_URL}/grafana
               hreflang: en-CA
             - type: text/html
               rel: canonical
