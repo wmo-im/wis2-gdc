@@ -83,21 +83,36 @@ class Registrar:
         except requests.exceptions.HTTPError as err:
             LOGGER.warning(err)
             self._process_record_metric(
-                self.metadata['id'], 'downloaded_errors_total',
+                'unknown', 'downloaded_errors_total',
+                [BROKER_URL, CENTRE_ID])
+        except json.decoder.JSONDecodeError as err:
+            LOGGER.warning(err)
+            self._process_record_metric(
+                'unknown', 'failed_total',
                 [BROKER_URL, CENTRE_ID])
 
-        return requests.get(wcmp2_url).json()
-
-    def register(self, metadata: dict) -> None:
+    def register(self, metadata: Union[dict, str]) -> None:
         """
         Register a metadata document
 
-        :param metadata: `dict` of metadata document
+        :param metadata: `dict` or `str` of metadata document
 
         :returns: `None`
         """
 
-        self.metadata = metadata
+        if isinstance(metadata, dict):
+            LOGGER.debug('Metadata is already a dict')
+            self.metadata = metadata
+        elif isinstance(metadata, str):
+            LOGGER.debug('Metadata is a string; parsing')
+            try:
+                self.metadata = json.loads(metadata)
+            except json.decoder.JSONDecodeError as err:
+                LOGGER.warning(err)
+                self._process_record_metric(
+                    'unknown', 'failed_total',
+                    [BROKER_URL, CENTRE_ID])
+                return
 
         self.centre_id = self.metadata['id'].split(':')[3]
         topic = f'monitor/a/wis2/{CENTRE_ID}/{self.centre_id}'
@@ -107,6 +122,16 @@ class Registrar:
 
         LOGGER.info('Running ETS')
         ets_results = self._run_ets()
+        failed_ets = False
+
+        try:
+            if ets_results['ets-report']['summary']['FAILED'] > 0:
+                LOGGER.warning('ETS errors; metadata not published')
+                failed_ets = True
+        except KeyError:
+            LOGGER.debug('Validation errors; metadata not published')
+            failed_ets = True
+
         ets_results['report-by'] = CENTRE_ID
         ets_results['centre-id'] = self.centre_id
 
@@ -114,28 +139,27 @@ class Registrar:
             LOGGER.info('Publishing ETS report to broker')
             self.broker.pub(topic, json.dumps(ets_results))
 
+        if failed_ets:
+            self._process_record_metric(
+                self.metadata['id'], 'failed_total', centre_id_labels)
+
         if REJECT_ON_FAILING_ETS:
-            try:
-                if ets_results['ets-report']['summary']['FAILED'] > 0:
-                    LOGGER.warning('ETS errors; metadata not published')
-                    return
-            except KeyError:
-                LOGGER.debug('Validation errors; metadata not published')
-                self._process_record_metric(
-                    self.metadata['id'], 'failed_total', centre_id_labels)
-                return
+            LOGGER.info('Stopping further processing')
+            return
 
         self._process_record_metric(
             self.metadata['id'], 'passed_total', centre_id_labels)
 
-        data_policy = self.metadata['properties']['wmo:dataPolicy']
+        data_policy = self.metadata['properties'].get('wmo:dataPolicy')
 
-        self._process_record_metric(
-            self.metadata['id'], f'{data_policy}_total', centre_id_labels)
+        if data_policy is not None:
+            LOGGER.debug('Adding data policy metric')
+            self._process_record_metric(
+                self.metadata['id'], f'{data_policy}_total', centre_id_labels)
 
-        if self.metadata['properties']['wmo:dataPolicy'] == 'core':
-            LOGGER.info('Core data detected: updating links')
-            self.update_record_links()
+            if data_policy == 'core':
+                LOGGER.info('Core data detected: updating links')
+                self.update_record_links()
 
         LOGGER.info('Publishing metadata to backend')
         self._publish()
@@ -320,6 +344,5 @@ def register(ctx, path, verbosity='NOTSET'):
     for w2p in wcmp2s_to_process:
         click.echo(f'Processing {w2p}')
         with w2p.open() as fh:
-            m = json.load(fh)
             r = Registrar()
-            r.register(m)
+            r.register(fh.read())
