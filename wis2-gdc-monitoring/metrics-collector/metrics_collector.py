@@ -149,13 +149,11 @@ def init_metrics() -> None:
     METRIC_INFO.info({
         'centre_id': CENTRE_ID,
         'url': API_URL,
-        'subscribed_to': f'{gb_centre_id}'
+        'subscribed_to': gb_centre_id
     })
 
     METRIC_CONNECTED_FLAG.labels(
         centre_id=gb_centre_id, report_by=CENTRE_ID).inc(1)
-
-    METRIC_DOWNLOADED_ERRORS_TOTAL.labels(gb_centre_id, CENTRE_ID).inc(0)
 
     with open(CENTRE_ID_CSV) as fh:
         reader = csv.DictReader(fh)
@@ -166,7 +164,6 @@ def init_metrics() -> None:
             METRIC_FAILED_TOTAL.labels(*labels).inc(0)
             METRIC_CORE_TOTAL.labels(*labels).inc(0)
             METRIC_RECOMMENDED_TOTAL.labels(*labels).inc(0)
-            METRIC_KPI_PERCENTAGE_OVER80_TOTAL.labels(*labels).inc(0)
 
 
 def collect_metrics() -> None:
