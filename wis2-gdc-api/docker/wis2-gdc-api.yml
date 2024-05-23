@@ -65,7 +65,7 @@ resources:
             - CRS84
         links:
             - type: application/zip
-              rel: enclosure
+              rel: archives
               title: Metadata archive (generated daily)
               href: ${WIS2_GDC_API_URL}/wis2-discovery-metadata-archive.zip
               hreflang: en-CA

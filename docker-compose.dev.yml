@@ -20,6 +20,11 @@
 ###############################################################################
 
 services:
-  elasticsearch:
+  wis2-gdc-backend:
     ports:
       - 9200:9200
+  wis2-gdc-management:
+    volumes:
+      - wis2-gdc-management-data:/data
+      - ./wis2-gdc-management/wis2_gdc:/app/wis2_gdc
+      # - ./tests:/data
