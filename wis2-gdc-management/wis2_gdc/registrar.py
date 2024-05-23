@@ -91,11 +91,12 @@ class Registrar:
                 'unknown', 'failed_total',
                 [BROKER_URL, CENTRE_ID])
 
-    def register(self, metadata: Union[dict, str]) -> None:
+    def register(self, metadata: Union[dict, str], topic: str = None) -> None:
         """
         Register a metadata document
 
         :param metadata: `dict` or `str` of metadata document
+        :param topic: `str` of incoming topic (default is `None`)
 
         :returns: `None`
         """
@@ -110,13 +111,27 @@ class Registrar:
             except json.decoder.JSONDecodeError as err:
                 LOGGER.warning(err)
                 self._process_record_metric(
-                    'unknown', 'failed_total',
-                    [BROKER_URL, CENTRE_ID])
+                    'unknown', 'failed_total', [BROKER_URL, CENTRE_ID])
                 return
 
         self.centre_id = self.metadata['id'].split(':')[3]
-        topic = f'monitor/a/wis2/{CENTRE_ID}/{self.centre_id}'
+        publish_report_topic = f'monitor/a/wis2/{CENTRE_ID}/{self.centre_id}'
         centre_id_labels = [self.centre_id, CENTRE_ID]
+
+        if topic is None:
+            LOGGER.warning('No incoming topic defined')
+        else:
+            LOGGER.info('Comparing centre-id of topic and metadata record')
+            incoming_topic_centre_id = topic.split('/')[3]
+
+            LOGGER.debug(f'Topic centre-id: {incoming_topic_centre_id}')
+            LOGGER.debug(f'Metadata centre-id {self.centre_id}')
+
+            if incoming_topic_centre_id != self.centre_id:
+                LOGGER.warning('Topic mismatch')
+                self._process_record_metric(
+                    self.metadata_id, 'failed_total', [BROKER_URL, CENTRE_ID])
+                return
 
         LOGGER.debug(f'Metadata: {json.dumps(self.metadata, indent=4)}')
 
@@ -137,7 +152,7 @@ class Registrar:
 
         if PUBLISH_REPORTS:
             LOGGER.info('Publishing ETS report to broker')
-            self.broker.pub(topic, json.dumps(ets_results))
+            self.broker.pub(publish_report_topic, json.dumps(ets_results))
 
         if failed_ets:
             self._process_record_metric(
@@ -172,7 +187,7 @@ class Registrar:
 
             if PUBLISH_REPORTS and 'summary' in kpi_results:
                 LOGGER.info('Publishing KPI report to broker')
-                self.broker.pub(topic, json.dumps(kpi_results))
+                self.broker.pub(publish_report_topic, json.dumps(kpi_results))
 
                 kpi_labels = [self.metadata['id']] + centre_id_labels
 

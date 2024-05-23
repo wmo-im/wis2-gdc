@@ -33,7 +33,7 @@ class DiscoveryMetadataHook(Hook):
         LOGGER.debug('Discovery metadata hook execution begin')
         r = Registrar()
         wcmp2_dict = r.get_wcmp2(msg_dict)
-        r.register(wcmp2_dict)
+        r.register(wcmp2_dict, topic)
         LOGGER.debug('Discovery metadata hook execution end')
 
     def __repr__(self):
