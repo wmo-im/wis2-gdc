@@ -40,4 +40,7 @@ RUN pip3 install -r /app/docker/wis2-gdc-api/requirements.txt && \
     pywcmp bundle sync && \
     chmod +x /app/docker/wis2-gdc-api/entrypoint.sh
 
+RUN chgrp -R 0 /pygeoapi && \
+    chmod -R g=u /pygeoapi
+
 ENTRYPOINT [ "/app/docker/wis2-gdc-api/entrypoint.sh" ]
