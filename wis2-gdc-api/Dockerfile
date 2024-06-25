@@ -40,4 +40,7 @@ RUN pip3 install -r /app/docker/wis2-gdc-api/requirements.txt && \
     chmod +x /app/docker/wis2-gdc-api/entrypoint.sh && \
     patch /pygeoapi/pygeoapi/provider/elasticsearch_.py /pygeoapi/pygeoapi_provider_elasticsearch_.patch
 
+RUN chgrp -R 0 /pygeoapi && \
+    chmod -R g=u /pygeoapi
+
 ENTRYPOINT [ "/app/docker/wis2-gdc-api/entrypoint.sh" ]
