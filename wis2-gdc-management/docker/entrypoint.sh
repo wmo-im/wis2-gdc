@@ -24,6 +24,10 @@
 
 echo "START /entrypoint.sh"
 
+echo "Starting cron"
+service cron start
+service cron status
+
 echo "Caching WNM schema"
 pywis-pubsub schema sync
 
