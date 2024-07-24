@@ -24,6 +24,12 @@
 
 echo "START /entrypoint.sh"
 
+printenv | grep -v "no_proxy" >> /etc/environment
+
+echo "Starting cron"
+service cron start
+service cron status
+
 echo "Caching WNM schema"
 pywis-pubsub schema sync
 
