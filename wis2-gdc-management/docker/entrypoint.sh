@@ -37,7 +37,7 @@ echo "Caching WCMP schemas"
 pywcmp bundle sync
 
 echo "Setting up discovery metadata backend"
-wis2-gdc setup --yes
+wis2-gdc setup
 
 echo "END /entrypoint.sh"
 exec "$@"

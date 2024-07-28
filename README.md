@@ -58,6 +58,9 @@ pywis-pubsub schema sync
 # setup backend
 wis2-gdc setup
 
+# setup backend (force reinitialization of backend)
+wis2-gdc setup --force
+
 # teardown backend
 wis2-gdc teardown
 
@@ -110,6 +113,9 @@ make force-build
 
 # start all containers
 make up
+
+# reinitialize backend
+make reinit-backend
 
 # start all containers in dev mode
 make dev
