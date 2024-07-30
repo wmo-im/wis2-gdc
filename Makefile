@@ -24,22 +24,25 @@ DOCKER_COMPOSE_ARGS=--project-name wis2-gdc --file docker-compose.yml --file doc
 build:
 	docker compose $(DOCKER_COMPOSE_ARGS) build
 
+force-build:
+	docker compose $(DOCKER_COMPOSE_ARGS) build --no-cache
+
 up:
 	docker compose $(DOCKER_COMPOSE_ARGS) up --detach
-
-dev:
-	docker compose $(DOCKER_COMPOSE_ARGS) --file docker-compose.dev.yml up
-
-login:
-	docker exec -it wis2-gdc-management /bin/bash
 
 down:
 	docker compose $(DOCKER_COMPOSE_ARGS) down
 
 restart: down up
 
-force-build:
-	docker compose $(DOCKER_COMPOSE_ARGS) build --no-cache
+login:
+	docker exec -it wis2-gdc-management /bin/bash
+
+dev:
+	docker compose $(DOCKER_COMPOSE_ARGS) --file docker-compose.dev.yml up
+
+reinit-backend:
+	docker exec -it wis2-gdc-management sh -c "wis2-gdc setup --force"
 
 logs:
 	docker compose $(DOCKER_COMPOSE_ARGS) logs --follow
@@ -51,4 +54,4 @@ clean:
 rm:
 	docker volume rm $(shell docker volume ls --filter name=wis2-gdc -q)
 
-.PHONY: build up dev login down restart force-build logs rm clean
+.PHONY: build up dev login down restart reinit-backend force-build logs rm clean

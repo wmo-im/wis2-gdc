@@ -57,7 +57,7 @@ class OGCAPIRecordsBackend(BaseBackend):
             LOGGER.debug('Updating existing record in catalogue')
             _ = self.conn.get_collection_update(self.collection, payload)
 
-    def exists(self, identifier: str) -> bool:
+    def record_exists(self, identifier: str) -> bool:
         LOGGER.debug(f'Querying GDC for id {identifier}')
         try:
             _ = self.conn.collection_item(self.collection, identifier)

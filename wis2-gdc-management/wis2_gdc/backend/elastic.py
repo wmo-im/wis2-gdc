@@ -145,7 +145,6 @@ class ElasticsearchBackend(BaseBackend):
         self.es = Elasticsearch(**settings)
 
     def setup(self) -> None:
-        self.teardown()
         LOGGER.debug(f'Creating index {self.index_name}')
         self.es.indices.create(index=self.index_name, body=self.ES_SETTINGS)
 
@@ -158,7 +157,12 @@ class ElasticsearchBackend(BaseBackend):
         LOGGER.debug(f"Indexing record {record['id']}")
         self.es.index(index=self.index_name, id=record['id'], body=record)
 
-    def exists(self, identifier: str) -> bool:
+    def exists(self) -> bool:
+        LOGGER.debug('Checking whether backend exists')
+
+        return self.es.indices.exists(index=self.index_name)
+
+    def record_exists(self, identifier: str) -> bool:
         LOGGER.debug(f'Querying GDC for id {identifier}')
         try:
             _ = self.es.get(index=self.index_name, id=identifier)

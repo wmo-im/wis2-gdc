@@ -62,7 +62,17 @@ class BaseBackend(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def exists(self, identifier: str) -> bool:
+    def exists(self) -> bool:
+        """
+        Querying whether backend exists
+
+        :returns: `bool` of whether backend exists
+        """
+
+        raise NotImplementedError()
+
+    @abstractmethod
+    def record_exists(self, identifier: str) -> bool:
         """
         Querying whether a record exists in a backend
 
