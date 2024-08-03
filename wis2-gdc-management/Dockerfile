@@ -19,7 +19,7 @@
 #
 ###############################################################################
 
-FROM ubuntu:focal
+FROM ubuntu:jammy
 
 LABEL maintainer="tomkralidis@gmail.com"
 
