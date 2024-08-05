@@ -9,7 +9,7 @@ wis2-gdc is a Reference Implementation of a WIS2 Global Discovery Catalogue.
 ## Workflow
 
 - connects to a WIS2 Global Broker, subscribed to the following topic:
-  - `origin/a/wis2/+/metadata/#`
+  - `cache/a/wis2/+/metadata/#`
 - on discovery metadata notifications, run the WCMP2 ETS and KPIs via [pywcmp](https://github.com/wmo-im/pywcmp)
 - publish ETS and KPI reports to local broker under `monitor/a/wis2/$WIS2_GDC_CENTRE_ID/centre-id`
 - publish to a WIS2 GDC (OGC API - Records) using one of the supported transaction backends:
