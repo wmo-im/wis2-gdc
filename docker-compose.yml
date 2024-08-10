@@ -19,6 +19,15 @@
 #
 ###############################################################################
 
+x-logging: &logging
+  logging:
+    driver: json-file
+    options:
+      mode: non-blocking
+      max-buffer-size: 100m
+      max-size: 10m
+      max-file: 1
+
 services:
   wis2-gdc-backend:
     container_name: wis2-gdc-backend
@@ -49,6 +58,7 @@ services:
       retries: 100
     networks:
       - wis2-gdc-net
+    <<: *logging
 
   prometheus:
     image: prom/prometheus
@@ -57,6 +67,7 @@ services:
       - ./wis2-gdc-monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
       - wis2-gdc-net
+    <<: *logging
 
   grafana:
     image: grafana/grafana-oss
@@ -82,6 +93,7 @@ services:
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
       - GF_SERVER_ROOT_URL=${WIS2_GDC_API_URL}/grafana/
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
+    <<: *logging
 
   wis2-gdc-broker:
     container_name: wis2-gdc-broker
@@ -92,6 +104,7 @@ services:
       - wis2-gdc.env
     networks:
       - wis2-gdc-net
+    <<: *logging
 
   wis2-gdc-metrics-collector:
     container_name: wis2-gdc-metrics-collector
@@ -104,6 +117,7 @@ services:
       - wis2-gdc-net
     depends_on:
       - wis2-gdc-broker
+    <<: *logging
 
   wis2-gdc-management:
     container_name: wis2-gdc-management
@@ -126,6 +140,7 @@ services:
     command: ["pywis-pubsub", "subscribe", "--config", "/app/docker/pywis-pubsub.yml", "--verbosity", "DEBUG"]
     networks:
       - wis2-gdc-net
+    <<: *logging
 
   wis2-gdc-api:
     container_name: wis2-gdc-api
@@ -146,6 +161,7 @@ services:
     restart: unless-stopped
     networks:
       - wis2-gdc-net
+    <<: *logging
 
 volumes:
   wis2-gdc-backend-data:
