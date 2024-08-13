@@ -158,9 +158,9 @@ class Registrar:
             self._process_record_metric(
                 self.metadata['id'], 'failed_total', centre_id_labels)
 
-        if REJECT_ON_FAILING_ETS:
-            LOGGER.info('Stopping further processing')
-            return
+            if REJECT_ON_FAILING_ETS:
+                LOGGER.info('Stopping further processing')
+                return
 
         self._process_record_metric(
             self.metadata['id'], 'passed_total', centre_id_labels)
