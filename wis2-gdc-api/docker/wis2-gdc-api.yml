@@ -8,8 +8,7 @@ server:
     language: en-US
     cors: true
     pretty_print: true
-    limit: 10
-    # templates: /path/to/templates
+    limit: 100
     map:
       url: https://tile.openstreetmap.org/{z}/{x}/{y}.png
       attribution: 'Map data &copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
@@ -20,7 +19,6 @@ server:
 
 logging:
     level: ${WIS2_GDC_LOGGING_LEVEL}
-    #logfile: /tmp/pygeoapi.log
 
 metadata:
     identification:
@@ -49,7 +47,7 @@ metadata:
         country: Country
         phone: +xx-xxx-xxx-xxxx
         fax: +xx-xxx-xxx-xxxx
-        email: pygeoapi@lists.osgeo.org
+        email: you@example.org
         url: https://github.com/wmo-im/wis2-gdc
         hours: Mo-Fr 08:00-17:00
         instructions: During hours of service. Off on weekends.
@@ -60,7 +58,7 @@ resources:
         type: collection
         title: WIS2 discovery metadata
         description: WIS2 discovery metadata
-        keywords: [wmo, wis2, gdc]
+        keywords: [wmo, wis2, gdc, wcmp2]
         crs:
             - CRS84
         links:
@@ -95,6 +93,7 @@ resources:
               data: ${WIS2_GDC_BACKEND_CONNECTION}
               id_field: id
               time_field: updated
+              title_field: title
 
     pywcmp-wis2-wcmp2-ets:
         type: process
