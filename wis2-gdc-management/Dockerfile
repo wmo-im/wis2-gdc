@@ -31,7 +31,7 @@ ENV TZ="Etc/UTC" \
 COPY ./ /app
 
 # add to crontab
-COPY ./docker/wis2-gdc-management.cron /etc/cron.d/wis2-gdc-management.cron
+COPY ./docker/wis2-gdc-management.cron /var/spool/cron/crontabs/wis2-gdc
 
 RUN apt-get update -y && \
     # install dependencies
@@ -45,7 +45,11 @@ RUN apt-get update -y && \
     apt autoremove -y && \
     apt-get -q clean && \
     rm -rf /var/lib/apt/lists/* && \
-    chmod 0644 /etc/cron.d/wis2-gdc-management.cron && \
-    crontab /etc/cron.d/wis2-gdc-management.cron
+    chmod 0644 /var/spool/cron/crontabs/wis2-gdc && \
+    crontab /var/spool/cron/crontabs/wis2-gdc && \
+    # add wis2-gdc user
+    useradd -ms /bin/bash wis2-gdc
+
+USER wis2-gdc
 
 ENTRYPOINT [ "/app/docker/entrypoint.sh" ]
