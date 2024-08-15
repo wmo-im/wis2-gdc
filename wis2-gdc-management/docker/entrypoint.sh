@@ -24,10 +24,12 @@
 
 echo "START /entrypoint.sh"
 
-printenv | grep -v "no_proxy" >> /etc/environment
+printenv | grep -v "no_proxy" > /tmp/environment
+sudo sh -c 'cat /tmp/environment >> /etc/environment'
+rm -f /tmp/environment
 
 echo "Starting cron"
-service cron start
+sudo service cron start
 service cron status
 
 echo "Caching WNM schema"
