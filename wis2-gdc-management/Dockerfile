@@ -25,7 +25,7 @@ LABEL maintainer="tomkralidis@gmail.com"
 
 ENV TZ="Etc/UTC" \
     DEBIAN_FRONTEND="noninteractive" \
-    DEBIAN_PACKAGES="bash cron curl git python3-pip python3-setuptools vim"
+    DEBIAN_PACKAGES="bash cron curl git python3-pip python3-setuptools sudo vim"
 
 # copy the app
 COPY ./ /app
@@ -48,7 +48,9 @@ RUN apt-get update -y && \
     chmod 0644 /var/spool/cron/crontabs/wis2-gdc && \
     crontab /var/spool/cron/crontabs/wis2-gdc && \
     # add wis2-gdc user
-    useradd -ms /bin/bash wis2-gdc
+    useradd -ms /bin/bash wis2-gdc && \
+    adduser wis2-gdc sudo && \
+    echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 USER wis2-gdc
 
