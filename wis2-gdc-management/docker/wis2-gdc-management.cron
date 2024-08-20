@@ -1,1 +1,1 @@
-0 0 * * * su -c "wis2-gdc archive $WIS2_GDC_METADATA_ARCHIVE_ZIPFILE" > /proc/1/fd/1 2>/proc/1/fd/2
+0 0 * * * wis2-gdc archive $WIS2_GDC_METADATA_ARCHIVE_ZIPFILE > /proc/1/fd/1 2>/proc/1/fd/2
