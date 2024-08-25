@@ -130,7 +130,7 @@ class Registrar:
             if incoming_topic_centre_id != self.centre_id:
                 LOGGER.warning('Topic mismatch')
                 self._process_record_metric(
-                    self.metadata_id, 'failed_total', [BROKER_URL, CENTRE_ID])
+                    self.metadata['id'], 'failed_total', [BROKER_URL, CENTRE_ID])  # noqa
                 return
 
         LOGGER.debug(f'Metadata: {json.dumps(self.metadata, indent=4)}')
