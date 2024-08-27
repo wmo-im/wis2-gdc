@@ -52,7 +52,7 @@ LOGGER.setLevel(LOGGING_LEVEL)
 # sets metrics as per https://github.com/wmo-im/wis2-metric-hierarchy/blob/main/metric-hierarchy/gdc.csv  # noqa
 
 METRIC_INFO = Info(
-    'wis2_gdc_metrics',
+    'wmo_wis2_gdc_metrics',
     'WIS2 GDC metrics'
 )
 
