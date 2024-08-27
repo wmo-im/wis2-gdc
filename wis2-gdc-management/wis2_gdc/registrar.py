@@ -57,14 +57,18 @@ class Registrar:
         if PUBLISH_REPORTS:
             self.broker = MQTTPubSubClient(BROKER_URL)
 
-    def get_wcmp2(self, wnm: dict) -> dict:
+    def get_wcmp2(self, wnm: dict, topic: str) -> Union[dict, None]:
         """
         Helper function to fetch WCMP2 document from a WNM
 
         :param wnm: `dict` of WNM
+        :param topic: `str` of topic
 
-        :returns: `dict` of WCMP2
+        :returns: `dict` of WCMP2 or `None`
         """
+
+        message = {}
+        message_failure_reason = None
 
         try:
             LOGGER.debug('Fetching canonical URL')
@@ -81,15 +85,27 @@ class Registrar:
             r.raise_for_status()
             return r.json()
         except requests.exceptions.HTTPError as err:
+            message_failure_reason = err
             LOGGER.warning(err)
             self._process_record_metric(
                 'unknown', 'downloaded_errors_total',
                 [BROKER_URL, CENTRE_ID])
         except json.decoder.JSONDecodeError as err:
+            message_failure_reason = err
             LOGGER.warning(err)
             self._process_record_metric(
                 'unknown', 'failed_total',
                 [BROKER_URL, CENTRE_ID])
+
+        LOGGER.debug(f'WCMP2 access failed: {message_failure_reason}')
+        message['message'] = str(message_failure_reason)
+        message['href'] = wcmp2_url
+
+        centre_id = topic.split('/')[3]
+        publish_report_topic = f'monitor/a/wis2/{CENTRE_ID}/{centre_id}'
+        self.broker.pub(publish_report_topic, json.dumps(message))
+
+        return None
 
     def register(self, metadata: Union[dict, str], topic: str = None) -> None:
         """
@@ -140,15 +156,15 @@ class Registrar:
         failed_ets = False
 
         try:
-            if ets_results['ets-report']['summary']['FAILED'] > 0:
+            if ets_results['summary']['FAILED'] > 0:
                 LOGGER.warning('ETS errors; metadata not published')
                 failed_ets = True
         except KeyError:
             LOGGER.debug('Validation errors; metadata not published')
             failed_ets = True
 
-        ets_results['report-by'] = CENTRE_ID
-        ets_results['centre-id'] = self.centre_id
+        ets_results['report_by'] = CENTRE_ID
+        ets_results['centre_id'] = self.centre_id
 
         if PUBLISH_REPORTS:
             LOGGER.info('Publishing ETS report to broker')
@@ -182,8 +198,8 @@ class Registrar:
         if RUN_KPI:
             LOGGER.info('Running KPI')
             kpi_results = self._run_kpi()
-            kpi_results['report-by'] = CENTRE_ID
-            kpi_results['centre-id'] = self.centre_id
+            kpi_results['report_by'] = CENTRE_ID
+            kpi_results['centre_id'] = self.centre_id
 
             if PUBLISH_REPORTS and 'summary' in kpi_results:
                 LOGGER.info('Publishing KPI report to broker')
