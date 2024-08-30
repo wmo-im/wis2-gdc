@@ -23,7 +23,9 @@ from copy import deepcopy
 import json
 import logging
 from pathlib import Path
+from io import StringIO
 from typing import Union
+import uuid
 
 import click
 import requests
@@ -32,9 +34,11 @@ from pywcmp.wcmp2.ets import WMOCoreMetadataProfileTestSuite2
 from pywcmp.wcmp2.kpi import WMOCoreMetadataProfileKeyPerformanceIndicators
 from pywis_pubsub import cli_options
 from pywis_pubsub.mqtt import MQTTPubSubClient
+from pywis_pubsub.publish import create_message
 
 from wis2_gdc.backend import BACKENDS
-from wis2_gdc.env import (BACKEND_TYPE, BACKEND_CONNECTION, BROKER_URL,
+from wis2_gdc.env import (API_URL, API_URL_DOCKER, BACKEND_TYPE,
+                          BACKEND_CONNECTION, BROKER_URL,
                           CENTRE_ID, GB_LINKS, PUBLISH_REPORTS,
                           REJECT_ON_FAILING_ETS, RUN_KPI)
 
@@ -50,6 +54,7 @@ class Registrar:
         """
 
         self.broker = None
+        self.wcmp2_url = None
         self.metadata = None
         self.backend = BACKENDS[BACKEND_TYPE](
                     {'connection': BACKEND_CONNECTION})
@@ -72,16 +77,16 @@ class Registrar:
 
         try:
             LOGGER.debug('Fetching canonical URL')
-            wcmp2_url = list(filter(lambda d: d['rel'] == 'canonical',
-                             wnm['links']))[0]['href']
+            self.wcmp2_url = list(filter(lambda d: d['rel'] == 'canonical',
+                                  wnm['links']))[0]['href']
         except (IndexError, KeyError):
             LOGGER.error('No canonical link found')
             raise
 
-        LOGGER.debug(f'Fetching {wcmp2_url}')
+        LOGGER.debug(f'Fetching {self.wcmp2_url}')
 
         try:
-            r = requests.get(wcmp2_url)
+            r = requests.get(self.wcmp2_url)
             r.raise_for_status()
             return r.json()
         except requests.exceptions.HTTPError as err:
@@ -97,11 +102,15 @@ class Registrar:
                 'unknown', 'failed_total',
                 [BROKER_URL, CENTRE_ID])
 
-        LOGGER.debug(f'WCMP2 access failed: {message_failure_reason}')
-        message['message'] = str(message_failure_reason)
-        message['href'] = wcmp2_url
-
         centre_id = topic.split('/')[3]
+
+        LOGGER.debug(f'WCMP2 access failed: {message_failure_reason}')
+        message['id'] = str(uuid.uuid4())
+        message['message'] = str(message_failure_reason)
+        message['href'] = self.wcmp2_url
+        message['report_by'] = CENTRE_ID
+        message['centre_id'] = centre_id
+
         publish_report_topic = f'monitor/a/wis2/{CENTRE_ID}/{centre_id}'
         self.broker.pub(publish_report_topic, json.dumps(message))
 
@@ -147,6 +156,17 @@ class Registrar:
                 LOGGER.warning('Topic mismatch')
                 self._process_record_metric(
                     self.metadata['id'], 'failed_total', [BROKER_URL, CENTRE_ID])  # noqa
+
+                msg = f'Topic mismatch ({incoming_topic_centre_id} != {self.centre_id})'  # noqa
+                message = {
+                    'id': str(uuid.uuid4()),
+                    'message': msg,
+                    'href': self.wcmp2_url,
+                    'report_by': CENTRE_ID,
+                    'centre_id': self.centre_id
+                }
+                self.broker.pub(publish_report_topic, json.dumps(message))
+
                 return
 
         LOGGER.debug(f'Metadata: {json.dumps(self.metadata, indent=4)}')
@@ -161,6 +181,8 @@ class Registrar:
                 failed_ets = True
         except KeyError:
             LOGGER.debug('Validation errors; metadata not published')
+            ets_results['id'] = str(uuid.uuid4())
+            ets_results['href'] = self.wcmp2_url
             failed_ets = True
 
         ets_results['report_by'] = CENTRE_ID
@@ -211,6 +233,24 @@ class Registrar:
                     self.metadata['id'], 'kpi_percentage_total',
                     kpi_labels, kpi_results['summary']['percentage'])
 
+        api_url = f"{API_URL_DOCKER}/collections/wis2-discovery-metadata/items/{self.metadata['id']}"  # noqa
+
+        message = create_message(
+            topic='foo/bar',
+            content_type='application/geo+json',
+            url=api_url,
+            identifier=str(uuid.uuid4()),
+            datetime_=None,
+            metadata_id=self.metadata['id'],
+            operation='update'
+        )
+
+        message = json.dumps(message).replace(API_URL_DOCKER, API_URL)
+
+        LOGGER.info('Publishing updated record to broker')
+        publish_report_topic = f'origin/a/wis2/{CENTRE_ID}/metadata'
+        self.broker.pub(publish_report_topic, json.dumps(ets_results))
+
     def _process_record_metric(self, identifier: str, metric_name: str,
                                labels: list,
                                value: Union[str, int, float] = None) -> None:
@@ -254,7 +294,7 @@ class Registrar:
             ts = WMOCoreMetadataProfileTestSuite2(self.metadata)
             return ts.run_tests(fail_on_schema_validation=True)
         except ValueError as err:
-            return {'description': f'Failed ETS: {err}'}
+            return {'message': f'Failed ETS: {err}'}
 
     def _run_kpi(self) -> dict:
         """
@@ -267,7 +307,7 @@ class Registrar:
             kpis = WMOCoreMetadataProfileKeyPerformanceIndicators(self.metadata)  # noqa
             return kpis.evaluate()
         except Exception as err:
-            return {'description': f'Failed KPI: {err}'}
+            return {'message': f'Failed KPI: {err}'}
 
     def _publish(self):
         """
@@ -388,12 +428,18 @@ def teardown(ctx, bypass, verbosity='NOTSET'):
 def register(ctx, path, verbosity='NOTSET'):
     """Register discovery metadata"""
 
-    p = Path(path)
+    wcmp2s_to_process = []
 
-    if p.is_file():
-        wcmp2s_to_process = [p]
+    if path.startswith('http'):
+        r = requests.get(path).json()
+        wcmp2s_to_process = [StringIO(r)]
     else:
-        wcmp2s_to_process = p.rglob('*.json')
+        p = Path(path)
+
+        if p.is_file():
+            wcmp2s_to_process = [p]
+        else:
+            wcmp2s_to_process = p.rglob('*.json')
 
     for w2p in wcmp2s_to_process:
         click.echo(f'Processing {w2p}')
