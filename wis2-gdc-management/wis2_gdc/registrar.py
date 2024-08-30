@@ -23,7 +23,6 @@ from copy import deepcopy
 import json
 import logging
 from pathlib import Path
-from io import StringIO
 from typing import Union
 import uuid
 
@@ -129,8 +128,8 @@ class Registrar:
         if isinstance(metadata, dict):
             LOGGER.debug('Metadata is already a dict')
             self.metadata = metadata
-        elif isinstance(metadata, str):
-            LOGGER.debug('Metadata is a string; parsing')
+        elif isinstance(metadata, (bytes, str)):
+            LOGGER.debug('Metadata is bytes or string; parsing')
             try:
                 self.metadata = json.loads(metadata)
             except json.decoder.JSONDecodeError as err:
@@ -423,7 +422,7 @@ def teardown(ctx, bypass, verbosity='NOTSET'):
 @click.command()
 @click.pass_context
 @click.argument(
-    'path', type=click.Path(exists=True, dir_okay=True, file_okay=True))
+    'path', type=click.Path(exists=False, dir_okay=True, file_okay=True))
 @cli_options.OPTION_VERBOSITY
 def register(ctx, path, verbosity='NOTSET'):
     """Register discovery metadata"""
@@ -431,10 +430,12 @@ def register(ctx, path, verbosity='NOTSET'):
     wcmp2s_to_process = []
 
     if path.startswith('http'):
-        r = requests.get(path).json()
-        wcmp2s_to_process = [StringIO(r)]
+        wcmp2s_to_process = [path]
     else:
         p = Path(path)
+
+        if not p.exists():
+            raise click.ClickException('File not found')
 
         if p.is_file():
             wcmp2s_to_process = [p]
@@ -443,6 +444,13 @@ def register(ctx, path, verbosity='NOTSET'):
 
     for w2p in wcmp2s_to_process:
         click.echo(f'Processing {w2p}')
-        with w2p.open() as fh:
-            r = Registrar()
-            r.register(fh.read())
+
+        r = Registrar()
+
+        if w2p.startswith('http'):
+            metadata = requests.get(w2p).content
+        else:
+            with w2p.open() as fh:
+                metadata = fh.read()
+
+        r.register(metadata)

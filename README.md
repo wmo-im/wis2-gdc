@@ -75,6 +75,9 @@ wis2-gdc register /path/to/wcmp2-file.json
 # loading metadata manually (directory of .json files)
 wis2-gdc register /path/to/dir/of/wcmp2-files
 
+# loading metadata manually (from URL)
+wis2-gdc register https://example.org/wcmp2-file.json
+
 # loading metadata from a known harvest endpoint
 
 # load from wis2box known deployments (https://demo.wis2box.wis.wmo.int)
