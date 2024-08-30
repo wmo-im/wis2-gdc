@@ -53,5 +53,6 @@ RUN apt-get update -y && \
     echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 USER wis2-gdc
+WORKDIR /home/wis2-gdc
 
 ENTRYPOINT [ "/app/docker/entrypoint.sh" ]
