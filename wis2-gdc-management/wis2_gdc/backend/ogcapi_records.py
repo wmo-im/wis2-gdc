@@ -38,7 +38,7 @@ class OGCAPIRecordsBackend(BaseBackend):
         self.conn = Records(env.API_URL)
         self.collection = 'discovery-metadata'
 
-    def save(self):
+    def save_record(self):
 
         ttype = 'create'
 
