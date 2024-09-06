@@ -79,7 +79,7 @@ wis2-gdc register /path/to/dir/of/wcmp2-files
 wis2-gdc register https://example.org/wcmp2-file.json
 
 # deleting metadata by identifier
-wis2-gdc unregister urn:wmo:md:ca-eccc-msc:id123
+wis2-gdc unregister "urn:wmo:md:ca-eccc-msc:id123"
 
 # loading metadata from a known harvest endpoint
 
