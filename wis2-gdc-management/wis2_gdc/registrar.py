@@ -246,9 +246,44 @@ class Registrar:
 
         message = json.dumps(message).replace(API_URL_DOCKER, API_URL)
 
-        LOGGER.info('Publishing updated record to broker')
+        LOGGER.info('Publishing updated record to GDC broker')
         publish_report_topic = f'origin/a/wis2/{CENTRE_ID}/metadata'
         self.broker.pub(publish_report_topic, json.dumps(ets_results))
+
+    def delete_record(self, topic: str, wnm: dict) -> None:
+        """
+        Delete a metadata document
+
+        :param topic: `str` of incoming topic (default is `None`)
+        :param wnm: `dict` of WNM
+
+        :returns: `None`
+        """
+
+        centre_id = topic.split('/')[3]
+        publish_report_topic = f'monitor/a/wis2/{CENTRE_ID}/{centre_id}'
+
+        message = {
+            'id': str(uuid.uuid4()),
+            'href': None,
+            'report_by': CENTRE_ID,
+            'centre_id': centre_id
+        }
+
+        metadata_id = wnm['properties'].get('metadata_id')
+
+        if metadata_id is None:
+            message['message'] = 'No metadata id specified'
+        else:
+            try:
+                self.backend.delete_record(metadata_id)
+                message['message'] = f'metadata {metadata_id} deleted'
+            except Exception:
+                message['message'] = f'metadata {metadata_id} not found'
+
+        self.broker.pub(publish_report_topic, json.dumps(message))
+
+        return
 
     def _process_record_metric(self, identifier: str, metric_name: str,
                                labels: list,
@@ -317,7 +352,7 @@ class Registrar:
         """
 
         LOGGER.info(f'Saving to {BACKEND_TYPE} ({BACKEND_CONNECTION})')
-        self.backend.save(self.metadata)
+        self.backend.save_record(self.metadata)
 
     def update_record_links(self) -> None:
         """
@@ -454,3 +489,15 @@ def register(ctx, path, verbosity='NOTSET'):
                 metadata = fh.read()
 
         r.register(metadata)
+
+
+@click.command()
+@click.pass_context
+@click.argument('identifier')
+@cli_options.OPTION_VERBOSITY
+def unregister(ctx, identifier, verbosity='NOTSET'):
+    """Unregister discovery metadata"""
+
+    click.echo(f'Unregistering {identifier}')
+    r = Registrar()
+    r.delete_record(identifier)

@@ -30,10 +30,19 @@ LOGGER = logging.getLogger(__name__)
 
 class DiscoveryMetadataHook(Hook):
     def execute(self, topic: str, msg_dict: dict) -> None:
+        wcmp2_dict = None
+
         LOGGER.debug('Discovery metadata hook execution begin')
         r = Registrar()
 
-        wcmp2_dict = r.get_wcmp2(msg_dict, topic)
+        try:
+            wcmp2_dict = r.get_wcmp2(msg_dict, topic)
+        except (IndexError, KeyError):
+            is_deletion = list(filter(lambda d: d['rel'] == 'deletion',
+                                      msg_dict['links']))
+
+            if is_deletion:
+                r.delete_record(topic, msg_dict)
 
         if wcmp2_dict is not None:
             r.register(wcmp2_dict, topic)

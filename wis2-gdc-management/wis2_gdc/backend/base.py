@@ -50,7 +50,7 @@ class BaseBackend(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def save(self, record: dict) -> None:
+    def save_record(self, record: dict) -> None:
         """
         Upsert a resource to a backend
 
@@ -79,6 +79,18 @@ class BaseBackend(ABC):
         :param identifier: `str` of record identifier
 
         :returns: `bool` of whether record exists in backend
+        """
+
+        raise NotImplementedError()
+
+    @abstractmethod
+    def delete_record(self, identifier: str) -> None:
+        """
+        Delete a record from the backend
+
+        :param identifier: `str` of record identifier
+
+        :returns: `None`
         """
 
         raise NotImplementedError()

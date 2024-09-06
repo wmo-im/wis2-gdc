@@ -153,9 +153,13 @@ class ElasticsearchBackend(BaseBackend):
             LOGGER.debug(f'Deleting index {self.index_name}')
             self.es.indices.delete(index=self.index_name)
 
-    def save(self, record: dict) -> None:
+    def save_record(self, record: dict) -> None:
         LOGGER.debug(f"Indexing record {record['id']}")
         self.es.index(index=self.index_name, id=record['id'], body=record)
+
+    def delete_record(self, identifier: str) -> None:
+        LOGGER.debug(f"Deleting record {identifier}")
+        self.es.delete(index=self.index_name, id=identifier)
 
     def exists(self) -> bool:
         LOGGER.debug('Checking whether backend exists')
