@@ -453,6 +453,8 @@ def teardown(ctx, bypass, verbosity='NOTSET'):
     LOGGER.debug(f'Backend: {backend}')
     backend.teardown()
 
+    click.echo('Done')
+
 
 @click.command()
 @click.pass_context
@@ -490,6 +492,8 @@ def register(ctx, path, verbosity='NOTSET'):
 
         r.register(metadata)
 
+    click.echo('Done')
+
 
 @click.command()
 @click.pass_context
@@ -499,5 +503,11 @@ def unregister(ctx, identifier, verbosity='NOTSET'):
     """Unregister discovery metadata"""
 
     click.echo(f'Unregistering {identifier}')
-    r = Registrar()
-    r.delete_record(identifier)
+    backend = BACKENDS[BACKEND_TYPE]({'connection': BACKEND_CONNECTION})
+    try:
+        LOGGER.debug(f'Backend: {backend}')
+        backend.delete_record(identifier)
+    except Exception:
+        click.echo('record not found')
+
+    click.echo('Done')
