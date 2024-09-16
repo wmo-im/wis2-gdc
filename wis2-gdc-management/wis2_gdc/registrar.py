@@ -484,7 +484,7 @@ def register(ctx, path, verbosity='NOTSET'):
 
         r = Registrar()
 
-        if w2p.startswith('http'):
+        if isinstance(w2p, str) and w2p.startswith('http'):
             metadata = requests.get(w2p).content
         else:
             with w2p.open() as fh:
