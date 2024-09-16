@@ -32,6 +32,9 @@ echo "Starting cron"
 sudo service cron start
 service cron status
 
+echo "Making /data writeable for wis2-gdc"
+sudo chown wis2-gdc.wis2-gdc /data
+
 echo "Caching WNM schema"
 pywis-pubsub schema sync
 
