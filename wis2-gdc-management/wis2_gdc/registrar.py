@@ -275,6 +275,7 @@ class Registrar:
         if metadata_id is None:
             message['message'] = 'No metadata id specified'
         else:
+            message['metadata_id'] = metadata_id
             try:
                 self.backend.delete_record(metadata_id)
                 message['message'] = f'metadata {metadata_id} deleted'
