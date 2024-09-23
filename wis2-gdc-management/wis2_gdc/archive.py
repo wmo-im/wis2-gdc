@@ -77,7 +77,7 @@ def archive_metadata(archive_zipfile: str) -> None:
 
             for feature in response['features']:
                 LOGGER.debug(f"Saving {feature['id']} to archive")
-                filename = f"{feature['id']}.json"
+                filename = f"{CENTRE_ID}/{feature['id']}.json"
                 zf.writestr(filename, json.dumps(feature))
 
             if _get_next_link(response['links']) is None:
@@ -100,5 +100,5 @@ def archive_metadata(archive_zipfile: str) -> None:
 def archive(ctx, archive_zipfile, verbosity='NOTSET'):
     """Archive discovery metadata records"""
 
-    click.echo(f'Archiving metadata from GDC {API_URL}')
+    click.echo(f'Archiving metadata from GDC {API_URL} to {archive_zipfile}')
     archive_metadata(archive_zipfile)
