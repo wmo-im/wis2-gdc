@@ -74,6 +74,12 @@ class Registrar:
         message = {}
         message_failure_reason = None
 
+        centre_id = topic.split('/')[3]
+        if centre_id.endswith('global-discovery-catalogue'):
+            msg = 'WCMP2 record republished from another GDC; not processing'
+            LOGGER.info(msg)
+            return None
+
         try:
             LOGGER.debug('Fetching canonical URL')
             self.wcmp2_url = list(filter(lambda d: d['rel'] == 'canonical',
@@ -100,8 +106,6 @@ class Registrar:
             self._process_record_metric(
                 'unknown', 'failed_total',
                 [BROKER_URL, CENTRE_ID])
-
-        centre_id = topic.split('/')[3]
 
         LOGGER.debug(f'WCMP2 access failed: {message_failure_reason}')
         message['id'] = str(uuid.uuid4())
@@ -234,8 +238,10 @@ class Registrar:
 
         api_url = f"{API_URL_DOCKER}/collections/wis2-discovery-metadata/items/{self.metadata['id']}"  # noqa
 
+        publish_report_topic = f'origin/a/wis2/{CENTRE_ID}/metadata'
+
         message = create_message(
-            topic='foo/bar',
+            topic=publish_report_topic,
             content_type='application/geo+json',
             url=api_url,
             identifier=str(uuid.uuid4()),
@@ -247,8 +253,7 @@ class Registrar:
         message = json.dumps(message).replace(API_URL_DOCKER, API_URL)
 
         LOGGER.info('Publishing updated record to GDC broker')
-        publish_report_topic = f'origin/a/wis2/{CENTRE_ID}/metadata'
-        self.broker.pub(publish_report_topic, json.dumps(ets_results))
+        self.broker.pub(publish_report_topic, message)
 
     def delete_record(self, topic: str, wnm: dict) -> None:
         """
