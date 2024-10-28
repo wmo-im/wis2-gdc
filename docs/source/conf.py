@@ -65,15 +65,6 @@ exclude_patterns = []
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 
-html_favicon = '_static/favicon.ico' 
-
-#html_sidebars = { 
-#    '**': [
-#        'relations.html',  # needs 'show_related': True theme option to display
-#        'searchbox.html',
-#        'indexsidebar.html']
-#}
+html_favicon = '_static/favicon.ico'
 
 pygments_style = 'sphinx'
-
-
