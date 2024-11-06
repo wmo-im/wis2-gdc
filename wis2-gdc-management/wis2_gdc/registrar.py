@@ -388,7 +388,6 @@ class Registrar:
                     new_link['channel'] = channel.replace('origin', 'cache')
 
                 new_link['rel'] = 'items'
-                new_link['channel'] = channel.replace('origin', 'cache')
                 new_link['type'] = 'application/geo+json'
 
                 del self.metadata['links'][count]
