@@ -213,8 +213,9 @@ class Registrar:
             self._process_record_metric(
                 self.metadata['id'], f'{data_policy}_total', centre_id_labels)
 
-            LOGGER.info('Updating links')
-            self.update_record_links(data_policy)
+            if data_policy == 'core':
+                LOGGER.info('Core data detected: updating links')
+                self.update_record_links()
 
         LOGGER.info('Publishing metadata to backend')
         self._publish()
@@ -359,7 +360,7 @@ class Registrar:
         LOGGER.info(f'Saving to {BACKEND_TYPE} ({BACKEND_CONNECTION})')
         self.backend.save_record(self.metadata)
 
-    def update_record_links(self, data_policy: str) -> None:
+    def update_record_links(self) -> None:
         """
         Update Global Service links
 
@@ -378,14 +379,10 @@ class Registrar:
         for count, value in enumerate(self.metadata['links']):
             if is_wis2_mqtt_link(value):
                 LOGGER.debug('Adjusting MQTT link')
-                channel = value.get('channel', value.get('wmo:topic'))
+                channel = value.get('wmo:topic', value.get('channel'))
 
                 new_link = value
                 _ = new_link.pop('wmo:topic', None)
-
-                if data_policy == 'core':
-                    LOGGER.debug('Adjusting channel origin to cache')
-                    new_link['channel'] = channel.replace('origin', 'cache')
 
                 new_link['rel'] = 'items'
                 new_link['channel'] = channel.replace('origin', 'cache')
