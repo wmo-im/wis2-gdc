@@ -26,10 +26,7 @@ reference documentation on all aspects of the project.
    configuration
    administration
    running
-   openapi
-   transactions
-   admin-api
-   security
+   api
    contributing
    support
    license
