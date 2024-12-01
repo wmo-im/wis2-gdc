@@ -3,9 +3,12 @@
 Configuration
 =============
 
+Main configuration environment variables
+----------------------------------------
+
 ``wis2-gdc`` configuration is driven by the following environment variables, which are managed in ``wis2-gdc.env``:
 
-.. csv-table:: Environment variables
+.. csv-table:: Main environment variables
    :widths: 30 30 30
    :header: Name,Description,Default
 
@@ -23,6 +26,39 @@ Configuration
    ``WIS2_GDC_PUBLISH_REPORTS``,whether the GDC should publish ETS and KPI reports,``true``
    ``WIS2_GDC_REJECT_ON_FAILING_ETS``,whether the GDC should stop ingest based on on failing record,``true``
    ``WIS2_GDC_RUN_KPI``,whether the GDC should run KPI as part of ingest,``false``
+
+API configuration environment variables
+---------------------------------------
+
+If you wish to update the API configuration, you can set the below values accordingly (to override the pygeoapi defaults):
+
+.. csv-table:: pygeoapi configuration environment variables
+   :widths: 30 30
+   :header: Name,Description
+
+   ``WIS2_GDC_METADATA_IDENTIFICATION_TITLE``,API title
+   ``WIS2_GDC_METADATA_IDENTIFICATION_DESCRIPTION``,API description 
+   ``WIS2_GDC_METADATA_IDENTIFICATION_KEYWORDS``,API keywords
+   ``WIS2_GDC_METADATA_IDENTIFICATION_TERMS_OF_SERVICE``,API terms of service
+   ``WIS2_GDC_METADATA_IDENTIFICATION_URL``,URL related to API
+   ``WIS2_GDC_METADATA_LICENSE_NAME``,API license name
+   ``WIS2_GDC_METADATA_LICENSE_URL``,API license URL
+   ``WIS2_GDC_METADATA_PROVIDER_NAME``,API provider name
+   ``WIS2_GDC_METADATA_PROVIDER_URL``,API provider URL
+   ``WIS2_GDC_METADATA_CONTACT_NAME``,API contact name
+   ``WIS2_GDC_METADATA_CONTACT_POSITION``,API contact position
+   ``WIS2_GDC_METADATA_CONTACT_ADDRESS``,API contact address
+   ``WIS2_GDC_METADATA_CONTACT_CITY``,API contact city
+   ``WIS2_GDC_METADATA_CONTACT_STATEORPROVINCE``,API contact state or province
+   ``WIS2_GDC_METADATA_CONTACT_POSTALCODE``,API contact postal code
+   ``WIS2_GDC_METADATA_CONTACT_COUNTRY``,API contact country
+   ``WIS2_GDC_METADATA_CONTACT_PHONE``,API contact phone number (in format ``+xx-xxx-xxx-xxxx``)
+   ``WIS2_GDC_METADATA_CONTACT_FAX``,API contact fax number (in format ``+xx-xxx-xxx-xxxx``)
+   ``WIS2_GDC_METADATA_CONTACT_EMAIL``,API contact email
+   ``WIS2_GDC_METADATA_CONTACT_URL``,API contact URL
+   ``WIS2_GDC_METADATA_CONTACT_HOURS``,API contact hours of service
+   ``WIS2_GDC_METADATA_CONTACT_INSTRUCTIONS``,API contact instructions
+   ``WIS2_GDC_METADATA_CONTACT_ROLE``,API contact role
 
 Global Broker environment variables
 -----------------------------------
@@ -55,12 +91,12 @@ A default installation with minimal configuration changes per below satisfies mo
 
    The ``wis2-gdc`` Docker Compose file also contains additional environment variables (see ``docker-compose.yml`` to adjust accordingly).  In most cases, these values do not need adjustment.
 
-Application specific configuration
-----------------------------------
+Application specific configurations
+-----------------------------------
 
-Application specific configurations can be found in the following files:
+Application specific configurations can be found in the following files (for direct editing if needed):
 
-.. csv-table:: Applicaiton specific configuration files
+.. csv-table:: Application specific configuration files
    :widths: 30 30
    :header: Filepath,Description
 
