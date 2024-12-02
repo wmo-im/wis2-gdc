@@ -38,7 +38,6 @@ If you wish to update the API configuration, you can set the below values accord
 
    ``WIS2_GDC_METADATA_IDENTIFICATION_TITLE``,API title
    ``WIS2_GDC_METADATA_IDENTIFICATION_DESCRIPTION``,API description 
-   ``WIS2_GDC_METADATA_IDENTIFICATION_KEYWORDS``,API keywords
    ``WIS2_GDC_METADATA_IDENTIFICATION_TERMS_OF_SERVICE``,API terms of service
    ``WIS2_GDC_METADATA_IDENTIFICATION_URL``,URL related to API
    ``WIS2_GDC_METADATA_LICENSE_NAME``,API license name
