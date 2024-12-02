@@ -2,7 +2,7 @@ server:
     bind:
         host: 0.0.0.0
         port: 5000
-    url: ${WIS2_GDC_API_URL}
+    url: ${WIS2_GDC_API_URL-:http://localhost}
     mimetype: application/json; charset=UTF-8
     encoding: utf-8
     language: en-US
@@ -18,40 +18,40 @@ server:
         output_dir: /tmp/
 
 logging:
-    level: ${WIS2_GDC_LOGGING_LEVEL}
+    level: ${WIS2_GDC_LOGGING_LEVEL:-ERROR}
 
 metadata:
     identification:
-        title: WMO WIS2 Global Discovery Catalogue instance
-        description: WMO WIS2 Global Discovery Catalogue instance
+        title: ${WIS2_GDC_METADATA_IDENTIFICATION_TITLE:-WMO WIS2 Global Discovery Catalogue instance}
+        description: ${WIS2_GDC_METADATA_IDENTIFICATION_DESCRIPTION:-WMO WIS2 Global Discovery Catalogue instance}
         keywords:
             - wmo
             - wis2
             - gdc
         keywords_type: theme
-        terms_of_service: https://creativecommons.org/licenses/by/4.0
-        url: https://github.com/wmo-im/wis2-gdc
+        terms_of_service: ${WIS2_GDC_METADATA_IDENTIFICATION_TERMS_OF_SERVICE:-https://creativecommons.org/licenses/by/4.0}
+        url: ${WIS2_GDC_METADATA_IDENTIFICATION_TITLE:-https://wis2-gdc.readthedocs.io}
     license:
-        name: CC-BY 4.0 license
-        url: https://creativecommons.org/licenses/by/4.0
+        name: ${WIS2_GDC_METADATA_LICENSE_NAME:-CC-BY 4.0 license}
+        url: ${WIS2_GDC_METADATA_LICENSE_URL:-https://creativecommons.org/licenses/by/4.0}
     provider:
-        name: GDC provider name
-        url: https://github.com/wmo-im/wis2-gdc
+        name: ${WIS2_GDC_METADATA_PROVIDER_NAME:-GDC provider name}
+        url: ${WIS2_GDC_METADATA_PROVIDER_URL:-https://github.com/wmo-im/wis2-gdc}
     contact:
-        name: Firstname Lastname
-        position: Position name
-        address: Mailing Address
-        city: City
-        stateorprovince: Administrative Area
-        postalcode: Zip or Postal Code
-        country: Country
-        phone: +xx-xxx-xxx-xxxx
-        fax: +xx-xxx-xxx-xxxx
-        email: you@example.org
-        url: https://github.com/wmo-im/wis2-gdc
-        hours: Mo-Fr 08:00-17:00
-        instructions: During hours of service. Off on weekends.
-        role: pointOfContact
+        name: ${WIS2_GDC_METADATA_CONTACT_NAME:-Firstname Lastname}
+        position: ${WIS2_GDC_METADATA_CONTACT_POSITION:Position name}
+        address: ${WIS2_GDC_METADATA_CONTACT_ADDRESS:-Mailing Address}
+        city: ${WIS2_GDC_METADATA_CONTACT_CITY:-City}
+        stateorprovince: ${WIS2_GDC_METADATA_CONTACT_STATEORPROVICE:-Administrative Area}
+        postalcode: ${WIS2_GDC_METADATA_CONTACT_POSTALCODE:-Zip or Postal Code}
+        country: ${WIS2_GDC_METADATA_CONTACT_COUNTRY:-Country}
+        phone: ${WIS2_GDC_METADATA_CONTACT_PHONE:-+xx-xxx-xxx-xxxx}
+        fax: ${WIS2_GDC_METADATA_CONTACT_FAX:-+xx-xxx-xxx-xxxx}
+        email: ${WIS2_GDC_METADATA_CONTACT_EMAIL:-you@example.org}
+        url: ${WIS2_GDC_METADATA_CONTACT_URL:-https://github.com/wmo-im/wis2-gdc}
+        hours: ${WIS2_GDC_METADATA_CONTACT_HOURS:-Mo-Fr 08:00-17:00}
+        instructions: ${WIS2_GDC_METADATA_CONTACT_INSTRUCTIONS:-During hours of service. Off on weekends.}
+        role: ${WIS2_GDC_METADATA_CONTACT_ROLE:-pointOfContact}
 
 resources:
     wis2-discovery-metadata:
@@ -65,18 +65,18 @@ resources:
             - type: application/zip
               rel: archives
               title: Metadata archive (generated daily)
-              href: ${WIS2_GDC_API_URL}/wis2-discovery-metadata-archive.zip
+              href: ${WIS2_GDC_API_URL:-http://localhost}/wis2-discovery-metadata-archive.zip
               hreflang: en-CA
               length: -1
             - type: text/plain
               rel: related
               title: OpenMetrics
-              href: ${WIS2_GDC_API_URL}/wis2-gdc-metrics.txt
+              href: ${WIS2_GDC_API_URL:-http://localhost}/wis2-gdc-metrics.txt
               hreflang: en-CA
             - type: text/html
               rel: related
               title: Analytics and monitoring dashboard
-              href: ${WIS2_GDC_API_URL}/grafana
+              href: ${WIS2_GDC_API_URL:-http://localhost}/grafana
               hreflang: en-CA
             - type: text/html
               rel: canonical
@@ -89,8 +89,8 @@ resources:
                 crs: http://www.opengis.net/def/crs/OGC/1.3/CRS84
         providers:
             - type: record
-              name: ${WIS2_GDC_BACKEND_TYPE}
-              data: ${WIS2_GDC_BACKEND_CONNECTION}
+              name: ${WIS2_GDC_BACKEND_TYPE:-Elasticsearch}
+              data: ${WIS2_GDC_BACKEND_CONNECTION:-http://wis2-gdc-backend:9200/wis2-discovery-metadata}
               id_field: id
               time_field: updated
               title_field: title
