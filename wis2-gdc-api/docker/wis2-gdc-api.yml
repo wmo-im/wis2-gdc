@@ -42,7 +42,7 @@ metadata:
         position: ${WIS2_GDC_METADATA_CONTACT_POSITION:Position name}
         address: ${WIS2_GDC_METADATA_CONTACT_ADDRESS:-Mailing Address}
         city: ${WIS2_GDC_METADATA_CONTACT_CITY:-City}
-        stateorprovince: ${WIS2_GDC_METADATA_CONTACT_STATEORPROVICE:-Administrative Area}
+        stateorprovince: ${WIS2_GDC_METADATA_CONTACT_STATEORPROVINCE:-Administrative Area}
         postalcode: ${WIS2_GDC_METADATA_CONTACT_POSTALCODE:-Zip or Postal Code}
         country: ${WIS2_GDC_METADATA_CONTACT_COUNTRY:-Country}
         phone: ${WIS2_GDC_METADATA_CONTACT_PHONE:-+xx-xxx-xxx-xxxx}
