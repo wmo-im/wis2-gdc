@@ -40,6 +40,7 @@ from wis2_gdc.env import (API_URL, API_URL_DOCKER, BACKEND_TYPE,
                           BACKEND_CONNECTION, BROKER_URL,
                           CENTRE_ID, GB_LINKS, PUBLISH_REPORTS,
                           REJECT_ON_FAILING_ETS, RUN_KPI)
+from wis2_gdc.wme import generate_wme
 
 LOGGER = logging.getLogger(__name__)
 
@@ -193,7 +194,8 @@ class Registrar:
 
         if PUBLISH_REPORTS:
             LOGGER.info('Publishing ETS report to broker')
-            self.broker.pub(publish_report_topic, json.dumps(ets_results))
+            wme = generate_wme(self.centre_id, 'ets', ets_results)
+            self.broker.pub(publish_report_topic, json.dumps(wme))
 
         if failed_ets:
             self._process_record_metric(
@@ -227,7 +229,8 @@ class Registrar:
 
             if PUBLISH_REPORTS and 'summary' in kpi_results:
                 LOGGER.info('Publishing KPI report to broker')
-                self.broker.pub(publish_report_topic, json.dumps(kpi_results))
+                wme = generate_wme(self.centre_id, 'kpi', kpi_results)
+                self.broker.pub(publish_report_topic, json.dumps(wme))
 
                 kpi_labels = [self.metadata['id']] + centre_id_labels
 
