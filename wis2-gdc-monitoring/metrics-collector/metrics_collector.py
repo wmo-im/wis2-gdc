@@ -28,7 +28,7 @@ from urllib.parse import urlparse
 
 import paho.mqtt.client as mqtt_client
 from prometheus_client import (
-    Counter, Gauge, Info, start_http_server, REGISTRY, GC_COLLECTOR,
+    Counter, Gauge, start_http_server, REGISTRY, GC_COLLECTOR,
     PLATFORM_COLLECTOR, PROCESS_COLLECTOR
 )
 
@@ -50,11 +50,6 @@ LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(LOGGING_LEVEL)
 
 # sets metrics as per https://github.com/wmo-im/wis2-metric-hierarchy/blob/main/metric-hierarchy/gdc.csv  # noqa
-
-METRIC_INFO = Info(
-    'wmo_wis2_gdc_metrics',
-    'WIS2 GDC metrics'
-)
 
 METRIC_PASSED_TOTAL = Counter(
     'wmo_wis2_gdc_passed_total',
@@ -116,6 +111,12 @@ METRIC_CONNECTED_FLAG = Gauge(
     ['centre_id', 'report_by']
 )
 
+METRIC_API_STATUS = Gauge(
+    'wmo_wis2_gdc_api_status',
+    'Status of GDC API',
+    ['centre_id']
+)
+
 METRIC_DOWNLOADED_ERRORS_TOTAL = Counter(
     'wmo_wis2_gdc_downloaded_errors_total',
     'Number of metadata download errors',
@@ -146,14 +147,11 @@ def init_metrics() -> None:
 
     gb_centre_id = get_gb_centre_id()
 
-    METRIC_INFO.info({
-        'centre_id': CENTRE_ID,
-        'url': API_URL,
-        'subscribed_to': gb_centre_id
-    })
-
     METRIC_CONNECTED_FLAG.labels(
         centre_id=gb_centre_id, report_by=CENTRE_ID).inc(1)
+
+    METRIC_API_STATUS.labels(
+        centre_id=CENTRE_ID).inc(1)
 
     with open(CENTRE_ID_CSV) as fh:
         reader = csv.DictReader(fh)
