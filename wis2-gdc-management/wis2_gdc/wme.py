@@ -19,7 +19,7 @@
 #
 ###############################################################################
 
-from datetime import datetime, UTC
+from datetime import datetime
 import logging
 import uuid
 
@@ -49,7 +49,7 @@ def generate_wme(subject: str, report_type: str, data: dict) -> dict:
         'source': CENTRE_ID,
         'subject': subject,
         'id': str(uuid.uuid4()),
-        'time': datetime.now(UTC).strftime('%Y-%m-%dT%H:%M:%SZ'),
+        'time': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
         'datacontenttype': 'application/json',
         'dataschema': DATASCHEMAS[report_type],
         'data': data
