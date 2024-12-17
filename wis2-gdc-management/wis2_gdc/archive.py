@@ -21,6 +21,8 @@
 
 import json
 import logging
+import uuid
+from pathlib import Path
 import zipfile
 
 import click
@@ -29,6 +31,7 @@ from typing import Union
 
 from pywis_pubsub import cli_options
 from pywis_pubsub.mqtt import MQTTPubSubClient
+from pywis_pubsub.publish import create_message
 
 from wis2_gdc.env import API_URL, API_URL_DOCKER, BROKER_URL, CENTRE_ID
 
@@ -83,13 +86,20 @@ def archive_metadata(archive_zipfile: str) -> None:
             if _get_next_link(response['links']) is None:
                 end = True
 
-    msg = {
-        'type': 'archive-published',
-        'description': f'Archive published at {API_URL}/wis2-gdc-archive.zip'
-    }
+    metadata_archive_zipfile_topic = f'origin/a/wis2/{CENTRE_ID}/metadata'
+
+    n = Path(archive_zipfile).name
+    url = f'{API_URL}/{n}'
+
+    message = create_message(
+        topic=metadata_archive_zipfile_topic,
+        content_type='application/zip',
+        url=url,
+        identifier=str(uuid.uuid4())
+    )
 
     m = MQTTPubSubClient(BROKER_URL)
-    m.pub(f'monitor/a/wis2/{CENTRE_ID}', json.dumps(msg))
+    m.pub(metadata_archive_zipfile_topic, json.dumps(message))
     m.close()
 
 
