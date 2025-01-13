@@ -216,7 +216,7 @@ class Registrar:
                 self.metadata['id'], f'{data_policy}_total', centre_id_labels)
 
             LOGGER.info('Updating links')
-            self.update_record_links(data_policy)
+            self.metadata['links'] = self.update_record_links(data_policy)
 
         LOGGER.info('Publishing metadata to backend')
         self._publish()
@@ -362,11 +362,11 @@ class Registrar:
         LOGGER.info(f'Saving to {BACKEND_TYPE} ({BACKEND_CONNECTION})')
         self.backend.save_record(self.metadata)
 
-    def update_record_links(self, data_policy: str) -> None:
+    def update_record_links(self, data_policy: str) -> list:
         """
         Update Global Service links
 
-        :returns: `None` (self.metadata updated inline)
+        :returns: `list` of links, updated accordingly
         """
 
         def is_wis2_mqtt_link(link) -> bool:
@@ -378,12 +378,15 @@ class Registrar:
 
             return False
 
-        for count, value in enumerate(self.metadata['links']):
-            if is_wis2_mqtt_link(value):
-                LOGGER.debug('Adjusting MQTT link')
-                channel = value.get('channel', value.get('wmo:topic'))
+        new_links = []
 
-                new_link = value
+        for link in self.metadata['links']:
+            new_link = deepcopy(link)
+
+            if is_wis2_mqtt_link(link):
+                LOGGER.debug('Adjusting MQTT link')
+                channel = link.get('channel', link.get('wmo:topic'))
+
                 _ = new_link.pop('wmo:topic', None)
 
                 if data_policy == 'core':
@@ -393,8 +396,6 @@ class Registrar:
                 new_link['rel'] = 'items'
                 new_link['type'] = 'application/geo+json'
 
-                del self.metadata['links'][count]
-
                 for gb_link in GB_LINKS:
                     gb_link_to_add = deepcopy(new_link)
                     title = f'Notifications from {gb_link[2]} ({gb_link[0]})'
@@ -403,6 +404,10 @@ class Registrar:
 
                     LOGGER.debug(f'Adding new link: {gb_link_to_add}')
                     self.metadata['links'].append(gb_link_to_add)
+
+            new_links.append(new_link)
+
+        return new_links
 
     def __repr__(self):
         return '<Registrar>'
