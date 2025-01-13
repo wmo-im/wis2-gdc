@@ -35,14 +35,13 @@ class DiscoveryMetadataHook(Hook):
         LOGGER.debug('Discovery metadata hook execution begin')
         r = Registrar()
 
-        try:
-            wcmp2_dict = r.get_wcmp2(msg_dict, topic)
-        except (IndexError, KeyError):
-            is_deletion = list(filter(lambda d: d['rel'] == 'deletion',
-                                      msg_dict['links']))
+        is_deletion = list(filter(lambda d: d['rel'] == 'deletion',
+                                  msg_dict['links']))
+        if is_deletion:
+            r.delete_record(topic, msg_dict)
+            return
 
-            if is_deletion:
-                r.delete_record(topic, msg_dict)
+        wcmp2_dict = r.get_wcmp2(msg_dict, topic)
 
         if wcmp2_dict is not None:
             r.register(wcmp2_dict, topic)
