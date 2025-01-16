@@ -215,8 +215,8 @@ class Registrar:
             self._process_record_metric(
                 self.metadata['id'], f'{data_policy}_total', centre_id_labels)
 
-            LOGGER.info('Updating links')
-            self.metadata['links'] = self.update_record_links(data_policy)
+        LOGGER.info('Updating links')
+        self.metadata['links'] = self.update_record_links(data_policy)
 
         LOGGER.info('Publishing metadata to backend')
         self._publish()
@@ -371,8 +371,7 @@ class Registrar:
 
         def is_wis2_mqtt_link(link) -> bool:
             if link['href'].startswith('mqtt'):
-                if (link.get('wmo:topic', '').startswith('origin/a/wis2') or
-                        link.get('channel', '').startswith('origin/a/wis2')):
+                if link.get('channel', '').startswith('origin/a/wis2'):
                     LOGGER.debug('Found MQTT link')
                     return True
 
@@ -403,9 +402,9 @@ class Registrar:
                     gb_link_to_add['href'] = gb_link[1]
 
                     LOGGER.debug(f'Adding new link: {gb_link_to_add}')
-                    self.metadata['links'].append(gb_link_to_add)
-
-            new_links.append(new_link)
+                    new_links.append(gb_link_to_add)
+            else:
+                new_links.append(new_link)
 
         return new_links
 
