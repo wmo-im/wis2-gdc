@@ -99,6 +99,14 @@ class ElasticsearchBackend(BaseBackend):
                                         'type': 'keyword'
                                     }
                                 }
+                            },
+                            'centre-id': {
+                                'type': 'text',
+                                'fields': {
+                                    'raw': {
+                                        'type': 'keyword'
+                                    }
+                                }
                             }
                         }
                     }

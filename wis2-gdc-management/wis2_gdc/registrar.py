@@ -218,6 +218,9 @@ class Registrar:
         LOGGER.info('Updating links')
         self.metadata['links'] = self.update_record_links(data_policy)
 
+        LOGGER.info('Adding centre-id property')
+        self.metadata['properties']['centre-id'] = self.centre_id
+
         LOGGER.info('Publishing metadata to backend')
         self._publish()
 
