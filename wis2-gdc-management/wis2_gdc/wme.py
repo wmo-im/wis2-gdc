@@ -45,7 +45,7 @@ def generate_wme(subject: str, report_type: str, data: dict) -> dict:
 
     return {
         'specversion': '1.0',
-        'type': 'int.wmo.wis2.wme.report.wcmp2.{report_type}',
+        'type': f'int.wmo.wis2.wme.report.wcmp2.{report_type}',
         'source': CENTRE_ID,
         'subject': subject,
         'id': str(uuid.uuid4()),
