@@ -1,0 +1,17 @@
+244c244,247
+<                 prop_name = self.mask_prop(prop[0])
+---
+>                 if '|' in prop[1]:
+>                     prop_name = self.mask_prop(prop[0])
+>                 else:
+>                     prop_name = f'{self.mask_prop(prop[0])}.raw'
+252c255,256
+<                 query['query']['bool']['filter'].append(pf)
+---
+>                 if '|' not in prop[1]:
+>                     pf['match'][prop_name]['minimum_should_match'] = '100%'
+254,255c258
+<             if '|' not in prop[1]:
+<                 pf['match'][prop_name]['minimum_should_match'] = '100%'
+---
+>                 query['query']['bool']['filter'].append(pf)
