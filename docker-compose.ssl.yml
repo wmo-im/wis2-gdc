@@ -1,0 +1,6 @@
+ervices:
+  wis2-gdc-broker:
+    volumes:
+      - ./path/to/your.ca.crt:/mosquitto/config/certs/ca.crt
+      - ./path/to/your.tls.crt:/mosquitto/config/certs/tls.crt
+      - ./path/to/your/tls.key:/mosquitto/config/certs/tls.key
