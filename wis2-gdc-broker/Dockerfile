@@ -22,7 +22,13 @@
 FROM eclipse-mosquitto:latest
 
 COPY ./docker/mosquitto.conf /mosquitto/config/mosquitto.conf
+COPY ./docker/mosquitto-ssl.inc /mosquitto/config/mosquitto-ssl.inc
 COPY ./docker/acl.conf /mosquitto/config/acl.conf
 COPY ./docker/entrypoint.sh /docker-entrypoint.sh
 
 RUN chmod +x /docker-entrypoint.sh
+
+RUN chgrp -R 0 /mosquitto && \
+    chmod -R g=u /mosquitto
+
+USER 1001
