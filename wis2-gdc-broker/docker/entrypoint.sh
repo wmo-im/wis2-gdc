@@ -17,6 +17,10 @@ else
     echo "Mosquitto password file already exists. Skipping wis2-gdc user addition."
 fi
 
+if [ -e "/mosquitto/config/certs/tls.crt" ] && [ -e "/mosquitto/config/certs/tls.key" ] && [ -e "/mosquitto/config/certs/ca.crt" ] ; then
+    echo "Adding Mosquitto SSL information from /mosquitto/config/mosquitto-ssl.inc"
+    cat /mosquitto/config/mosquitto-ssl.inc >> /mosquitto/config/mosquitto.conf
+fi
 
 sed -i "s#_USERNAME#$USERNAME#" /mosquitto/config/acl.conf
 
