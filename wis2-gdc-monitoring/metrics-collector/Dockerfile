@@ -33,4 +33,9 @@ RUN pip3 install -r /app/requirements.txt && \
 ENV WIS2_GDC_CENTRE_ID_CSV="/data/centre-id.csv"
 ENV PYTHONUNBUFFERED="true"
 
+RUN chgrp -R 0 /app && \
+    chmod -R g=u /app
+
+USER 1001
+
 ENTRYPOINT [ "python3","-u","/app/metrics_collector.py" ]

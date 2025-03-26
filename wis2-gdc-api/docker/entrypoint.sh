@@ -30,7 +30,7 @@ set +e
 SCRIPT_NAME="/"
 CONTAINER_NAME="wis2-gdc-api"
 CONTAINER_HOST=${CONTAINER_HOST:=0.0.0.0}
-CONTAINER_PORT=${CONTAINER_PORT:=80}
+CONTAINER_PORT=${CONTAINER_PORT:=8080}
 WSGI_WORKERS=${WSGI_WORKERS:=4}
 WSGI_WORKER_TIMEOUT=${WSGI_WORKER_TIMEOUT:=6000}
 WSGI_WORKER_CLASS=${WSGI_WORKER_CLASS:=gevent}
@@ -48,7 +48,7 @@ function error() {
 cd /pygeoapi
 
 # Lock all Python files (for gunicorn hot reload)
-find . -type f -name "*.py" | xargs chmod -R 0444
+# find . -type f -name "*.py" | xargs chmod -R 0444
 
 echo "Trying to generate OpenAPI document"
 pygeoapi openapi generate ${PYGEOAPI_CONFIG} --output-file ${PYGEOAPI_OPENAPI}
