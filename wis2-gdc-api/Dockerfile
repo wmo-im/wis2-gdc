@@ -37,10 +37,12 @@ COPY ./docker/wis2-gdc-api.yml /pygeoapi/local.config.yml
 
 RUN pip3 install -r /app/docker/wis2-gdc-api/requirements.txt && \
     pywcmp bundle sync && \
-    chmod +x /app/docker/wis2-gdc-api/entrypoint.sh && \
+    chmod +x /app/docker/wis2-gdc-api/entrypoint.sh
     patch /pygeoapi/pygeoapi/provider/elasticsearch_.py /pygeoapi/pygeoapi_provider_elasticsearch_.patch
 
 RUN chgrp -R 0 /pygeoapi && \
     chmod -R g=u /pygeoapi
+
+USER 1001
 
 ENTRYPOINT [ "/app/docker/wis2-gdc-api/entrypoint.sh" ]

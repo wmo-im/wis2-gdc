@@ -23,9 +23,12 @@ FROM ubuntu:jammy
 
 LABEL maintainer="tomkralidis@gmail.com"
 
+ARG WIS2_GDC_ENABLE_CRON=false
+
 ENV TZ="Etc/UTC" \
     DEBIAN_FRONTEND="noninteractive" \
-    DEBIAN_PACKAGES="bash cron curl git python3-pip python3-setuptools sudo vim"
+    DEBIAN_PACKAGES="bash cron curl git python3-pip python3-setuptools sudo vim" \
+    HOME=/app
 
 # copy the app
 COPY ./ /app
@@ -36,6 +39,9 @@ COPY ./docker/wis2-gdc-management.cron /var/spool/cron/crontabs/wis2-gdc
 RUN apt-get update -y && \
     # install dependencies
     apt-get install -y ${DEBIAN_PACKAGES} && \
+    if [ "$WIS2_GDC_ENABLE_CRON" = "true" ]; \
+    then apt-get install -y cron; \
+    fi && \
     pip3 install --no-cache-dir -r /app/requirements-backend.txt && \
     # install wis2-gdc
     cd /app && \
@@ -44,15 +50,19 @@ RUN apt-get update -y && \
     # cleanup
     apt autoremove -y && \
     apt-get -q clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    chmod 0644 /var/spool/cron/crontabs/wis2-gdc && \
-    crontab /var/spool/cron/crontabs/wis2-gdc && \
-    # add wis2-gdc user
-    useradd -ms /bin/bash wis2-gdc && \
-    adduser wis2-gdc sudo && \
-    echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+    rm -rf /var/lib/apt/lists/*
 
-USER wis2-gdc
-WORKDIR /home/wis2-gdc
+# setup cron if enabled
+RUN if [ "$WIS2_GDC_ENABLE_CRON" = "true" ]; \
+    then cp /tmp/wis2-gdc-management /etc/cron.d/wis2-gdc-management && \
+    chmod 0644 /etc/cron.d/wis2-gdc-management && \
+    crontab /etc/cron.d/wis2-gdc-management && \
+    touch /var/log/cron.log; \
+    fi
+
+RUN chgrp -R 0 /app && \
+    chmod -R g=u /app
+
+USER 1001
 
 ENTRYPOINT [ "/app/docker/entrypoint.sh" ]
