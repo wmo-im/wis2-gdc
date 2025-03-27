@@ -24,7 +24,7 @@
 
 echo "START /entrypoint.sh"
 
-if [ "${ENABLE_CRON}" = "true" ]; then
+if [ "${WIS2_GDC_ENABLE_CRON}" = "true" ]; then
   echo "Starting cron"
   sudo service cron start
   service cron status
