@@ -126,6 +126,7 @@ services:
       - wis2-gdc.env
     environment:
       - WIS2_GDC_API_URL_DOCKER=http://wis2-gdc-api
+      - WIS2_GDC_ENABLE_CRON=true
     depends_on:
       wis2-gdc-backend:
         condition: service_healthy
@@ -136,7 +137,7 @@ services:
     volumes:
       - wis2-gdc-management-data:/data
     restart: always
-    command: ["WIS2_GDC_ENABLE_CRON=true", "pywis-pubsub", "subscribe", "--config", "/app/docker/pywis-pubsub.yml", "--verbosity", "DEBUG"]
+    command: ["pywis-pubsub", "subscribe", "--config", "/app/docker/pywis-pubsub.yml", "--verbosity", "DEBUG"]
     networks:
       - wis2-gdc-net
     <<: *logging
@@ -152,7 +153,7 @@ services:
     volumes:
       - wis2-gdc-management-data:/data
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/conformance"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/conformance"]
       interval: 5s
       retries: 3
     env_file:
