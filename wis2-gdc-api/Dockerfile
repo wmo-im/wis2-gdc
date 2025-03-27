@@ -19,7 +19,7 @@
 #
 ###############################################################################
 
-FROM geopython/pygeoapi:latest
+FROM geopython/pygeoapi:0.20.0
 
 LABEL maintainer="Tom Kralidis <tomkralidis@gmail.com>"
 
