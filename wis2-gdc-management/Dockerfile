@@ -54,7 +54,7 @@ RUN apt-get update -y && \
 
 # setup cron if enabled
 RUN if [ "$WIS2_GDC_ENABLE_CRON" = "true" ]; \
-    then cp /tmp/wis2-gdc-management /etc/cron.d/wis2-gdc-management && \
+    then cp /var/spool/cron/crontabs/wis2-gdc /etc/cron.d/wis2-gdc-management && \
     chmod 0644 /etc/cron.d/wis2-gdc-management && \
     crontab /etc/cron.d/wis2-gdc-management && \
     touch /var/log/cron.log; \
