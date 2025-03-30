@@ -19,7 +19,7 @@
 #
 ###############################################################################
 
-FROM geopython/pygeoapi:latest
+FROM geopython/pygeoapi:0.20.0
 
 LABEL maintainer="Tom Kralidis <tomkralidis@gmail.com>"
 
@@ -27,17 +27,16 @@ ENV PYGEOAPI_CONFIG=/pygeoapi/local.config.yml
 ENV PYGEOAPI_OPENAPI=/pygeoapi/local.openapi.yml
 
 RUN apt-get update && \
-    apt-get install -y curl patch
+    apt-get install -y curl
 
 COPY ./app.py /pygeoapi/pygeoapi/app.py
-COPY ./pygeoapi_provider_elasticsearch_.patch /pygeoapi/pygeoapi_provider_elasticsearch_.patch
+COPY ./pygeoapi_provider_elasticsearch_2025-03-30.py /pygeoapi/pygeoapi/provider/elasticsearch_.py
 COPY ./requirements.txt /app/docker/wis2-gdc-api/requirements.txt
 COPY ./docker/entrypoint.sh /app/docker/wis2-gdc-api/entrypoint.sh
 COPY ./docker/wis2-gdc-api.yml /pygeoapi/local.config.yml
 
 RUN pip3 install -r /app/docker/wis2-gdc-api/requirements.txt && \
     pywcmp bundle sync && \
-    chmod +x /app/docker/wis2-gdc-api/entrypoint.sh && \
-    patch /pygeoapi/pygeoapi/provider/elasticsearch_.py /pygeoapi/pygeoapi_provider_elasticsearch_.patch
+    chmod +x /app/docker/wis2-gdc-api/entrypoint.sh
 
 ENTRYPOINT [ "/app/docker/wis2-gdc-api/entrypoint.sh" ]
