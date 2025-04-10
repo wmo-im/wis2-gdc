@@ -90,7 +90,6 @@ services:
       - GF_ALERTING_ENABLED=true
       - GF_USERS_DEFAULT_THEME=dark
       - GF_DISABLE_SIGNOUT_MENU=true
-      - GF_SERVER_SERVE_FROM_SUB_PATH=true
       - GF_SERVER_ROOT_URL=${WIS2_GDC_API_URL}/grafana/
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
     <<: *logging
