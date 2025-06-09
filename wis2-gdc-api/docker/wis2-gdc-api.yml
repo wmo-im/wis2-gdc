@@ -3,6 +3,8 @@ server:
         host: 0.0.0.0
         port: 5000
     url: ${WIS2_GDC_API_URL:-http://localhost}
+    icon: https://wmo.int/themes/custom/server_theme/dist/images/favicons//favicon-32x32.png
+    logo: https://upload.wikimedia.org/wikipedia/en/thumb/b/b6/World_Meteorological_Organization_Logo.svg/2560px-World_Meteorological_Organization_Logo.svg.png
     mimetype: application/json; charset=UTF-8
     encoding: utf-8
     language: en-US
