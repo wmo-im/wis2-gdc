@@ -34,10 +34,10 @@ metadata:
             - gdc
         keywords_type: theme
         terms_of_service: ${WIS2_GDC_METADATA_IDENTIFICATION_TERMS_OF_SERVICE:-https://creativecommons.org/licenses/by/4.0}
-        url: ${WIS2_GDC_METADATA_IDENTIFICATION_TITLE:-https://wis2-gdc.readthedocs.io}
+        url: ${WIS2_GDC_METADATA_IDENTIFICATION_URL:-https://wis2-gdc.readthedocs.io}
     license:
-        name: ${WIS2_GDC_METADATA_LICENSE_NAME:-CC-BY 4.0 license}
-        url: ${WIS2_GDC_METADATA_LICENSE_URL:-https://creativecommons.org/licenses/by/4.0}
+        name: ${WIS2_GDC_METADATA_LICENSE_NAME:-WMO Unified Data Policy}
+        url: ${WIS2_GDC_METADATA_LICENSE_URL:-https://library.wmo.int/idurl/4/58009}
     provider:
         name: ${WIS2_GDC_METADATA_PROVIDER_NAME:-GDC provider name}
         url: ${WIS2_GDC_METADATA_PROVIDER_URL:-https://github.com/wmo-im/wis2-gdc}
