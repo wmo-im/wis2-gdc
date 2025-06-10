@@ -36,28 +36,30 @@ If you wish to update the API configuration, you can set the below values accord
    :widths: 30 30
    :header: Name,Description
 
-   ``WIS2_GDC_METADATA_IDENTIFICATION_TITLE``,API title
-   ``WIS2_GDC_METADATA_IDENTIFICATION_DESCRIPTION``,API description 
-   ``WIS2_GDC_METADATA_IDENTIFICATION_TERMS_OF_SERVICE``,API terms of service
+   ``WIS2_GDC_SERVER_ICON``,Icon for HTML templates
+   ``WIS2_GDC_SERVER_LOGO``,Logo/banner for HTML templates
+   ``WIS2_GDC_METADATA_IDENTIFICATION_TITLE``,Title
+   ``WIS2_GDC_METADATA_IDENTIFICATION_DESCRIPTION``,Description 
+   ``WIS2_GDC_METADATA_IDENTIFICATION_TERMS_OF_SERVICE``,Terms of service
    ``WIS2_GDC_METADATA_IDENTIFICATION_URL``,URL related to API
-   ``WIS2_GDC_METADATA_LICENSE_NAME``,API license name
-   ``WIS2_GDC_METADATA_LICENSE_URL``,API license URL
-   ``WIS2_GDC_METADATA_PROVIDER_NAME``,API provider name
-   ``WIS2_GDC_METADATA_PROVIDER_URL``,API provider URL
-   ``WIS2_GDC_METADATA_CONTACT_NAME``,API contact name
-   ``WIS2_GDC_METADATA_CONTACT_POSITION``,API contact position
-   ``WIS2_GDC_METADATA_CONTACT_ADDRESS``,API contact address
-   ``WIS2_GDC_METADATA_CONTACT_CITY``,API contact city
-   ``WIS2_GDC_METADATA_CONTACT_STATEORPROVINCE``,API contact state or province
-   ``WIS2_GDC_METADATA_CONTACT_POSTALCODE``,API contact postal code
-   ``WIS2_GDC_METADATA_CONTACT_COUNTRY``,API contact country
-   ``WIS2_GDC_METADATA_CONTACT_PHONE``,API contact phone number (in format ``+xx-xxx-xxx-xxxx``)
-   ``WIS2_GDC_METADATA_CONTACT_FAX``,API contact fax number (in format ``+xx-xxx-xxx-xxxx``)
-   ``WIS2_GDC_METADATA_CONTACT_EMAIL``,API contact email
-   ``WIS2_GDC_METADATA_CONTACT_URL``,API contact URL
-   ``WIS2_GDC_METADATA_CONTACT_HOURS``,API contact hours of service
-   ``WIS2_GDC_METADATA_CONTACT_INSTRUCTIONS``,API contact instructions
-   ``WIS2_GDC_METADATA_CONTACT_ROLE``,API contact role
+   ``WIS2_GDC_METADATA_LICENSE_NAME``,License name
+   ``WIS2_GDC_METADATA_LICENSE_URL``,License URL
+   ``WIS2_GDC_METADATA_PROVIDER_NAME``,Provider name
+   ``WIS2_GDC_METADATA_PROVIDER_URL``,Provider URL
+   ``WIS2_GDC_METADATA_CONTACT_NAME``,Contact name
+   ``WIS2_GDC_METADATA_CONTACT_POSITION``,Contact position
+   ``WIS2_GDC_METADATA_CONTACT_ADDRESS``,Contact address
+   ``WIS2_GDC_METADATA_CONTACT_CITY``,Contact city
+   ``WIS2_GDC_METADATA_CONTACT_STATEORPROVINCE``,Contact state or province
+   ``WIS2_GDC_METADATA_CONTACT_POSTALCODE``,Contact postal code
+   ``WIS2_GDC_METADATA_CONTACT_COUNTRY``,Contact country
+   ``WIS2_GDC_METADATA_CONTACT_PHONE``,Contact phone number (in format ``+xx-xxx-xxx-xxxx``)
+   ``WIS2_GDC_METADATA_CONTACT_FAX``,Contact fax number (in format ``+xx-xxx-xxx-xxxx``)
+   ``WIS2_GDC_METADATA_CONTACT_EMAIL``,Contact email
+   ``WIS2_GDC_METADATA_CONTACT_URL``,Contact URL
+   ``WIS2_GDC_METADATA_CONTACT_HOURS``,Contact hours of service
+   ``WIS2_GDC_METADATA_CONTACT_INSTRUCTIONS``,Contact instructions
+   ``WIS2_GDC_METADATA_CONTACT_ROLE``,Contact role
 
 Global Broker environment variables
 -----------------------------------

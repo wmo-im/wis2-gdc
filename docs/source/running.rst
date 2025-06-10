@@ -3,7 +3,7 @@
 Running
 =======
 
-As defined by the WIS2 Technical Regulations, wis2-gdc is an event driven service which listens to WIS2 Global Broker services in ordder to manage discovery metadata publication.
+As defined by the WIS2 Technical Regulations, wis2-gdc is an event driven service which listens to WIS2 Global Broker services in order to manage discovery metadata publication.
 
 Interactive discovery metadata workflows
 ----------------------------------------
@@ -43,9 +43,56 @@ TLS/SSL
 
 To enable SSL, it is advised to setup SSL on a proxy server and "proxy pass" to wis2-gdc services accordingly.
 
-Below are examples of adding HTTP and MQTT proxies to Nginx:
+Below are examples of adding HTTP (port 443) and MQTT (port 8883) proxies to Nginx:
 
-TODO: add nginx snippets
+HTTP
+^^^^
+
+.. code-block:: nginx
+
+   server {
+           listen 443 ssl default_server;
+           listen [::]:443 ssl default_server;
+   
+           ssl_certificate /path/to/fullchain.pem;
+           ssl_certificate_key /path/to/privkey.pem;
+   
+           root /var/www/html;
+   
+           server_name gdc.hostname;  // adjust accordingly
+   
+           location / {
+                   proxy_pass http://localhost:5001/;
+           }
+   
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_set_header X-Forwarded-Host $server_name;
+   
+           add_header 'Access-Control-Allow-Origin' '*';
+           add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+           add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
+   }
+
+MQTT
+^^^^
+
+.. code-block:: nginx
+
+   stream {
+           upstream broker {
+                   server 127.0.0.1:1883 fail_timeout=1s max_fails=1;
+           }
+           server {
+                   ssl_certificate /etc/letsencrypt/live/gdc.wis2dev.io/fullchain.pem;
+                   ssl_certificate_key /etc/letsencrypt/live/gdc.wis2dev.io/privkey.pem;
+                   ssl_protocols TLSv1.2;
+                   listen 8883 ssl;
+                   proxy_pass broker;
+                   proxy_connect_timeout 1s;
+           }
+   }
 
 .. note::
 

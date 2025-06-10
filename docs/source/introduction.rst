@@ -20,7 +20,7 @@ Features
 * supports metadata filtering by spatial, temporal freetext or attribute queries
 * easy to deploy: Docker / Docker Compose based setup and configuration
 
-.. _`WIS2`: https://community.wmo.int/activity-areas/wis/wis-overview
-.. _`Guide to WIS, Volume II: WIS 2.0`: https://wmo-im.github.io/wis2-guide/guide/wis2-guide-DRAFT.html
-.. _`component definition`: https://wmo-im.github.io/wis2-guide/guide/wis2-guide-DRAFT.html#_2_4_4_global_discovery_catalogue
-.. _`technical considerations`: https://wmo-im.github.io/wis2-guide/guide/wis2-guide-DRAFT.html#_2_7_5_global_discovery_catalogue
+.. _`WIS2`: https://community.wmo.int/en/activity-areas/wis
+.. _`Guide to WIS, Volume II: WIS 2.0`: https://wmo-im.github.io/wis2-guide/guide/wis2-guide-APPROVED.html
+.. _`component definition`: https://wmo-im.github.io/wis2-guide/guide/wis2-guide-APPROVED.html#_2_4_4_global_discovery_catalogue
+.. _`technical considerations`: https://wmo-im.github.io/wis2-guide/guide/wis2-guide-APPROVED.html#_2_7_5_global_discovery_catalogue
