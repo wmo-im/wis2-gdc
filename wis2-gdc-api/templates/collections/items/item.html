@@ -131,9 +131,9 @@ broker: {{ l['href'] }}
 subscribe_topics:
     - {{ l['channel'] }}
                   </pre>
-                  <button type="button" class="btn btn-success" data-bs-target="data-subscription-modal-label" data-bs-toggle="modal" onclick="copyToClipboard('pywis-pubsub-config{{ loop.index }}')">Copy</button>
                 </div>
                 <div class="modal-footer">
+                  <button type="button" class="btn btn-success" data-bs-target="data-subscription-modal-label" data-bs-toggle="modal" onclick="copyToClipboard('pywis-pubsub-config{{ loop.index }}')">Copy</button>
                   <button type="button" class="btn btn-secondary" data-bs-target="data-subscription-modal-label" data-bs-toggle="modal">Close</button>
                 </div>
               </div>
