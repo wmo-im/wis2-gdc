@@ -244,7 +244,7 @@ class ElasticsearchProvider(BaseProvider):
 
                 # PATCH TK 2025-03-30
                 # force exact matches if | is not found
-                if '|' in prop[1]:
+                if '|' in prop[1] or '.' in prop[0]:
                     prop_name = self.mask_prop(prop[0])
                 else:
                     prop_name = f'{self.mask_prop(prop[0])}.raw'
