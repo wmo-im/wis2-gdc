@@ -34,6 +34,7 @@ from pywis_pubsub.mqtt import MQTTPubSubClient
 from pywis_pubsub.publish import create_message
 
 from wis2_gdc.env import API_URL, API_URL_DOCKER, BROKER_URL, CENTRE_ID
+from wis2_gdc.registrar import Registrar
 
 LOGGER = logging.getLogger(__name__)
 
@@ -103,6 +104,40 @@ def archive_metadata(archive_zipfile: str) -> None:
     m.close()
 
 
+def restore_metadata(archive_zipfile: str) -> None:
+    """
+    Restore all discovery metadata from an archive zipfile
+
+    :param archive_zipfile: `str` of filename of zipfile
+
+    :returns: `None`
+    """
+
+    r = Registrar()
+
+    with zipfile.ZipFile(archive_zipfile) as zf:
+        for filename in zf.namelist():
+            if not zf.getinfo(filename).is_dir():
+                LOGGER.debug(f'Reading {filename}')
+                metadata = json.loads(zf.read(filename))
+                r.metadata = metadata
+                LOGGER.debug(f'Publishing {filename}')
+                r._publish()
+
+    message = {
+        'id': str(uuid.uuid4()),
+        'message': 'Archive metadata restore complete',
+        'report_by': CENTRE_ID,
+        'centre_id': CENTRE_ID
+    }
+
+    archive_restore_topic = f'monitor/a/wis2/{CENTRE_ID}'
+
+    m = MQTTPubSubClient(BROKER_URL)
+    m.pub(archive_restore_topic, json.dumps(message))
+    m.close()
+
+
 @click.command()
 @click.pass_context
 @click.argument('archive-zipfile')
@@ -112,3 +147,14 @@ def archive(ctx, archive_zipfile, verbosity='NOTSET'):
 
     click.echo(f'Archiving metadata from GDC {API_URL} to {archive_zipfile}')
     archive_metadata(archive_zipfile)
+
+
+@click.command()
+@click.pass_context
+@click.argument('archive-zipfile')
+@cli_options.OPTION_VERBOSITY
+def restore(ctx, archive_zipfile, verbosity='NOTSET'):
+    """Restore discovery metadata records from an archive zipfile"""
+
+    click.echo(f'Restoring metadata {archive_zipfile} to GDC {API_URL}')
+    restore_metadata(archive_zipfile)
