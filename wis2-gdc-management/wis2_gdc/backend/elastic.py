@@ -19,7 +19,9 @@
 #
 ###############################################################################
 
+import json
 import logging
+from pathlib import Path
 from urllib.parse import urlparse
 
 from elasticsearch import Elasticsearch, NotFoundError
@@ -27,6 +29,8 @@ from elasticsearch import Elasticsearch, NotFoundError
 from wis2_gdc.backend.base import BaseBackend
 
 LOGGER = logging.getLogger(__name__)
+
+GDC_ES_SETTINGS = Path(__file__).resolve().parent.parent / 'resources' / 'gdc-es-settings.json'  # noqa
 
 
 class ElasticsearchBackend(BaseBackend):
@@ -38,81 +42,8 @@ class ElasticsearchBackend(BaseBackend):
         super().__init__(defs)
 
         # default index settings
-        self.ES_SETTINGS = {
-            'settings': {
-                'number_of_shards': 1,
-                'number_of_replicas': 0
-            },
-            'mappings': {
-                'properties': {
-                    'id': {
-                        'type': 'text',
-                        'fields': {
-                            'raw': {
-                                'type': 'keyword'
-                            }
-                        }
-                    },
-                    'geometry': {
-                        'type': 'geo_shape'
-                    },
-                    'time': {
-                        'properties': {
-                            'interval': {
-                                'type': 'date',
-                                'null_value': '1850',
-                                'format': 'year||year_month||year_month_day||date_time||t_time||t_time_no_millis',  # noqa
-                                'ignore_malformed': True
-                            }
-                        }
-                    },
-                    'properties': {
-                        'properties': {
-                            'type': {
-                                'type': 'text',
-                                'fields': {
-                                    'raw': {
-                                        'type': 'keyword'
-                                    }
-                                }
-                            },
-                            'title': {
-                                'type': 'text',
-                                'fields': {
-                                    'raw': {
-                                        'type': 'keyword'
-                                    }
-                                }
-                            },
-                            'description': {
-                                'type': 'text',
-                                'fields': {
-                                    'raw': {
-                                        'type': 'keyword'
-                                    }
-                                }
-                            },
-                            'wmo:dataPolicy': {
-                                'type': 'text',
-                                'fields': {
-                                    'raw': {
-                                        'type': 'keyword'
-                                    }
-                                }
-                            },
-                            'centre-id': {
-                                'type': 'text',
-                                'fields': {
-                                    'raw': {
-                                        'type': 'keyword'
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        with GDC_ES_SETTINGS.open() as fh:
+            self.ES_SETTINGS = json.load(fh)
 
         self.url_parsed = urlparse(self.defs.get('connection'))
         self.index_name = self.url_parsed.path.lstrip('/')

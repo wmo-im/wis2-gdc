@@ -191,6 +191,7 @@ class Registrar:
 
         ets_results['report_by'] = CENTRE_ID
         ets_results['centre_id'] = self.centre_id
+        ets_results['href'] = self.wcmp2_url
 
         if PUBLISH_REPORTS:
             LOGGER.info('Publishing ETS report to broker')
