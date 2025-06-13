@@ -30,6 +30,9 @@ To register metadata manually, login to the ``wis2-gdc-management`` container an
    # create a metadata archive zipfile
    wis2-gdc archive foo.zip
 
+   # restore from a metadata archive zipfile
+   wis2-gdc restore foo.zip
+
 Services
 --------
 

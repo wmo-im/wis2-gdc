@@ -43,10 +43,11 @@ Workflows
 
 The ``wis2-gdc`` monitoring capability collects and provides metrics on WCMP2 that is scraped by the WIS2 Global Monitor (GM).
 
-``wis2-gdc`` also provides its own MQTT broker that provides WCMP2 compliance and key performance indicator (KPI) reports.  The WIS2 GB subscribes to the ``wis2-gdc`` broker in order to publish these reports for data providers in support of quality assessment, scoring and corrective action.  The ``wis2-gdc`` broker also acts as an internal message bus for inter-application event handling.
+``wis2-gdc`` also provides its own MQTT broker that provides WCMP2 compliance and key performance indicator (KPI) reports.  The WIS2 GB subscribes to the ``wis2-gdc`` broker in order to publish these reports back to users (available on WIS2 topic ``monitor/a/wis2/<CENTRE_ID_OF_GDC>/CENTRE_ID_OF_DATA_PUBLISHER>`` for data providers in support of quality assessment, scoring and corrective action.  The ``wis2-gdc`` broker also acts as an internal message bus for inter-application event handling.
 
 The ``wis2-gdc`` API provides an OGC API - Records endpoint that is OGC compliant.  The API provides search engine capability for WIS2 metadata, also providing OGC API - Processes functionality for WCMP2 validation and KPI quality assessment.
 
+The ``wis2-gdc-management`` container also provides functionality to restore a WCMP2 metadata archive zipfile from another GDC.  Note that ETS and KPI validations are not performed during a restore workflow.
 
 
 .. _`Twelve-Factor App methodology`: https://12factor.net

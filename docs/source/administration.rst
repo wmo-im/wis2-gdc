@@ -46,3 +46,6 @@ As a convenience, the ``Makefile`` in the root directory provides shortcuts to m
 
    # remove all volumes
    make rm
+
+   # perform pruning of Docker system artifacts
+   make rm

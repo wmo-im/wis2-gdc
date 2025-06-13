@@ -13,8 +13,8 @@ Features
 * WCMP2 validation as a service
 * out of the box modern OGC API compliant server:
 
-  * OGC API - Records
-  * OGC API - Processes
+  * `OGC API - Records`_
+  * `OGC API - Processes`_
 * easy to use OpenAPI / Swagger documentation for developers
 * supports JSON, GeoJSON, and HTML output
 * supports metadata filtering by spatial, temporal freetext or attribute queries
@@ -24,3 +24,5 @@ Features
 .. _`Guide to WIS, Volume II: WIS 2.0`: https://wmo-im.github.io/wis2-guide/guide/wis2-guide-APPROVED.html
 .. _`component definition`: https://wmo-im.github.io/wis2-guide/guide/wis2-guide-APPROVED.html#_2_4_4_global_discovery_catalogue
 .. _`technical considerations`: https://wmo-im.github.io/wis2-guide/guide/wis2-guide-APPROVED.html#_2_7_5_global_discovery_catalogue
+.. _`OGC API - Records`: https://ogcapi.ogc.org/records
+.. _`OGC API - Processes`: https://ogcapi.ogc.org/processes
