@@ -22,7 +22,7 @@
 import click
 
 from wis2_gdc.registrar import register, setup, teardown, unregister
-from wis2_gdc.archive import archive
+from wis2_gdc.archive import archive, restore
 from wis2_gdc.sync import sync
 
 __version__ = '0.1.dev0'
@@ -42,3 +42,4 @@ cli.add_command(unregister)
 cli.add_command(register)
 cli.add_command(sync)
 cli.add_command(archive)
+cli.add_command(restore)

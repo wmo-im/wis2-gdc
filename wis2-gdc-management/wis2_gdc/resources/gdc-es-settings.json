@@ -1,0 +1,247 @@
+{
+    "settings": {
+        "number_of_shards": 1,
+        "number_of_replicas": 0
+    },
+    "mappings": {
+        "dynamic": false,
+        "properties": {
+            "id": {
+                "type": "text",
+                "fields": {
+                    "raw": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "geometry": {
+                "type": "geo_shape"
+            },
+            "time": {
+                "properties": {
+                    "interval": {
+                        "type": "date",
+                        "null_value": "1850",
+                        "format": "year||year_month||year_month_day||date_time||t_time||t_time_no_millis",
+                        "ignore_malformed": true
+                    }
+                }
+            },
+            "properties": {
+                "properties": {
+                    "type": {
+                        "type": "text",
+                        "fields": {
+                            "raw": {
+                                "type": "keyword"
+                            }
+                        }
+                    },
+                    "title": {
+                        "type": "text",
+                        "fields": {
+                            "raw": {
+                                "type": "keyword"
+                            }
+                        }
+                    },
+                    "language": {
+                        "type": "object",
+                        "enabled": false
+                    },
+                    "contacts": {
+                        "properties": {
+                            "addresses": {
+                                "properties": {
+                                    "administrativeArea": {
+                                        "type": "text",
+                                        "fields": {
+                                            "keyword": {
+                                                "type": "keyword",
+                                                "ignore_above": 256
+                                            }
+                                        }
+                                    },
+                                    "city": {
+                                        "type": "text",
+                                        "fields": {
+                                            "keyword": {
+                                                "type": "keyword",
+                                                "ignore_above": 256
+                                            }
+                                        }
+                                    },
+                                    "country": {
+                                        "type": "text",
+                                        "fields": {
+                                            "keyword": {
+                                                "type": "keyword",
+                                                "ignore_above": 256
+                                            }
+                                        }
+                                    },
+                                    "deliveryPoint": {
+                                        "type": "text",
+                                        "fields": {
+                                            "keyword": {
+                                                "type": "keyword",
+                                                "ignore_above": 256
+                                            }
+                                        }
+                                    },
+                                    "name": {
+                                        "type": "text",
+                                        "fields": {
+                                            "keyword": {
+                                                "type": "keyword",
+                                                "ignore_above": 256
+                                            }
+                                        }
+                                    },
+                                    "postalCode": {
+                                        "type": "text",
+                                        "fields": {
+                                            "keyword": {
+                                                "type": "keyword",
+                                                "ignore_above": 256
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "contactInstructions": {
+                                "type": "text",
+                                "fields": {
+                                    "keyword": {
+                                        "type": "keyword",
+                                        "ignore_above": 256
+                                    }
+                                }
+                            },
+                            "emails": {
+                                "properties": {
+                                    "value": {
+                                        "type": "text",
+                                        "fields": {
+                                            "keyword": {
+                                                "type": "keyword",
+                                                "ignore_above": 256
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "hoursOfService": {
+                                "type": "text",
+                                "fields": {
+                                    "keyword": {
+                                        "type": "keyword",
+                                        "ignore_above": 256
+                                    }
+                                }
+                            },
+                            "identifier": {
+                                "type": "text",
+                                "fields": {
+                                    "keyword": {
+                                        "type": "keyword",
+                                        "ignore_above": 256
+                                    }
+                                }
+                            },
+                            "name": {
+                                "type": "text",
+                                "fields": {
+                                    "keyword": {
+                                        "type": "keyword",
+                                        "ignore_above": 256
+                                    }
+                                }
+                            },
+                            "organization": {
+                                "type": "text",
+                                "fields": {
+                                    "keyword": {
+                                        "type": "keyword",
+                                        "ignore_above": 256
+                                    }
+                                }
+                            },
+                            "phones": {
+                                "properties": {
+                                    "value": {
+                                        "type": "text",
+                                        "fields": {
+                                            "keyword": {
+                                                "type": "keyword",
+                                                "ignore_above": 256
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "position": {
+                                "type": "text",
+                                "fields": {
+                                    "keyword": {
+                                        "type": "keyword",
+                                        "ignore_above": 256
+                                    }
+                                }
+                            },
+                            "roles": {
+                                "type": "text",
+                                "fields": {
+                                    "keyword": {
+                                        "type": "keyword",
+                                        "ignore_above": 256
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "formats": {
+                        "type": "text",
+                        "fields": {
+                            "raw": {
+                                "type": "keyword"
+                            }
+                        }
+                    },
+                    "rights": {
+                        "type": "text",
+                        "fields": {
+                            "raw": {
+                                "type": "keyword"
+                            }
+                        }
+                    },
+                    "description": {
+                        "type": "text",
+                        "fields": {
+                            "raw": {
+                                "type": "keyword"
+                            }
+                        }
+                    },
+                    "wmo:dataPolicy": {
+                        "type": "text",
+                        "fields": {
+                            "raw": {
+                                "type": "keyword"
+                            }
+                        }
+                    },
+                    "centre-id": {
+                        "type": "text",
+                        "fields": {
+                            "raw": {
+                                "type": "keyword"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

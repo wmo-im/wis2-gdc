@@ -88,6 +88,9 @@ wis2-gdc sync wis2box
 
 # create an archive of metadata records to a zipfile
 wis2-gdc archive foo.zip
+
+# restore an archive of metadata records from a zipfile
+wis2-gdc restore wis2-discovery-metadata.zip
 ```
 
 ### Docker
