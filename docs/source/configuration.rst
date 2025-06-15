@@ -26,6 +26,7 @@ Main configuration environment variables
    ``WIS2_GDC_PUBLISH_REPORTS``,whether the GDC should publish ETS and KPI reports,``true``
    ``WIS2_GDC_REJECT_ON_FAILING_ETS``,whether the GDC should stop ingest based on on failing record,``true``
    ``WIS2_GDC_RUN_KPI``,whether the GDC should run KPI as part of ingest,``false``
+   ``WIS2_GDC_ENABLE_CRON``,whether the GDC should enable cron as part of the management container,``true``
 
 API configuration environment variables
 ---------------------------------------

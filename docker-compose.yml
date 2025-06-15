@@ -136,6 +136,7 @@ services:
       retries: 3
     volumes:
       - wis2-gdc-management-data:/data
+      - ./:/data2
     restart: always
     command: ["pywis-pubsub", "subscribe", "--config", "/app/docker/pywis-pubsub.yml", "--verbosity", "DEBUG"]
     networks:
