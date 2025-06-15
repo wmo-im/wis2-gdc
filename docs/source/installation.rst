@@ -6,7 +6,7 @@ Installation
 Requirements
 ------------
 
-wis2box is built as a `Docker Compose`_ application, allowing for easy install and container management.  Ensure that `Docker`_ and Docker Compose 
+wis2-gdc is built as a `Docker Compose`_ application, allowing for easy install and container management.  Ensure that `Docker`_ and Docker Compose
 are installed on the system in order to install and run ``wis2-gdc``.
 
 The `make`_ utility can be used as a convenience to executing Docker Compose commands via the provided ``Makefile``.

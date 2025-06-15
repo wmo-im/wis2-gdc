@@ -9,12 +9,12 @@ echo "USERNAME: $USERNAME"
 echo "PASSWORD: $PASSWORD"
 
 if [ ! -e "/mosquitto/config/password.txt" ]; then
-    echo "Adding wis2-gc users to mosquitto password file"
+    echo "Adding wis2-gdc users to mosquitto password file"
     mosquitto_passwd -b -c /mosquitto/config/password.txt $USERNAME $PASSWORD
     mosquitto_passwd -b /mosquitto/config/password.txt everyone everyone
     chmod 644 /mosquitto/config/password.txt
 else
-    echo "Mosquitto password file already exists. Skipping wis2box user addition."
+    echo "Mosquitto password file already exists. Skipping wis2-gdc user addition."
 fi
 
 
