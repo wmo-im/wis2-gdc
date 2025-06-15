@@ -35,6 +35,7 @@ from pywis_pubsub.publish import create_message
 
 from wis2_gdc.env import API_URL, API_URL_DOCKER, BROKER_URL, CENTRE_ID
 from wis2_gdc.registrar import Registrar
+from wis2_gdc.wme import generate_wme
 
 LOGGER = logging.getLogger(__name__)
 
@@ -125,16 +126,15 @@ def restore_metadata(archive_zipfile: str) -> None:
                 r._publish()
 
     message = {
-        'id': str(uuid.uuid4()),
-        'message': 'Archive metadata restore complete',
-        'report_by': CENTRE_ID,
-        'centre_id': CENTRE_ID
+        'message': 'Archive metadata restore complete'
     }
 
     archive_restore_topic = f'monitor/a/wis2/{CENTRE_ID}'
+    wme = generate_wme(CENTRE_ID, 'ets', message)
 
+    LOGGER.info('Publishing restore report to broker')
     m = MQTTPubSubClient(BROKER_URL)
-    m.pub(archive_restore_topic, json.dumps(message))
+    m.pub(archive_restore_topic, json.dumps(wme))
     m.close()
 
 

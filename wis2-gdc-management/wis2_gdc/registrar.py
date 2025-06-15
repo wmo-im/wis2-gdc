@@ -109,14 +109,13 @@ class Registrar:
                 [BROKER_URL, CENTRE_ID])
 
         LOGGER.debug(f'WCMP2 access failed: {message_failure_reason}')
-        message['id'] = str(uuid.uuid4())
         message['message'] = str(message_failure_reason)
         message['href'] = self.wcmp2_url
-        message['report_by'] = CENTRE_ID
-        message['centre_id'] = centre_id
 
+        LOGGER.info('Publishing URL error report to broker')
+        wme = generate_wme(centre_id, 'ets', message)
         publish_report_topic = f'monitor/a/wis2/{CENTRE_ID}/{centre_id}'
-        self.broker.pub(publish_report_topic, json.dumps(message))
+        self.broker.pub(publish_report_topic, json.dumps(wme))
 
         return None
 
@@ -275,10 +274,7 @@ class Registrar:
         publish_report_topic = f'monitor/a/wis2/{CENTRE_ID}/{centre_id}'
 
         message = {
-            'id': str(uuid.uuid4()),
-            'href': None,
-            'report_by': CENTRE_ID,
-            'centre_id': centre_id
+            'href': None
         }
 
         metadata_id = wnm['properties'].get('metadata_id')
@@ -293,7 +289,9 @@ class Registrar:
             except Exception:
                 message['message'] = f'metadata {metadata_id} not found'
 
-        self.broker.pub(publish_report_topic, json.dumps(message))
+        LOGGER.info('Publishing missing metadata_id report to broker')
+        wme = generate_wme(centre_id, 'ets', message)
+        self.broker.pub(publish_report_topic, json.dumps(wme))
 
         return
 
