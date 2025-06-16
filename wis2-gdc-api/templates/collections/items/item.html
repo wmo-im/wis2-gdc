@@ -129,7 +129,7 @@
                 </div>
                 <div class="modal-body">
                   <pre id="wis2downloader-command">
-wis2downloader add-subscription --topic "cache/a/wis2/de-dwd-gts-to-wis2/#"
+wis2downloader add-subscription --topic "{{ mqtt_links[0]['channel'] }}"
                   </pre>
                 </div>
                 <div class="modal-footer">
