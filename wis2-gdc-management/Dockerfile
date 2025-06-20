@@ -23,24 +23,16 @@ FROM ubuntu:jammy
 
 LABEL maintainer="tomkralidis@gmail.com"
 
-ARG WIS2_GDC_ENABLE_CRON
-
 ENV TZ="Etc/UTC" \
     DEBIAN_FRONTEND="noninteractive" \
-    DEBIAN_PACKAGES="bash curl git python3-pip python3-setuptools sudo vim" \
+    DEBIAN_PACKAGES="bash cron curl git python3-pip python3-setuptools sudo vim" \
     HOME=/app
-
-RUN if [ "$WIS2_GDC_ENABLE_CRON" = "true" ]; \
-    then export WIS2_GDC_ENABLE_CRON=true; \
-    else export WIS2_GDC_ENABLE_CRON=false; \
-    fi
-
 
 # copy the app
 COPY ./ /app
 
 # add to crontab
-COPY ./docker/wis2-gdc-management.cron /var/spool/cron/crontabs/wis2-gdc
+COPY ./docker/wis2-gdc-management.cron /etc/cron.d/wis2-gdc-management
 
 RUN apt-get update -y && \
     # install dependencies
@@ -55,16 +47,9 @@ RUN apt-get update -y && \
     apt-get -q clean && \
     rm -rf /var/lib/apt/lists/*
 
-# setup cron if enabled
-RUN if [ "$WIS2_GDC_ENABLE_CRON" = "true" ]; \
-        then apt-get install -y cron \
-        cp /var/spool/cron/crontabs/wis2-gdc /etc/cron.d/wis2-gdc-management \
-        chmod 0644 /etc/cron.d/wis2-gdc-management \
-        crontab /etc/cron.d/wis2-gdc-management \
-        touch /var/log/cron.log; \
-    else \
-        touch /tmp/NOCRON; \
-    fi
+# setup cron
+RUN crontab -u 1001 /etc/cron.d/wis2-gdc-management && \
+    chmod u+s /usr/sbin/cron
 
 RUN chgrp -R 0 /app && \
     chmod -R g=u /app
