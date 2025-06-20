@@ -26,8 +26,7 @@ echo "START /entrypoint.sh"
 
 if [ "${WIS2_GDC_ENABLE_CRON}" = "true" ]; then
   echo "Starting cron"
-  sudo service cron start
-  service cron status
+  cron
 fi
 
 echo "Caching WNM schema"
