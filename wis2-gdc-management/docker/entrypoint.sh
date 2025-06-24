@@ -26,7 +26,8 @@ echo "START /entrypoint.sh"
 
 if [ "${WIS2_GDC_ENABLE_CRON}" = "true" ]; then
   echo "Starting cron"
-  cron
+  crontab /app/docker/wis2-gdc-management.cron
+  cron -f &
 fi
 
 echo "Caching WNM schema"
