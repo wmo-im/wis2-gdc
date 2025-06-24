@@ -31,9 +31,6 @@ ENV TZ="Etc/UTC" \
 # copy the app
 COPY ./ /app
 
-# add to crontab
-COPY ./docker/wis2-gdc-management.cron /etc/cron.d/wis2-gdc-management
-
 RUN apt-get update -y && \
     # install dependencies
     apt-get install -y ${DEBIAN_PACKAGES} && \
@@ -47,9 +44,10 @@ RUN apt-get update -y && \
     apt-get -q clean && \
     rm -rf /var/lib/apt/lists/*
 
-# setup cron
-RUN crontab -u 1001 /etc/cron.d/wis2-gdc-management && \
-    chmod u+s /usr/sbin/cron
+# Start the cron service
+RUN touch /etc/cron.allow && \
+    echo "1001" >> cron.allow && \
+    service cron restart
 
 RUN chgrp -R 0 /app && \
     chmod -R g=u /app
