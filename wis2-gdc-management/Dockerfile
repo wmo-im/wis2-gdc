@@ -31,7 +31,6 @@ ENV TZ="Etc/UTC" \
 # copy the app
 COPY ./ /app
 
-
 RUN apt-get update -y && \
     # install dependencies
     apt-get install -y ${DEBIAN_PACKAGES} && \
@@ -44,6 +43,11 @@ RUN apt-get update -y && \
     apt autoremove -y && \
     apt-get -q clean && \
     rm -rf /var/lib/apt/lists/*
+
+# Start the cron service
+RUN touch /etc/cron.allow && \
+    echo "1001" >> cron.allow && \
+    service cron restart
 
 RUN chgrp -R 0 /app && \
     chmod -R g=u /app
