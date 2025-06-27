@@ -91,7 +91,9 @@ def archive_metadata(archive_zipfile: str) -> None:
     metadata_archive_zipfile_topic = f'origin/a/wis2/{CENTRE_ID}/metadata'
 
     n = Path(archive_zipfile).name
-    url = f'{API_URL}/{n}'
+    url = f'{API_URL_DOCKER}/{n}'
+
+    LOGGER.info(f"URL: {url}")
 
     message = create_message(
         topic=metadata_archive_zipfile_topic,
@@ -100,8 +102,10 @@ def archive_metadata(archive_zipfile: str) -> None:
         identifier=str(uuid.uuid4())
     )
 
+    message = json.dumps(message).replace(API_URL_DOCKER, API_URL)
+
     m = MQTTPubSubClient(BROKER_URL)
-    m.pub(metadata_archive_zipfile_topic, json.dumps(message))
+    m.pub(metadata_archive_zipfile_topic, message)
     m.close()
 
 
