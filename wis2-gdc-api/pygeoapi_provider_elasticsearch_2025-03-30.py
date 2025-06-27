@@ -531,7 +531,10 @@ class ElasticsearchProvider(BaseProvider):
         :returns: masked property name
         """
 
-        return f'properties.{property_name}'
+        if property_name.startswith('links.'):  # root object
+            return property_name
+        else:  # step into properties object
+            return f'properties.{property_name}'
 
     def get_properties(self):
         all_properties = []
