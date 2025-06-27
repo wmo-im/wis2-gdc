@@ -52,6 +52,82 @@
                     "created": {
                         "type": "date"
                     },
+                    "status": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "text",
+                                "fields": {
+                                    "keyword": {
+                                        "type": "keyword",
+                                        "ignore_above": 256
+                                    }
+                                }
+                            },
+                            "title": {
+                                "type": "text",
+                                "fields": {
+                                    "keyword": {
+                                        "type": "keyword",
+                                        "ignore_above": 256
+                                    }
+                                }
+                            },
+                            "description": {
+                                "type": "text",
+                                "fields": {
+                                    "keyword": {
+                                        "type": "keyword",
+                                        "ignore_above": 256
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "themes": {
+                        "properties": {
+                            "concepts": {
+                                "properties": {
+                                    "id": {
+                                        "type": "text",
+                                        "fields": {
+                                            "keyword": {
+                                                "type": "keyword",
+                                                "ignore_above": 256
+                                            }
+                                        }
+                                    },
+                                    "title": {
+                                        "type": "text",
+                                        "fields": {
+                                            "keyword": {
+                                                "type": "keyword",
+                                                "ignore_above": 256
+                                            }
+                                        }
+                                    },
+                                    "description": {
+                                        "type": "text",
+                                        "fields": {
+                                            "keyword": {
+                                                "type": "keyword",
+                                                "ignore_above": 256
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "scheme": {
+                                "type": "text",
+                                "fields": {
+                                    "keyword": {
+                                        "type": "keyword",
+                                        "ignore_above": 256
+                                    }
+                                }
+                            }
+                        }
+                    },
                     "contacts": {
                         "properties": {
                             "addresses": {
@@ -204,10 +280,15 @@
                         }
                     },
                     "formats": {
-                        "type": "text",
-                        "fields": {
-                            "raw": {
-                                "type": "keyword"
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "text",
+                                "fields": {
+                                    "raw": {
+                                        "type": "keyword"
+                                    }
+                                }
                             }
                         }
                     },
@@ -227,6 +308,14 @@
                             }
                         }
                     },
+                    "keywords": {
+                        "type": "text",
+                        "fields": {
+                            "raw": {
+                                "type": "keyword"
+                            }
+                        }
+                    },
                     "wmo:dataPolicy": {
                         "type": "text",
                         "fields": {
@@ -236,6 +325,19 @@
                         }
                     },
                     "centre-id": {
+                        "type": "text",
+                        "fields": {
+                            "raw": {
+                                "type": "keyword"
+                            }
+                        }
+                    }
+                }
+            },
+            "links": {
+                "type": "object",
+                "properties": {
+                    "channel": {
                         "type": "text",
                         "fields": {
                             "raw": {
