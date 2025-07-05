@@ -152,7 +152,7 @@ services:
     volumes:
       - wis2-gdc-management-data:/data
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/conformance"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/conformance"]
       interval: 5s
       retries: 3
     env_file:
