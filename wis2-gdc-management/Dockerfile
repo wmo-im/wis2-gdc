@@ -25,13 +25,12 @@ LABEL maintainer="tomkralidis@gmail.com"
 
 ENV TZ="Etc/UTC" \
     DEBIAN_FRONTEND="noninteractive" \
-    DEBIAN_PACKAGES="bash cron curl git python3-pip python3-setuptools sudo vim"
+    DEBIAN_PACKAGES="bash cron curl git python3-pip python3-setuptools sudo vim" \
+    HOME=/app \
+    WIS2_GDC_ENABLE_CRON=true
 
 # copy the app
 COPY ./ /app
-
-# add to crontab
-COPY ./docker/wis2-gdc-management.cron /var/spool/cron/crontabs/wis2-gdc
 
 RUN apt-get update -y && \
     # install dependencies
@@ -44,15 +43,19 @@ RUN apt-get update -y && \
     # cleanup
     apt autoremove -y && \
     apt-get -q clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    chmod 0644 /var/spool/cron/crontabs/wis2-gdc && \
-    crontab /var/spool/cron/crontabs/wis2-gdc && \
-    # add wis2-gdc user
-    useradd -ms /bin/bash wis2-gdc && \
-    adduser wis2-gdc sudo && \
-    echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+    rm -rf /var/lib/apt/lists/*
 
-USER wis2-gdc
-WORKDIR /home/wis2-gdc
+# Start the cron service
+RUN useradd -u 1001 -g 0 wis2-gdc && \
+    usermod -aG crontab wis2-gdc && \
+    touch /etc/cron.deny && \
+    service cron restart
+
+RUN chgrp -R 0 /app && \
+    chmod -R g=u /app && \
+    mkdir /data && \
+    chmod 775 /data
+
+USER 1001
 
 ENTRYPOINT [ "/app/docker/entrypoint.sh" ]

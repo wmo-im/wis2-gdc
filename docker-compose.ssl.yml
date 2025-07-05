@@ -1,0 +1,12 @@
+services:
+  wis2-gdc-broker:
+    volumes:
+      - ./path/to/your.ca.crt:/mosquitto/config/certs/ca.crt
+      - ./path/to/your.tls.crt:/mosquitto/config/certs/tls.crt
+      - ./path/to/your/tls.key:/mosquitto/config/certs/tls.key
+
+    ports:
+      - 8883:1883
+  wis2-gdc-api:
+    ports:
+      - 443:8080

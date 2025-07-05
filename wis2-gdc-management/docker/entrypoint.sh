@@ -24,16 +24,12 @@
 
 echo "START /entrypoint.sh"
 
-printenv | grep -v "no_proxy" > /tmp/environment
-sudo sh -c 'cat /tmp/environment >> /etc/environment'
-rm -f /tmp/environment
-
-echo "Starting cron"
-sudo service cron start
-service cron status
-
-echo "Making /data writeable for wis2-gdc"
-sudo chown wis2-gdc.wis2-gdc /data
+if [ "${WIS2_GDC_ENABLE_CRON}" = "true" ]; then
+  echo "Enabling cron"
+  crontab /app/docker/wis2-gdc-management.cron
+  echo "Crontab for current user:"
+  crontab -l
+fi
 
 echo "Caching WNM schema"
 pywis-pubsub schema sync
@@ -42,7 +38,7 @@ echo "Caching WCMP schemas"
 pywcmp bundle sync
 
 echo "Setting up discovery metadata backend"
-wis2-gdc setup
+wis2-gdc setup -y
 
 echo "END /entrypoint.sh"
 exec "$@"
