@@ -33,11 +33,9 @@ from pywcmp.wcmp2.ets import WMOCoreMetadataProfileTestSuite2
 from pywcmp.wcmp2.kpi import WMOCoreMetadataProfileKeyPerformanceIndicators
 from pywis_pubsub import cli_options
 from pywis_pubsub.mqtt import MQTTPubSubClient
-from pywis_pubsub.publish import create_message
 
 from wis2_gdc.backend import BACKENDS
-from wis2_gdc.env import (API_URL, API_URL_DOCKER, BACKEND_TYPE,
-                          BACKEND_CONNECTION, BROKER_URL,
+from wis2_gdc.env import (BACKEND_TYPE, BACKEND_CONNECTION, BROKER_URL,
                           CENTRE_ID, GB_LINKS, PUBLISH_REPORTS,
                           REJECT_ON_FAILING_ETS, RUN_KPI)
 from wis2_gdc.wme import generate_wme
@@ -240,25 +238,6 @@ class Registrar:
                 self._process_record_metric(
                     self.metadata['id'], 'kpi_percentage_total',
                     kpi_labels, kpi_results['summary']['percentage'])
-
-        api_url = f"{API_URL_DOCKER}/collections/wis2-discovery-metadata/items/{self.metadata['id']}"  # noqa
-
-        publish_report_topic = f'origin/a/wis2/{CENTRE_ID}/metadata'
-
-        message = create_message(
-            topic=publish_report_topic,
-            content_type='application/geo+json',
-            url=api_url,
-            identifier=str(uuid.uuid4()),
-            datetime_=None,
-            metadata_id=self.metadata['id'],
-            operation='update'
-        )
-
-        message = json.dumps(message).replace(API_URL_DOCKER, API_URL)
-
-        LOGGER.info('Publishing updated record to GDC broker')
-        self.broker.pub(publish_report_topic, message)
 
     def delete_record(self, topic: str, wnm: dict) -> None:
         """
