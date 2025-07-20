@@ -52,6 +52,9 @@
                     "created": {
                         "type": "date"
                     },
+                    "updated": {
+                        "type": "date"
+                    },
                     "status": {
                         "type": "object",
                         "properties": {
