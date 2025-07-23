@@ -145,7 +145,6 @@ services:
     container_name: wis2-gdc-api
     build:
       context: ./wis2-gdc-api/
-    image: geopython/pygeoapi:latest
     depends_on:
       wis2-gdc-management:
         condition: service_healthy
