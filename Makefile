@@ -28,7 +28,7 @@ build-management:
 	docker compose $(DOCKER_COMPOSE_ARGS) build wis2-gdc-management
 
 force-build:
-	docker compose $(DOCKER_COMPOSE_ARGS) build --no-cache
+	docker compose $(DOCKER_COMPOSE_ARGS) build --no-cache --pull
 
 up:
 	docker compose $(DOCKER_COMPOSE_ARGS) up --detach
