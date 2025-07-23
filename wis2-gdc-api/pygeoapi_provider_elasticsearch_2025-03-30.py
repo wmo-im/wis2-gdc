@@ -531,7 +531,7 @@ class ElasticsearchProvider(BaseProvider):
         :returns: masked property name
         """
 
-        if property_name.startswith('links.', 'time.'):  # root object
+        if property_name.startswith(('links.', 'time.')):  # root object
             return property_name
         else:  # step into properties object
             return f'properties.{property_name}'
