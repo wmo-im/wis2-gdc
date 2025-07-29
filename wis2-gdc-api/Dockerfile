@@ -38,6 +38,7 @@ COPY ./templates/collections/items/item.html /pygeoapi/pygeoapi/templates/collec
 
 RUN pip3 install -r /app/docker/wis2-gdc-api/requirements.txt && \
     pywcmp bundle sync && \
+    cp -rp /root/.pywcmp / && \
     chmod +x /app/docker/wis2-gdc-api/entrypoint.sh
 
 RUN chgrp -R 0 /pygeoapi && \
