@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         # NOTE: other containers tested upstream
-        image: [ {tag: 'wis2-gdc-metrics-collector', build: 'wis2-gdc-monitoring/metrics-collector'}, {tag: 'wis2-gdc-management', build: wis2-gdc-management'} ]
+        image: [ {tag: 'wis2-gdc-metrics-collector', build: 'wis2-gdc-monitoring/metrics-collector'}, {tag: 'wis2-gdc-management', build: 'wis2-gdc-management'} ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
