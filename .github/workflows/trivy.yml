@@ -11,22 +11,22 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        # NOTE: remaining containers tested upstream
-        image: ['wis2-gdc-metrics-collector', wis2-gdc-management']
+        # NOTE: other containers tested upstream
+        image: [ {tag: 'wis2-gdc-metrics-collector', build: 'wis2-gdc-monitoring/metrics-collector'}, {tag: 'wis2-gdc-management', build: wis2-gdc-management'} ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Build docker image ${{ matrix.image }}
+      - name: Build docker image ${{ matrix.image.tag }}
         run: |
-          docker build -t ${{ matrix.image }}:test ${{ matrix.image }}
-      - name: Run Trivy vulnerability scanner on ${{ matrix.image }}
+          docker build -t ${{ matrix.image.tag }}:test ${{ matrix.image.build }}
+      - name: Run Trivy vulnerability scanner on ${{ matrix.image.tag }}
         if: always()
         uses: aquasecurity/trivy-action@0.32.0
         env:
           TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2
           TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db:1
         with:
-          image-ref: ${{ matrix.image }}:test
+          image-ref: ${{ matrix.image.tag }}:test
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
