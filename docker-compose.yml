@@ -125,7 +125,7 @@ services:
     env_file:
       - wis2-gdc.env
     environment:
-      - WIS2_GDC_API_URL_DOCKER=http://wis2-gdc-api
+      - WIS2_GDC_API_URL_DOCKER=http://wis2-gdc-api:8080
     depends_on:
       wis2-gdc-backend:
         condition: service_healthy
