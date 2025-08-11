@@ -24,13 +24,6 @@
 
 echo "START /entrypoint.sh"
 
-if [ "${WIS2_GDC_ENABLE_CRON}" = "true" ]; then
-  echo "Enabling cron"
-  crontab /app/docker/wis2-gdc-management.cron
-  echo "Crontab for current user:"
-  crontab -l
-fi
-
 echo "Caching WNM schema"
 pywis-pubsub schema sync
 
@@ -39,6 +32,9 @@ pywcmp bundle sync
 
 echo "Setting up discovery metadata backend"
 wis2-gdc setup -y
+
+echo "Starting cron"
+/usr/local/bin/supercronic /app/docker/wis2-gdc-management.cron &
 
 echo "END /entrypoint.sh"
 exec "$@"

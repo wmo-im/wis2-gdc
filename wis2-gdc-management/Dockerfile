@@ -25,9 +25,8 @@ LABEL maintainer="tomkralidis@gmail.com"
 
 ENV TZ="Etc/UTC" \
     DEBIAN_FRONTEND="noninteractive" \
-    DEBIAN_PACKAGES="bash cron curl git python3-pip python3-setuptools sudo vim" \
-    HOME=/app \
-    WIS2_GDC_ENABLE_CRON=true
+    DEBIAN_PACKAGES="bash curl git python3-pip python3-setuptools sudo vim" \
+    HOME=/app
 
 # copy the app
 COPY ./ /app
@@ -45,13 +44,13 @@ RUN apt-get update -y && \
     apt-get -q clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Start the cron service
-RUN useradd -u 1001 -g 0 wis2-gdc && \
-    usermod -aG crontab wis2-gdc && \
-    touch /etc/cron.deny && \
-    service cron restart
+# Install Supercronic for job management
+RUN curl -fsSLO "https://github.com/aptible/supercronic/releases/download/v0.2.25/supercronic-linux-amd64" && \
+    chmod +x supercronic-linux-amd64 && \
+    mv supercronic-linux-amd64 /usr/local/bin/supercronic
 
-RUN chgrp -R 0 /app && \
+RUN useradd -u 1001 -g 0 wis2-gdc && \
+    chgrp -R 0 /app && \
     chmod -R g=u /app && \
     mkdir /data && \
     chmod 775 /data
