@@ -62,7 +62,8 @@ HTTP
    
            root /var/www/html;
    
-           server_name gdc.hostname;  // adjust accordingly
+           server_name gdc.hostname;
+           server_tokens off;
    
            location / {
                    proxy_pass http://localhost:5001/;
@@ -76,6 +77,8 @@ HTTP
            add_header 'Access-Control-Allow-Origin' '*';
            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
            add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
+           add_header Content-Security-Policy "default-src 'self' *;";
+           add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
    }
 
 MQTT
