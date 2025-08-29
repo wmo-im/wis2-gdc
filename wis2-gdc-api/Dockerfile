@@ -25,6 +25,7 @@ LABEL maintainer="Tom Kralidis <tomkralidis@gmail.com>"
 
 ENV PYGEOAPI_CONFIG=/pygeoapi/local.config.yml
 ENV PYGEOAPI_OPENAPI=/pygeoapi/local.openapi.yml
+ENV WIS2_GDC_METADATA_ARCHIVE_ZIPFILE=/data/wis2-discovery-metadata-archive.zip
 
 RUN apt-get update && \
     apt-get install -y curl
