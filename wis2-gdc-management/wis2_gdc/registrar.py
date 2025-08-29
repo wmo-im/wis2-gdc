@@ -239,6 +239,11 @@ class Registrar:
                     self.metadata['id'], 'kpi_percentage_total',
                     kpi_labels, kpi_results['summary']['percentage'])
 
+                if kpi_results['summary']['percentage'] > 80:
+                    self._process_record_metric(
+                        self.metadata['id'], 'kpi_percentage_over80_total',
+                        centre_id_labels, kpi_results['summary']['percentage'])
+
     def delete_record(self, topic: str, wnm: dict) -> None:
         """
         Delete a metadata document
@@ -299,7 +304,7 @@ class Registrar:
 
         if self.backend.record_exists(identifier) and len(labels) == 2:
             LOGGER.debug('Record exists; not publishing metric')
-            publish_metric = False
+            #publish_metric = False
 
         if publish_metric:
             LOGGER.debug('Record does not exist; publishing metric')

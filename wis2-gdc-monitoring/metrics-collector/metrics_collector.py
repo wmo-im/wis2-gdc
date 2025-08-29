@@ -196,6 +196,15 @@ def collect_metrics() -> None:
         elif topic == 'wis2-gdc/metrics/kpi_percentage_total':
             METRIC_KPI_PERCENTAGE_TOTAL.labels(*labels).set(value)
 
+            LOGGER.info("JJJ", METRIC_PASSED_TOTAL.labels(*labels))
+            LOGGER.info("JJJ", dir(METRIC_PASSED_TOTAL.labels(*labels)))
+
+            # plabels, pvalue = self._get_kpi_average_by_centre_id(
+            #     labels)
+            # METRIC_KPI_PERCENTAGE_AVERAGE.labels(*plabels).set(pvalue)
+        elif topic == 'wis2-gdc/metrics/kpi_percentage_over80_total':
+            METRIC_KPI_PERCENTAGE_OVER80_TOTAL.labels(*labels).inc()
+
     url = urlparse(BROKER_URL)
 
     client_id = 'wis2-gdc metrics collector'
