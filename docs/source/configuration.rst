@@ -22,7 +22,6 @@ Main configuration environment variables
    ``WIS2_GDC_COLLECTOR_URL``,URL of metrics collector,``http://wis2-gdc-metrics-collector:8006``
    ``WIS2_GDC_GB``,WIS2 Global Broker that the GDC connects to,``mqtts://everyone:everyone@globalbroker.meteo.fr:8883``
    ``WIS2_GDC_GB_TOPIC``,WIS2 topic that the GDC subscribes to,``cache/a/wis2/+/metadata/#``
-   ``WIS2_GDC_METADATA_ARCHIVE_ZIPFILE``,filepath to the metadata archive zipfile,``/data/wis2-gdc-archive.zip``
    ``WIS2_GDC_PUBLISH_REPORTS``,whether the GDC should publish ETS and KPI reports,``true``
    ``WIS2_GDC_REJECT_ON_FAILING_ETS``,whether the GDC should stop ingest based on on failing record,``true``
    ``WIS2_GDC_RUN_KPI``,whether the GDC should run KPI as part of ingest,``false``
@@ -91,6 +90,10 @@ A default installation with minimal configuration changes per below satisfies mo
 .. note::
 
    The ``wis2-gdc`` Docker Compose file also contains additional environment variables (see ``docker-compose.yml`` to adjust accordingly).  In most cases, these values do not need adjustment.
+
+.. note::
+
+   The ``WIS2_GDC_METADATA_ARCHIVE_ZIPFILE`` environment variable is always set by wis2-gdc to ``/data/wis2-discovery-metadata-archive.zip`` for the ``wis2-gdc-management`` and ``wis2-gdc-api`` containers.
 
 Application specific configurations
 -----------------------------------

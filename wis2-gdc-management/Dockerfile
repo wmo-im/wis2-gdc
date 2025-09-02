@@ -23,10 +23,11 @@ FROM ubuntu:jammy
 
 LABEL maintainer="tomkralidis@gmail.com"
 
-ENV TZ="Etc/UTC" \
-    DEBIAN_FRONTEND="noninteractive" \
-    DEBIAN_PACKAGES="bash curl git python3-pip python3-setuptools sudo vim" \
-    HOME=/app
+ENV TZ="Etc/UTC"
+ENV DEBIAN_FRONTEND="noninteractive"
+ENV DEBIAN_PACKAGES="bash curl git python3-pip python3-setuptools sudo vim"
+ENV HOME=/app
+ENV WIS2_GDC_METADATA_ARCHIVE_ZIPFILE=/data/wis2-discovery-metadata-archive.zip
 
 # copy the app
 COPY ./ /app
