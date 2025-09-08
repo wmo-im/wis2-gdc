@@ -79,8 +79,8 @@ resources:
               hreflang: en-CA
             - type: text/plain
               rel: related
-              title: Current WIS2 channels
-              href: https://raw.githubusercontent.com/wmo-im/wis2-guide/refs/heads/gh-pages/gdc-all-channels-latest.txt
+              title: Live channel list
+              href: ${WIS2_GDC_API_URL:-http://localhost}/wis2-gdc-all-channels-latest.txt
               hreflang: en-CA
             - type: text/html
               rel: related

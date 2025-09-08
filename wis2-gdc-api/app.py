@@ -58,3 +58,36 @@ def metrics():
         return Response(response, mimetype='text/plain')
     except Exception:
         return 'Internal Server Error', 500
+
+
+@app.route('/wis2-gdc-all-channels-latest.txt')
+def wis2_gdc_all_channels_latest():
+
+    LIVE_CHANNELS = []
+
+    URL = os.environ.get('WIS2_GDC_BACKEND_CONNECTION')
+    URL = f'{URL}/_search'
+
+    PARAMS = {
+        'size': 9999
+    }
+
+    CHANNELS = (
+        'cache/a/wis2',
+        'origin/a/wis2'
+    )
+
+    response = requests.get(URL, params=PARAMS)
+    response = response.json()
+
+    for feature in response['hits']['hits']:
+        for link in feature['_source']['links']:
+            channel = link.get('channel', '')
+            if channel.startswith(CHANNELS):
+                channel = '/'.join(channel.split('/')[4:])
+                LIVE_CHANNELS.append(
+                    ','.join([feature['_source']['id'], channel]))
+
+    LIVE_CHANNELS = list(sorted(set(LIVE_CHANNELS)))
+
+    return Response('\n'.join(LIVE_CHANNELS), mimetype='text/plain')
