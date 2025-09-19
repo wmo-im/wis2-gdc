@@ -40,7 +40,7 @@ source bin/activate
 # clone codebase and install
 git clone https://github.com/wmo-im/wis2-gdc.git
 cd wis2-gdc/wis2-gdc-management
-python3 setup.py install
+pip3 install .
 ```
 
 ## Running

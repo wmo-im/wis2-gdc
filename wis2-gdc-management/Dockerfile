@@ -19,15 +19,16 @@
 #
 ###############################################################################
 
-FROM ubuntu:jammy
+FROM ubuntu:noble-20250910
 
 LABEL maintainer="tomkralidis@gmail.com"
 
 ENV TZ="Etc/UTC"
 ENV DEBIAN_FRONTEND="noninteractive"
-ENV DEBIAN_PACKAGES="bash curl git python3-pip python3-setuptools sudo vim"
+ENV DEBIAN_PACKAGES="bash curl git python3-pip python3-setuptools python3-venv sudo vim"
 ENV HOME=/app
 ENV WIS2_GDC_METADATA_ARCHIVE_ZIPFILE=/data/wis2-discovery-metadata-archive.zip
+ENV PATH=$PATH:/venv/bin
 
 # copy the app
 COPY ./ /app
@@ -35,10 +36,11 @@ COPY ./ /app
 RUN apt-get update -y && \
     # install dependencies
     apt-get install -y ${DEBIAN_PACKAGES} && \
-    pip3 install --no-cache-dir -r /app/requirements-backend.txt && \
+    python3 -m venv --system-site-packages /venv && \
+    /venv/bin/pip3 install --no-cache-dir -r /app/requirements-backend.txt && \
     # install wis2-gdc
     cd /app && \
-    pip3 install -e . && \
+    /venv/bin/pip3 install -e . && \
     chmod +x /app/docker/entrypoint.sh && \
     # cleanup
     apt autoremove -y && \

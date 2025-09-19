@@ -51,7 +51,7 @@ cd /pygeoapi
 # find . -type f -name "*.py" | xargs chmod -R 0444
 
 echo "Trying to generate OpenAPI document"
-pygeoapi openapi generate ${PYGEOAPI_CONFIG} --output-file ${PYGEOAPI_OPENAPI}
+/venv/bin/pygeoapi openapi generate ${PYGEOAPI_CONFIG} --output-file ${PYGEOAPI_OPENAPI}
 
 [[ $? -ne 0 ]] && error "ERROR: OpenAPI document could not be generated"
 
@@ -64,7 +64,7 @@ case ${entry_cmd} in
         [[ "${SCRIPT_NAME}" = '/' ]] && export SCRIPT_NAME="" && echo "make SCRIPT_NAME empty from /"
 
         echo "Start gunicorn name=${CONTAINER_NAME} on ${CONTAINER_HOST}:${CONTAINER_PORT} with ${WSGI_WORKERS} workers and SCRIPT_NAME=${SCRIPT_NAME}"
-        exec gunicorn --workers ${WSGI_WORKERS} \
+        exec /venv/bin/gunicorn --workers ${WSGI_WORKERS} \
                 --worker-class=${WSGI_WORKER_CLASS} \
                 --timeout ${WSGI_WORKER_TIMEOUT} \
                 --name=${CONTAINER_NAME} \

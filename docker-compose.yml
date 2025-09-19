@@ -136,7 +136,7 @@ services:
     volumes:
       - wis2-gdc-management-data:/data
     restart: always
-    command: ["pywis-pubsub", "subscribe", "--config", "/app/docker/pywis-pubsub.yml", "--verbosity", "DEBUG"]
+    command: ["/venv/bin/pywis-pubsub", "subscribe", "--config", "/app/docker/pywis-pubsub.yml", "--verbosity", "DEBUG"]
     networks:
       - wis2-gdc-net
     <<: *logging

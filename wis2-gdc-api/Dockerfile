@@ -37,8 +37,8 @@ COPY ./docker/entrypoint.sh /app/docker/wis2-gdc-api/entrypoint.sh
 COPY ./docker/wis2-gdc-api.yml /pygeoapi/local.config.yml
 COPY ./templates/collections/items/item.html /pygeoapi/pygeoapi/templates/collections/items/item.html
 
-RUN pip3 install -r /app/docker/wis2-gdc-api/requirements.txt && \
-    pywcmp bundle sync && \
+RUN /venv/bin/pip3 install -r /app/docker/wis2-gdc-api/requirements.txt && \
+    /venv/bin/pywcmp bundle sync && \
     cp -rp /root/.pywcmp / && \
     chmod +x /app/docker/wis2-gdc-api/entrypoint.sh
 
