@@ -1,0 +1,73 @@
+---
+###############################################################
+#                   Authelia configuration                    #
+###############################################################
+
+# This secret can also be set using the env variables AUTHELIA_JWT_SECRET_FILE
+identity_validation:
+  reset_password:
+    jwt_secret: a_very_important_secret
+default_redirection_url: https://app.wis2-gdc.local
+
+server:
+  address: tcp://0.0.0.0:9091/
+
+log:
+  level: debug
+
+totp:
+  issuer: authelia.com
+
+authentication_backend:
+  file:
+    path: /config/users_database.yml
+
+access_control:
+  default_policy: bypass
+  rules:
+    - domain: "app.wis2-gdc.local"
+      policy: one_factor
+      resources:
+        - "^/collections/.*"  # testing
+      subject:
+        - "group:authelia"
+
+    - domain: "app.wis2-gdc.local"
+      policy: one_factor
+      methods:
+        - "POST"
+      resources:
+        - "^/processes/wis2-gdc-register/execution"
+        - "^/processes/wis2-gdc-unregister/execution"
+        - "^/processes/wis2-gdc-archive/execution"
+        - "^/processes/wis2-gdc-restore/execution"
+      subject:
+        - "group:authelia"
+
+session:
+  name: authelia_session
+  domain: wis2-gdc.local
+  same_site: lax
+  secret: unsecure_session_secret
+  expiration: 1h
+  inactivity: 5m
+  remember_me: 5M
+
+#  redis:
+#    host: redis
+#    port: 6379
+
+regulation:
+  max_retries: 3
+  find_time: 120
+  ban_time: 300
+
+storage:
+  encryption_key: you_must_generate_a_random_string_of_more_than_twenty_chars_and_configure_this
+  local:
+    path: /config/db.sqlite3
+
+notifier:
+  disable_startup_check: true
+  filesystem:
+    filename: /config/notification.txt
