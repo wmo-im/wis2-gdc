@@ -25,13 +25,13 @@
 echo "START /entrypoint.sh"
 
 echo "Caching WNM schema"
-pywis-pubsub schema sync
+/venv/bin/pywis-pubsub schema sync
 
 echo "Caching WCMP schemas"
-pywcmp bundle sync
+/venv/bin/pywcmp bundle sync
 
 echo "Setting up discovery metadata backend"
-wis2-gdc setup -y
+/venv/bin/wis2-gdc setup -y
 
 echo "Starting cron"
 /usr/local/bin/supercronic /app/docker/wis2-gdc-management.cron &
