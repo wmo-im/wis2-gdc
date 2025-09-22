@@ -53,6 +53,9 @@ cd /pygeoapi
 echo "Trying to generate OpenAPI document"
 /venv/bin/pygeoapi openapi generate ${PYGEOAPI_CONFIG} --output-file ${PYGEOAPI_OPENAPI}
 
+echo "Adding auth injection to OpenAPI document"
+/venv/bin/pygeoapi-auth openapi inject-auth ${PYGEOAPI_OPENAPI} authelia /authelia-configuration.yml --output-file /tmp/foo.yml && mv -f /tmp/foo.yml ${PYGEOAPI_OPENAPI}
+
 [[ $? -ne 0 ]] && error "ERROR: OpenAPI document could not be generated"
 
 echo "openapi.yml generated continue to pygeoapi"

@@ -7,7 +7,7 @@
 identity_validation:
   reset_password:
     jwt_secret: a_very_important_secret
-default_redirection_url: https://app.wis2-gdc.local
+default_redirection_url: https://api.wis2-gdc.local
 
 server:
   address: tcp://0.0.0.0:9091/
@@ -25,18 +25,12 @@ authentication_backend:
 access_control:
   default_policy: bypass
   rules:
-    - domain: "app.wis2-gdc.local"
-      policy: one_factor
-      resources:
-        - "^/collections/.*"  # testing
-      subject:
-        - "group:authelia"
-
-    - domain: "app.wis2-gdc.local"
+    - domain: "api.wis2-gdc.local"
       policy: one_factor
       methods:
         - "POST"
       resources:
+        - "^/processes/pywcmp-wis2-wcmp2-ets/execution"
         - "^/processes/wis2-gdc-register/execution"
         - "^/processes/wis2-gdc-unregister/execution"
         - "^/processes/wis2-gdc-archive/execution"

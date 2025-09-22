@@ -187,6 +187,7 @@ services:
         condition: service_healthy
     volumes:
       - wis2-gdc-management-data:/data
+      - ./authelia/configuration.yml:/authelia-configuration.yml
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/conformance"]
       interval: 5s

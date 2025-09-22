@@ -39,6 +39,7 @@ COPY ./templates/collections/items/item.html /pygeoapi/pygeoapi/templates/collec
 
 RUN /venv/bin/pip3 install -r /app/docker/wis2-gdc-api/requirements.txt && \
     /venv/bin/pywcmp bundle sync && \
+    /venv/bin/pip3 install https://github.com/geopython/pygeoapi-auth/archive/main.zip && \
     cp -rp /root/.pywcmp / && \
     chmod +x /app/docker/wis2-gdc-api/entrypoint.sh
 
