@@ -80,12 +80,15 @@ class Registrar:
             return None
 
         try:
-            LOGGER.debug('Fetching canonical URL')
-            self.wcmp2_url = list(filter(lambda d: d['rel'] == 'canonical',
-                                  wnm['links']))[0]['href']
-        except (IndexError, KeyError):
-            LOGGER.error('No canonical link found')
-            raise
+          LOGGER.debug('Fetching canonical or update URL')
+          links = wnm.get('links', [])
+          match = next((d for d in links if d.get('rel') in ('canonical', 'update')), None)
+          if not match:
+              raise ValueError('No canonical or update link found')
+          self.wcmp2_url = match['href']
+        except Exception as e:
+          LOGGER.error(f'Error while fetching canonical or update URL: {e}')
+          raise
 
         LOGGER.debug(f'Fetching {self.wcmp2_url}')
 
