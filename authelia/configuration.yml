@@ -27,8 +27,8 @@ access_control:
   rules:
     - domain: "api.wis2-gdc.local"
       policy: one_factor
-      methods:
-        - "POST"
+#      methods:
+#        - "POST"
       resources:
         - "^/processes/pywcmp-wis2-wcmp2-ets/execution"
         - "^/processes/wis2-gdc-register/execution"
