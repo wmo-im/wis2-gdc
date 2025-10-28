@@ -25,7 +25,7 @@ from wis2_gdc.registrar import register, setup, teardown, unregister
 from wis2_gdc.archive import archive, restore
 from wis2_gdc.sync import sync
 
-__version__ = '0.6.1'
+__version__ = '0.7.dev1'
 
 
 @click.group()
