@@ -113,7 +113,7 @@ class Registrar:
 
         LOGGER.info('Publishing URL error report to broker')
         wme = generate_wme(centre_id, 'ets', message)
-        publish_report_topic = f'monitor/a/wis2/{CENTRE_ID}/{centre_id}'
+        publish_report_topic = f'monitor/a/wis2/{centre_id}'
         self.broker.pub(publish_report_topic, json.dumps(wme))
 
         return None
@@ -142,7 +142,7 @@ class Registrar:
                 return
 
         self.centre_id = self.metadata['id'].split(':')[3]
-        publish_report_topic = f'monitor/a/wis2/{CENTRE_ID}/{self.centre_id}'
+        publish_report_topic = f'monitor/a/wis2/{self.centre_id}'
         centre_id_labels = [self.centre_id, CENTRE_ID]
 
         if topic is None:
@@ -251,7 +251,7 @@ class Registrar:
         """
 
         centre_id = topic.split('/')[3]
-        publish_report_topic = f'monitor/a/wis2/{CENTRE_ID}/{centre_id}'
+        publish_report_topic = f'monitor/a/wis2/{centre_id}'
 
         message = {
             'href': None
