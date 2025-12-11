@@ -43,14 +43,29 @@ def generate_wme(subject: str, report_type: str, data: dict) -> dict:
     :returns: `dict` of WMEM
     """
 
+    severity = 'INFO'
+
+    codes = [r['code'] for r in data['tests']]
+
+    if codes.count('FAILED') > 0:
+        severity = 'ERROR'
+    elif codes.count('WARNING') > 0:
+        severity = 'WARNING'
+
     return {
         'specversion': '1.0',
-        'type': f'int.wmo.wis2.wme.report.wcmp2.{report_type}',
+        'type': 'int.wmo.wis2.wme.event',
         'source': CENTRE_ID,
         'subject': subject,
         'id': str(uuid.uuid4()),
         'time': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
         'datacontenttype': 'application/json',
         'dataschema': DATASCHEMAS[report_type],
-        'data': data
+        'data': {
+            'conformsTo': [
+                'https://wis.wmo.int/def/spec/wcmp2-{report_type}'
+            ],
+            'severity': severity,
+            'content': data
+        }
     }
