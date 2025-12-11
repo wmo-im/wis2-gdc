@@ -37,7 +37,7 @@ from pywis_pubsub.mqtt import MQTTPubSubClient
 from wis2_gdc.backend import BACKENDS
 from wis2_gdc.env import (BACKEND_TYPE, BACKEND_CONNECTION, BROKER_URL,
                           CENTRE_ID, GB_LINKS, PUBLISH_REPORTS,
-                          REJECT_ON_FAILING_ETS, RUN_KPI)
+                          REJECT_ON_FAILING_ETS, RUN_KPI, EXPERIMENTAL)
 from wis2_gdc.wme import generate_wme
 
 LOGGER = logging.getLogger(__name__)
@@ -316,7 +316,8 @@ class Registrar:
 
         try:
             ts = WMOCoreMetadataProfileTestSuite2(self.metadata)
-            return ts.run_tests(fail_on_schema_validation=True)
+            return ts.run_tests(fail_on_schema_validation=True,
+                                relax_centre_id_checks=EXPERIMENTAL)
         except ValueError as err:
             return {'message': f'Failed ETS: {err}'}
 
