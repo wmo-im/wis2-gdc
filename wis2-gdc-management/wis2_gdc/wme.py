@@ -63,7 +63,7 @@ def generate_wme(subject: str, report_type: str, data: dict) -> dict:
         'dataschema': DATASCHEMAS[report_type],
         'data': {
             'conformsTo': [
-                'https://wis.wmo.int/def/spec/wcmp2-{report_type}'
+                f'https://wis.wmo.int/def/spec/wcmp2-{report_type}'
             ],
             'severity': severity,
             'content': data
