@@ -36,7 +36,7 @@ class OGCAPIRecordsBackend(BaseBackend):
         super().__init__(defs)
 
         self.conn = Records(env.API_URL)
-        self.collection = 'discovery-metadata'
+        self.collection = 'wis2-discovery-metadata'
 
     def save_record(self):
 
