@@ -47,7 +47,7 @@ def generate_wme(subject: str, severity, title: str,
 
     return {
         'specversion': '1.0',
-        'type': 'int.wmo.wis2.wme.event',
+        'type': 'int.wmo.wis.wme.event',
         'source': CENTRE_ID,
         'subject': subject,
         'id': str(uuid.uuid4()),
