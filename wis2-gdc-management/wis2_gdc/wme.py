@@ -27,30 +27,23 @@ from wis2_gdc.env import CENTRE_ID
 
 LOGGER = logging.getLogger(__name__)
 
-DATASCHEMAS = {
-    'ets': 'https://raw.githubusercontent.com/wmo-im/wis2-monitoring-events/refs/heads/main/schemas/wcmp2-ets-bundled.json',  # noqa
-    'kpi': 'https://raw.githubusercontent.com/wmo-im/wis2-monitoring-events/refs/heads/main/schemas/wcmp2-kpi-bundled.json'  # noqa
-}
+WME_DATA_SCHEMA = 'https://schemas.wmo.int/wme/1.0.0/schemas/wis2-event-message-bundled.json'  # noqa
 
 
-def generate_wme(subject: str, report_type: str, data: dict) -> dict:
+def generate_wme(subject: str, severity, title: str,
+                 data: dict) -> dict:
     """
     Generate WIS2 Monitoring Event Message of WCMP2 report
 
     :param subject: `str` of centre-id being reported
-    :param report_type: `str` of WCMP2 report type (default is ets)
+    :param severity: `str` of severity (default `INFO`)
+    :param title : `str` of title of event message
+    :param data: `dict` of data payload
 
     :returns: `dict` of WMEM
     """
 
-    severity = 'INFO'
-
-    codes = [r['code'] for r in data['tests']]
-
-    if codes.count('FAILED') > 0:
-        severity = 'ERROR'
-    elif codes.count('WARNING') > 0:
-        severity = 'WARNING'
+    data['title'] = title
 
     return {
         'specversion': '1.0',
@@ -60,10 +53,10 @@ def generate_wme(subject: str, report_type: str, data: dict) -> dict:
         'id': str(uuid.uuid4()),
         'time': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
         'datacontenttype': 'application/json',
-        'dataschema': DATASCHEMAS[report_type],
+        'dataschema': WME_DATA_SCHEMA,
         'data': {
             'conformsTo': [
-                f'https://wis.wmo.int/def/spec/wcmp2-{report_type}'
+                'http://wis.wmo.int/spec/wme/1/conf/monitoring-event-message-core'  # noqa
             ],
             'severity': severity,
             'content': data

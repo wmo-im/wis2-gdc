@@ -108,11 +108,16 @@ class Registrar:
                 [BROKER_URL, CENTRE_ID])
 
         LOGGER.debug(f'WCMP2 access failed: {message_failure_reason}')
-        message['message'] = str(message_failure_reason)
-        message['href'] = self.wcmp2_url
+
+        message['description'] = str(message_failure_reason)
+        message['links'] = [{
+            'rel': 'related',
+            'title': 'WCMP2 URL',
+            'href': self.wcmp2_url
+        }]
 
         LOGGER.info('Publishing URL error report to broker')
-        wme = generate_wme(centre_id, 'ets', message)
+        wme = generate_wme(centre_id, 'ERROR', 'WCMP2 access failure', message)
         publish_report_topic = f'monitor/a/wis2/{centre_id}'
         self.broker.pub(publish_report_topic, json.dumps(wme))
 
@@ -192,8 +197,18 @@ class Registrar:
         ets_results['href'] = self.wcmp2_url
 
         if PUBLISH_REPORTS:
+            severity = 'INFO'
+
+            codes = [r['code'] for r in ets_results['tests']]
+
+            if codes.count('WARNING') > 0:
+                severity = 'WARNING'
+            if codes.count('FAILED') > 0:
+                severity = 'ERROR'
+
             LOGGER.info('Publishing ETS report to broker')
-            wme = generate_wme(self.centre_id, 'ets', ets_results)
+            wme = generate_wme(self.centre_id, severity, 'WCMP2 ETS report',
+                               ets_results)
             self.broker.pub(publish_report_topic, json.dumps(wme))
 
         if failed_ets:
@@ -231,7 +246,8 @@ class Registrar:
 
             if PUBLISH_REPORTS and 'summary' in kpi_results:
                 LOGGER.info('Publishing KPI report to broker')
-                wme = generate_wme(self.centre_id, 'kpi', kpi_results)
+                wme = generate_wme(self.centre_id, 'INFO', 'WCMP2 KPI report',
+                                   kpi_results)
                 self.broker.pub(publish_report_topic, json.dumps(wme))
 
                 kpi_labels = [self.metadata['id']] + centre_id_labels
@@ -252,25 +268,27 @@ class Registrar:
 
         centre_id = topic.split('/')[3]
         publish_report_topic = f'monitor/a/wis2/{centre_id}'
+        severity = 'INFO'
 
-        message = {
-            'href': None
-        }
+        message = {}
 
         metadata_id = wnm['properties'].get('metadata_id')
 
         if metadata_id is None:
-            message['message'] = 'No metadata id specified'
+            message['description'] = 'No metadata id specified'
+            severity = 'ERROR'
         else:
             message['metadata_id'] = metadata_id
             try:
                 self.backend.delete_record(metadata_id)
-                message['message'] = f'metadata {metadata_id} deleted'
+                message['description'] = f'metadata {metadata_id} deleted'
             except Exception:
-                message['message'] = f'metadata {metadata_id} not found'
+                message['description'] = f'metadata {metadata_id} not found'
+                severity = 'ERROR'
 
         LOGGER.info('Publishing missing metadata_id report to broker')
-        wme = generate_wme(centre_id, 'ets', message)
+        wme = generate_wme(centre_id, severity,
+                           'WIS2 GDC WCMP2 deletion report', message)
         self.broker.pub(publish_report_topic, json.dumps(wme))
 
         return

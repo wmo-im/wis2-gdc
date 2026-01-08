@@ -129,12 +129,8 @@ def restore_metadata(archive_zipfile: str) -> None:
                 LOGGER.debug(f'Publishing {filename}')
                 r._publish()
 
-    message = {
-        'message': 'Archive metadata restore complete'
-    }
-
     archive_restore_topic = f'monitor/a/wis2/{CENTRE_ID}'
-    wme = generate_wme(CENTRE_ID, 'ets', message)
+    wme = generate_wme(CENTRE_ID, 'Metadata archive restored', {})
 
     LOGGER.info('Publishing restore report to broker')
     m = MQTTPubSubClient(BROKER_URL)
