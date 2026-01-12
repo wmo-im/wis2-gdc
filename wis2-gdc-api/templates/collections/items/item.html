@@ -179,36 +179,46 @@ subscribe_topics:
               </tr>
               {% endif %}
               <tr>
-                <td>id</td>
+                <td>identifier</td>
                 <td>{{ data.id }}</td>
               </tr>
-              {% for k, v in data['properties'].items() %}
-                {% if k != data['id_field'] %}
-                <tr>
-                  <td>{{ k | striptags }}</td>
-                  <td>{{ render_item_value(v, 80) }}</td>
-                </tr>
-                {% endif %}
-                {% endfor %}
-
-                <tr>
-                  <td>{% trans %}Links{% endtrans %}</td>
-                  <td>
-                    <ul>
-                      {% for l in other_links %}
-                      {% if l['href'] %}
-                        <li><a href="{{ l['href'] }}" title="{{ l['title'] or l['href'].split('/') }}">{{ l['title'] or (l['href'].split('/') | last) | truncate( 25 ) }}</a>
-                        {% if l['type'] %}
-                          ({{ l['type'] }})
-                        {% endif %}
-                        </li>
+              {% for prop in ['type', 'created', 'updated', 'title', 'description', 'wmo:dataPolicy', 'keywords', 'themes', 'contacts'] %}
+              {% if prop == 'keywords' %}
+              <tr>
+                <td>{{ prop | striptags }}</td>
+                <td>
+                  <ul>
+                    {% for kw in data['properties'][prop] %}
+                    <li>{{ kw }}</li>
+                    {% endfor %}
+                  </ul>
+                </td>
+              </tr>
+              {% else %}
+              <tr>
+                <td>{{ prop | striptags }}</td>
+                <td>{{ render_item_value(data['properties'][prop], 80) }}</td>
+              </tr>
+              {% endif %}
+              {% endfor %}
+              <tr>
+                <td>{% trans %}Links{% endtrans %}</td>
+                <td>
+                  <ul>
+                    {% for l in other_links %}
+                    {% if l['href'] %}
+                      <li><a href="{{ l['href'] }}" title="{{ l['title'] or l['href'].split('/') }}">{{ l['title'] or (l['href'].split('/') | last) | truncate( 25 ) }}</a>
+                      {% if l['type'] %}
+                        ({{ l['type'] }})
                       {% endif %}
-                      {% endfor %}
-                    </ul>
-                  </td>
-                </tr>
+                      </li>
+                    {% endif %}
+                    {% endfor %}
+                  </ul>
+                </td>
+              </tr>
             </tbody>
-            </table>
+          </table>
         </div>
       </div>
     </section>

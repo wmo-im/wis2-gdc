@@ -35,6 +35,7 @@ COPY ./pygeoapi_provider_elasticsearch_2025-03-30.py /pygeoapi/pygeoapi/provider
 COPY ./requirements.txt /app/docker/wis2-gdc-api/requirements.txt
 COPY ./docker/entrypoint.sh /app/docker/wis2-gdc-api/entrypoint.sh
 COPY ./docker/wis2-gdc-api.yml /pygeoapi/local.config.yml
+COPY ./templates/collections/items/index.html /pygeoapi/pygeoapi/templates/collections/items/index.html
 COPY ./templates/collections/items/item.html /pygeoapi/pygeoapi/templates/collections/items/item.html
 
 RUN /venv/bin/pip3 install -r /app/docker/wis2-gdc-api/requirements.txt && \
