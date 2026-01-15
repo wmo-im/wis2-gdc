@@ -109,6 +109,7 @@
             <tr>
               <td>
                 <h5><a title="{{ ft['properties']['title'] | string }}" href="{{ data.items_path }}/{{ ft['id'] }}">{{ ft['properties']['title'] | string | truncate(55) }}</a></h5>
+                <code>{{ ft['id'] }}</code>
                 <p>{{ ft['properties']['description'] | string | truncate(255) }}</p>
               </td>
             </tr>
