@@ -110,14 +110,10 @@ class Registrar:
         LOGGER.debug(f'WCMP2 access failed: {message_failure_reason}')
 
         message['description'] = str(message_failure_reason)
-        message['links'] = [{
-            'rel': 'related',
-            'title': 'WCMP2 URL',
-            'href': self.wcmp2_url
-        }]
 
         LOGGER.info('Publishing URL error report to broker')
-        wme = generate_wme(centre_id, 'ERROR', 'WCMP2 access failure', message)
+        wme = generate_wme(centre_id, 'ERROR', 'WCMP2 access failure',
+                           message, [self._get_link()])
         publish_report_topic = f'monitor/a/wis2/{centre_id}'
         self.broker.pub(publish_report_topic, json.dumps(wme))
 
@@ -164,15 +160,14 @@ class Registrar:
                 self._process_record_metric(
                     self.metadata['id'], 'failed_total', [BROKER_URL, CENTRE_ID])  # noqa
 
-                msg = f'Topic mismatch ({incoming_topic_centre_id} != {self.centre_id})'  # noqa
                 message = {
-                    'id': str(uuid.uuid4()),
-                    'message': msg,
-                    'href': self.wcmp2_url,
-                    'report_by': CENTRE_ID,
-                    'centre_id': self.centre_id
+                    'description': f'Topic mismatch ({incoming_topic_centre_id} != {self.centre_id})'  # noqa
                 }
-                self.broker.pub(publish_report_topic, json.dumps(message))
+
+                wme = generate_wme(self.centre_id, 'ERROR', message,
+                                   [self.get_link()])
+
+                self.broker.pub(publish_report_topic, json.dumps(wme))
 
                 return
 
@@ -189,12 +184,10 @@ class Registrar:
         except KeyError:
             LOGGER.debug('Validation errors; metadata not published')
             ets_results['id'] = str(uuid.uuid4())
-            ets_results['href'] = self.wcmp2_url
             failed_ets = True
 
         ets_results['report_by'] = CENTRE_ID
         ets_results['centre_id'] = self.centre_id
-        ets_results['href'] = self.wcmp2_url
 
         if PUBLISH_REPORTS:
             severity = 'INFO'
@@ -208,7 +201,7 @@ class Registrar:
 
             LOGGER.info('Publishing ETS report to broker')
             wme = generate_wme(self.centre_id, severity, 'WCMP2 ETS report',
-                               ets_results)
+                               ets_results, [self.get_link()])
             self.broker.pub(publish_report_topic, json.dumps(wme))
 
         if failed_ets:
@@ -408,6 +401,25 @@ class Registrar:
                 new_links.append(new_link)
 
         return new_links
+
+    def _get_link(self):
+        """
+        Generates a link object
+
+        :returns: `dict` of link object
+        """
+
+        link = {
+            'rel': 'related',
+            'type': 'application/geo+json',
+            'title': 'WCMP2 discovery metadata record',
+            'href': self.wcmp2_url
+        }
+
+        if self.metadata is not None:
+            link['length'] = len(self.metadata)
+
+        return link
 
     def __repr__(self):
         return '<Registrar>'

@@ -31,7 +31,7 @@ WME_DATA_SCHEMA = 'https://schemas.wmo.int/wme/1.0.0/schemas/wis2-event-message-
 
 
 def generate_wme(subject: str, severity, title: str,
-                 data: dict) -> dict:
+                 data: dict, links: list = []) -> dict:
     """
     Generate WIS2 Monitoring Event Message of WCMP2 report
 
@@ -39,13 +39,14 @@ def generate_wme(subject: str, severity, title: str,
     :param severity: `str` of severity (default `INFO`)
     :param title : `str` of title of event message
     :param data: `dict` of data payload
+    :param links: `list` of links
 
     :returns: `dict` of WMEM
     """
 
     data['title'] = title
 
-    return {
+    message = {
         'specversion': '1.0',
         'type': 'int.wmo.wis.wme.event',
         'source': CENTRE_ID,
@@ -62,3 +63,8 @@ def generate_wme(subject: str, severity, title: str,
             'content': data
         }
     }
+
+    if links:
+        message['links'] = links
+
+    return message
