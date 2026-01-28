@@ -39,6 +39,7 @@ COPY ./templates/collections/items/index.html /pygeoapi/pygeoapi/templates/colle
 COPY ./templates/collections/items/item.html /pygeoapi/pygeoapi/templates/collections/items/item.html
 
 RUN /venv/bin/pip3 install -r /app/docker/wis2-gdc-api/requirements.txt && \
+    /venv/bin/pip3 install "gunicorn<24" && \
     /venv/bin/pywcmp bundle sync && \
     cp -rp /root/.pywcmp / && \
     chmod +x /app/docker/wis2-gdc-api/entrypoint.sh
