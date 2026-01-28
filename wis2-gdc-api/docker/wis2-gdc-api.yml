@@ -103,7 +103,6 @@ resources:
               id_field: id
               time_field: updated
               title_field: title
-              editable: true
 
     pywcmp-wis2-wcmp2-ets:
         type: process
