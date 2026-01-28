@@ -165,7 +165,7 @@ class Registrar:
                 }
 
                 wme = generate_wme(self.centre_id, 'ERROR', message,
-                                   [self.get_link()])
+                                   [self._get_link()])
 
                 self.broker.pub(publish_report_topic, json.dumps(wme))
 
@@ -201,7 +201,7 @@ class Registrar:
 
             LOGGER.info('Publishing ETS report to broker')
             wme = generate_wme(self.centre_id, severity, 'WCMP2 ETS report',
-                               ets_results, [self.get_link()])
+                               ets_results, [self._get_link()])
             self.broker.pub(publish_report_topic, json.dumps(wme))
 
         if failed_ets:
