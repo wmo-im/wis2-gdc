@@ -24,6 +24,14 @@
                         "null_value": "1850",
                         "format": "year||year_month||year_month_day||date_time||t_time||t_time_no_millis",
                         "ignore_malformed": true
+                    },
+                    "resolution": {
+                        "type": "text",
+                        "fields": {
+                            "raw": {
+                                "type": "keyword"
+                            }
+                        }
                     }
                 }
             },
