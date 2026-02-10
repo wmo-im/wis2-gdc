@@ -103,6 +103,7 @@ resources:
               id_field: id
               time_field: updated
               title_field: title
+              include_extra_query_parameters: true
 
     pywcmp-wis2-wcmp2-ets:
         type: process
