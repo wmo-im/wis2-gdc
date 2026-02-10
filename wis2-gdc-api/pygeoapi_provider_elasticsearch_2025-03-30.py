@@ -121,6 +121,11 @@ class ElasticsearchProvider(BaseProvider):
                 return {}
 
             self._fields = self.get_nested_fields(p, self._fields)
+
+            self._fields['time.resolution'] = {
+                'type': 'string'
+            }
+
         return self._fields
 
     def get_nested_fields(self, properties, fields, prev_field=None):
