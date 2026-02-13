@@ -50,6 +50,9 @@ vim local.env # update accordingly
 
 source local.env
 
+# setup pywis-pubsub - sync WIS2 notification schema
+pywis-pubsub schema sync
+
 # setup backend
 wis2-gdc setup
 
@@ -58,6 +61,11 @@ wis2-gdc setup --force
 
 # teardown backend
 wis2-gdc teardown
+
+# connect to Global Broker
+# discovery metadata notifications will automatically trigger wis2-gdc to validate and publish
+# WCMP2 to the GDC identified in wis2-gdc.env (WIS2_GDC_GB)
+pywis-pubsub subscribe --config pywis-pubsub.yml
 
 # loading metadata manually (single file)
 wis2-gdc register /path/to/wcmp2-file.json
