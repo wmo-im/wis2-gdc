@@ -22,12 +22,10 @@ wis2-gdc is a Reference Implementation of a WIS2 Global Discovery Catalogue.
 ## Installation
 
 ### Requirements
-- Python 3
-- [virtualenv](https://virtualenv.pypa.io)
+- Docker
 
 ### Dependencies
-Dependencies are listed in [requirements.txt](requirements.txt). Dependencies
-are automatically installed during pywis-pubsub installation.
+Dependencies are embedded in service definitions and orchestrated by Docker.
 
 ### Installing wis2-gdc
 
