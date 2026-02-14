@@ -47,6 +47,9 @@ RUN /venv/bin/pip3 install -r /app/docker/wis2-gdc-api/requirements.txt && \
 RUN chgrp -R 0 /pygeoapi && \
     chmod -R g=u /pygeoapi
 
+# FIXME: fix upstream in pygeoapi
+RUN sed -i 's/default=json_serial/default=json_serial, ensure_ascii=False/' /pygeoapi/pygeoapi/util.py
+
 USER 1001
 
 ENTRYPOINT [ "/app/docker/wis2-gdc-api/entrypoint.sh" ]
