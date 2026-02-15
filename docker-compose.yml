@@ -132,6 +132,7 @@ services:
       - wis2-gdc-broker
     <<: *logging
 
+
   wis2-gdc-management:
     container_name: wis2-gdc-management
     build:
@@ -151,7 +152,6 @@ services:
       retries: 3
     volumes:
       - wis2-gdc-management-data:/data
-      - /Users/tomkralidis/Dev/wmo/wis2-gdc:/data2:rw
     restart: always
     command: ["/venv/bin/pywis-pubsub", "subscribe", "--config", "/app/docker/pywis-pubsub.yml", "--verbosity", "DEBUG"]
     networks:
