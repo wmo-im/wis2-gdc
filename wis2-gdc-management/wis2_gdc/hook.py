@@ -22,7 +22,9 @@
 import logging
 
 from pywis_pubsub.hook import Hook
+import redis
 
+from wis2_gdc.env import CACHE_URL, CACHE_RETENTION_SECONDS
 from wis2_gdc.registrar import Registrar
 
 LOGGER = logging.getLogger(__name__)
@@ -31,6 +33,22 @@ LOGGER = logging.getLogger(__name__)
 class DiscoveryMetadataHook(Hook):
     def execute(self, topic: str, msg_dict: dict) -> None:
         wcmp2_dict = None
+        self.cache = redis.Redis().from_url(CACHE_URL)
+
+        LOGGER.debug('Checking for duplicate message')
+        if self.cache.get(msg_dict['id']) is not None:
+            msg = f"Duplicate message {msg_dict['id']}; discarding"
+            LOGGER.info(msg)
+            return
+        else:
+            msg = f"New message {msg_dict['id']}; adding"
+            LOGGER.info(msg)
+            self.cache.set(
+                msg_dict['id'],
+                msg_dict['properties']['data_id'],
+                nx=True,
+                ex=CACHE_RETENTION_SECONDS
+            )
 
         LOGGER.debug('Discovery metadata hook execution begin')
         r = Registrar()

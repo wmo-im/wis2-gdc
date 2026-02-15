@@ -26,6 +26,8 @@ Main configuration environment variables
    ``WIS2_GDC_REJECT_ON_FAILING_ETS``,whether the GDC should stop ingest based on on failing record,``true``
    ``WIS2_GDC_RUN_KPI``,whether the GDC should run KPI as part of ingest,``false``
    ``WIS2_GDC_EXPERIMENTAL``,whether the GDC should in experimental mode,``false``
+   ``WIS2_GDC_CACHE_URL``,URL of the GDC cache,``redis://wis2-gdc-cache:6379``
+   ``WIS2_GDC_CACHE_RETENTION_SECONDS``,cache retention policy for notification messages in seconds,``3600``
 
 API configuration environment variables
 ---------------------------------------
@@ -74,7 +76,7 @@ WIS2 Global Broker environment variables are defined as comma-separated values (
 
 An example can be found below:
 
-.. code-block:: csv
+.. code-block:: text
 
    WIS2_GDC_GB_LINK_METEOFRANCE,"fr-meteo-france-global-broker,mqtts://everyone:everyone@globalbroker.meteo.fr:8883,Météo-France, Global Broker Service"
 

@@ -94,6 +94,20 @@ services:
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
     <<: *logging
 
+  wis2-gdc-cache:
+    image: redis:latest
+    container_name: wis2-gdc-cache
+    env_file:
+      - wis2-gdc.env
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      retries: 100
+    networks:
+      - wis2-gdc-net
+    <<: *logging
+
   wis2-gdc-broker:
     container_name: wis2-gdc-broker
     restart: always
@@ -129,12 +143,15 @@ services:
     depends_on:
       wis2-gdc-backend:
         condition: service_healthy
+      wis2-gdc-cache:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://wis2-gdc-backend:9200/wis2-discovery-metadata"]
-      interval: 5s
+      interval: 1m
       retries: 3
     volumes:
       - wis2-gdc-management-data:/data
+      - /Users/tomkralidis/Dev/wmo/wis2-gdc:/data2:rw
     restart: always
     command: ["/venv/bin/pywis-pubsub", "subscribe", "--config", "/app/docker/pywis-pubsub.yml", "--verbosity", "DEBUG"]
     networks:
@@ -152,7 +169,7 @@ services:
       - wis2-gdc-management-data:/data
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/conformance"]
-      interval: 5s
+      interval: 1m
       retries: 3
     env_file:
       - wis2-gdc.env
