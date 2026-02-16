@@ -10,9 +10,11 @@ wis2-gdc is a Reference Implementation of a WIS2 Global Discovery Catalogue.
 
 - connects to a WIS2 Global Broker, subscribed to the following topic:
   - `cache/a/wis2/+/metadata/#`
-- on discovery metadata notifications, run the WCMP2 ETS and KPIs via [pywcmp](https://github.com/wmo-im/pywcmp)
+- on discovery metadata notifications:
+  - check for message duplication
+  - run the WCMP2 ETS and KPIs via [pywcmp](https://github.com/World-Meteorological-Organization/pywcmp)
 - publish ETS and KPI reports to local broker under `monitor/a/wis2/centre-id`
-- publish to a WIS2 GDC (OGC API - Records) using one of the supported transaction backends:
+- publish to a WIS2 GDC ([OGC API - Records](https://docs.ogc.org/is/20-004r1/20-004r1.html)) using one of the supported transaction backends:
   - [OGC API - Features - Part 4: Create, Replace, Update and Delete](https://docs.ogc.org/DRAFTS/20-002.html)
   - Elasticsearch direct (default)
 - collect real-time and offline GDC metrics and make them available as [OpenMetrics](https://openmetrics.io)
@@ -104,6 +106,7 @@ The Docker setup uses Docker and Docker Compose to manage the following services
 - **wis2-gdc-management**: management service to ingest, validate and publish discovery metadata published from a WIS2 Global Broker instance
   - the default Global Broker connection is to NOAA.  This can be modified in `wis2-gdc.env` to point to a different Global Broker
 - **wis2-gdc-backend**: API search engine backend (default Elasticsearch)
+- **wis2-gdc-cache**: message cache (default Redis)
 
 See [`wis2-gdc.env`](wis2-gdc.env) for default environment variable settings.
 

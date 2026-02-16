@@ -26,6 +26,8 @@ Main configuration environment variables
    ``WIS2_GDC_REJECT_ON_FAILING_ETS``,whether the GDC should stop ingest based on on failing record,``true``
    ``WIS2_GDC_RUN_KPI``,whether the GDC should run KPI as part of ingest,``false``
    ``WIS2_GDC_EXPERIMENTAL``,whether the GDC should in experimental mode,``false``
+   ``WIS2_GDC_CACHE_URL``,URL of the GDC cache,``redis://wis2-gdc-cache:6379``
+   ``WIS2_GDC_CACHE_RETENTION_SECONDS``,cache retention policy for notification messages in seconds,``3600``
 
 API configuration environment variables
 ---------------------------------------
@@ -74,7 +76,7 @@ WIS2 Global Broker environment variables are defined as comma-separated values (
 
 An example can be found below:
 
-.. code-block:: csv
+.. code-block:: text
 
    WIS2_GDC_GB_LINK_METEOFRANCE,"fr-meteo-france-global-broker,mqtts://everyone:everyone@globalbroker.meteo.fr:8883,Météo-France, Global Broker Service"
 
@@ -119,3 +121,47 @@ Application specific configurations can be found in the following files (for dir
 
 .. _`Python logging levels`: https://docs.python.org/library/logging.html#logging-levels
 .. _`documentation`: https://docs.pygeoapi.io/en/latest/configuration.html
+
+Connections to additional Global Brokers
+----------------------------------------
+
+By default, wis2-gdc interacts with a single Global Broker via the ``wis2-gdc-management`` service.
+
+To connect to additional Global Brokers, any number of additional ``wis2-gdc-management`` services may be added.  For example, adding in ``docker-compose.yml``:
+
+.. code-block:: yaml
+
+   wis2-gdc-management2:  # update name accordingly
+     container_name: wis2-gdc-management2  # update name accordingly
+     build:
+       context: ./wis2-gdc-management/
+     env_file:
+       - wis2-gdc.env
+     environment:
+       - WIS2_GDC_API_URL_DOCKER=http://wis2-gdc-api:8080
+       - WIS2_GDC_GB=mqtts://everyone:everyone@globalbroker.inmet.br:8883  # override default WIS2_GDC_GB
+     depends_on:
+       wis2-gdc-backend:
+         condition: service_healthy
+       wis2-gdc-cache:
+         condition: service_healthy
+     healthcheck:
+       test: ["CMD", "curl", "-f", "http://wis2-gdc-backend:9200/wis2-discovery-metadata"]
+       interval: 1m
+       retries: 3
+     volumes:
+       - wis2-gdc-management-data2:/data  # update volume accordingly
+     restart: always
+     command: ["/venv/bin/pywis-pubsub", "subscribe", "--config", "/app/docker/pywis-pubsub.yml", "--verbosity", "DEBUG"]
+     networks:
+       - wis2-gdc-net
+     <<: *logging
+
+...then adding the associated volume:
+
+.. code-block:: yaml
+
+   volumes:
+     wis2-gdc-backend-data:
+     wis2-gdc-management-data:
+     wis2-gdc-management2-data:  # added volume

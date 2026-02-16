@@ -49,6 +49,8 @@ BACKEND_TYPE = os.environ.get('WIS2_GDC_BACKEND_TYPE')
 BACKEND_CONNECTION = os.environ.get('WIS2_GDC_BACKEND_CONNECTION')
 BROKER_URL = os.environ.get('WIS2_GDC_BROKER_URL')
 CENTRE_ID = os.environ.get('WIS2_GDC_CENTRE_ID')
+CACHE_URL = os.environ.get('WIS2_GDC_CACHE_URL')
+CACHE_RETENTION_SECONDS = int(os.environ.get('WIS2_GDC_CACHE_RETENTION_SECONDS', 3600))  # noqa
 GB = os.environ.get('WIS2_GDC_GB')
 GB_CENTRE_ID = None
 GB_TOPIC = os.environ.get('WIS2_GDC_GB_TOPIC')
@@ -60,7 +62,7 @@ EXPERIMENTAL = str2bool(os.environ.get('WIS2_GDC_EXPERIMENTAL', 'false'))
 GB_LINKS = []
 
 if None in [API_URL, API_URL_DOCKER, BACKEND_TYPE, BACKEND_CONNECTION,
-            BROKER_URL, CENTRE_ID, GB, GB_TOPIC]:
+            BROKER_URL, CACHE_URL, CENTRE_ID, GB, GB_TOPIC]:
     raise EnvironmentError('Environment variables not set!')
 
 for key, value in os.environ.items():

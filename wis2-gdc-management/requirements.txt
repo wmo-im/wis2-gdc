@@ -1,5 +1,6 @@
 click
 pywcmp
 pywis-pubsub
+redis[hiredis]
 requests
 unicodecsv

@@ -24,6 +24,9 @@ services:
     ports:
       - 1883:1883  # default
       - 1884:1884  # websockets
+  wis2-gdc-cache:
+    ports:
+      - 6379:6379
   wis2-gdc-api:
     ports:
       - 8000:8080

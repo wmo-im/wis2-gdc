@@ -33,13 +33,14 @@ As a containerized solution, ``wis2-gdc`` provides functionality via the followi
   * **grafana**: analytics and visualization
 * **wis2-gdc-broker**: MQTT broker
 * **wis2-gdc-backend**: API search engine backend (default Elasticsearch)
+* **wis2-gdc-cache**: message cache (default Redis)
 
 ``wis2-gdc`` is primarily an event-driven system, also providing interactive functionality for managing WIS2 metadata if required.
 
 Workflows
 ^^^^^^^^^
 
-``wis2-gdc`` starts up by connecting to a WIS2 Global Broker (GB), subscribing to notifications for WIS2 metadata (WMO Core Metadata Profile [WCMP2]).  On receipt of WIS2 Notification Messages (WNM) for metadata, ``wis2-gdc`` will ingest, validate and publish a WCMP2 record to its catalogue API.  In addition, WCMP2 update and deletion is supported with the appropriate WNM.
+``wis2-gdc`` starts up by connecting to a WIS2 Global Broker (GB), subscribing to notifications for WIS2 metadata (WMO Core Metadata Profile [WCMP2]).  On receipt of WIS2 Notification Messages (WNM) for metadata, ``wis2-gdc`` will perform message deduplication, validate, ingest and publish a WCMP2 record to its catalogue API.  In addition, WCMP2 update and deletion is supported with the appropriate WNM.
 
 The ``wis2-gdc`` monitoring capability collects and provides metrics on WCMP2 that is scraped by the WIS2 Global Monitor (GM).
 
@@ -47,8 +48,7 @@ The ``wis2-gdc`` monitoring capability collects and provides metrics on WCMP2 th
 
 The ``wis2-gdc`` API provides an OGC API - Records endpoint that is OGC compliant.  The API provides search engine capability for WIS2 metadata, also providing OGC API - Processes functionality for WCMP2 validation and KPI quality assessment.
 
-The ``wis2-gdc-management`` container also provides functionality to restore a WCMP2 metadata archive zipfile from another GDC.  Note that ETS and KPI validations are not performed during a restore workflow.
-
+The ``wis2-gdc-management`` container provides functionality to restore a WCMP2 metadata archive zipfile from another GDC.  Note that ETS and KPI validations are not performed during a restore workflow.
 
 .. _`Twelve-Factor App methodology`: https://12factor.net
 .. _`Docker`: https://www.docker.com
