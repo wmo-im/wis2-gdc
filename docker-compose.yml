@@ -132,7 +132,6 @@ services:
       - wis2-gdc-broker
     <<: *logging
 
-
   wis2-gdc-management:
     container_name: wis2-gdc-management
     build:
