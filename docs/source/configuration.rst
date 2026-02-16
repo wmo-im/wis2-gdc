@@ -121,3 +121,50 @@ Application specific configurations can be found in the following files (for dir
 
 .. _`Python logging levels`: https://docs.python.org/library/logging.html#logging-levels
 .. _`documentation`: https://docs.pygeoapi.io/en/latest/configuration.html
+
+Connections to additional Global Brokers
+----------------------------------------
+
+By default, wis2-gdc interacts with a single Global Broker via the ``wis2-gdc-management`` service.
+
+To connect to additional Global Brokers, any number of additional ``wis2-gdc-management`` services may be added.  For example, adding in ``docker-compose.yml``:
+
+.. code-block:: yaml
+
+   wis2-gdc-management2:  # update name accordingly
+     container_name: wis2-gdc-management2  # update name accordingly
+     build:
+       context: ./wis2-gdc-management/
+     env_file:
+       - wis2-gdc.env
+     environment:
+       - WIS2_GDC_API_URL_DOCKER=http://wis2-gdc-api:8080
+       - WIS2_GDC_GB=mqtts://everyone:everyone@globalbroker.inmet.br:8883  # override default WIS2_GDC_GB
+     depends_on:
+       wis2-gdc-backend:
+         condition: service_healthy
+       wis2-gdc-cache:
+         condition: service_healthy
+     healthcheck:
+       test: ["CMD", "curl", "-f", "http://wis2-gdc-backend:9200/wis2-discovery-metadata"]
+       interval: 1m
+       retries: 3
+     volumes:
+       - wis2-gdc-management-data2:/data  # update volume accordingly
+     restart: always
+     command: ["/venv/bin/pywis-pubsub", "subscribe", "--config", "/app/docker/pywis-pubsub.yml", "--verbosity", "DEBUG"]
+     networks:
+       - wis2-gdc-net
+     <<: *logging
+
+...then adding the associated volume:
+
+.. code-block:: yaml
+
+   volumes:
+     wis2-gdc-backend-data:
+     wis2-gdc-management-data:
+     wis2-gdc-management2-data:  # added volume
+
+
+
