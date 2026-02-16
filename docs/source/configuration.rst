@@ -165,6 +165,3 @@ To connect to additional Global Brokers, any number of additional ``wis2-gdc-man
      wis2-gdc-backend-data:
      wis2-gdc-management-data:
      wis2-gdc-management2-data:  # added volume
-
-
-
