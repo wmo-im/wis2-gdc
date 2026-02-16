@@ -9,7 +9,7 @@ wis2-gdc is a Reference Implementation of a WIS2 Global Discovery Catalogue.
 ## Workflow
 
 - connects to a WIS2 Global Broker, subscribed to the following topic:
-  - `cache/a/wis2/+/metadata/#`
+  - `cache/a/wis2/+/metadata`
 - on discovery metadata notifications:
   - check for message duplication
   - run the WCMP2 ETS and KPIs via [pywcmp](https://github.com/World-Meteorological-Organization/pywcmp)

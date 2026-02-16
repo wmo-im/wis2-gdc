@@ -21,7 +21,7 @@ Main configuration environment variables
    ``WIS2_GDC_CENTRE_ID``,centre identifier of the GDC,``ca-eccc-msc-global-discovery-catalogue``
    ``WIS2_GDC_COLLECTOR_URL``,URL of metrics collector,``http://wis2-gdc-metrics-collector:8006``
    ``WIS2_GDC_GB``,WIS2 Global Broker that the GDC connects to,``mqtts://everyone:everyone@globalbroker.meteo.fr:8883``
-   ``WIS2_GDC_GB_TOPIC``,WIS2 topic that the GDC subscribes to,``cache/a/wis2/+/metadata/#``
+   ``WIS2_GDC_GB_TOPIC``,WIS2 topic that the GDC subscribes to,``cache/a/wis2/+/metadata``
    ``WIS2_GDC_PUBLISH_REPORTS``,whether the GDC should publish ETS and KPI reports,``true``
    ``WIS2_GDC_REJECT_ON_FAILING_ETS``,whether the GDC should stop ingest based on on failing record,``true``
    ``WIS2_GDC_RUN_KPI``,whether the GDC should run KPI as part of ingest,``false``
