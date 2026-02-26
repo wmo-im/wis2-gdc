@@ -22,6 +22,7 @@
 import click
 
 from wis2_gdc.registrar import register, setup, teardown, unregister
+from wis2_gdc.metrics import metrics
 from wis2_gdc.archive import archive, restore
 from wis2_gdc.sync import sync
 
@@ -43,3 +44,4 @@ cli.add_command(register)
 cli.add_command(sync)
 cli.add_command(archive)
 cli.add_command(restore)
+cli.add_command(metrics)

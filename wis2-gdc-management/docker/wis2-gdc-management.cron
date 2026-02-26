@@ -1,2 +1,3 @@
 0 0 * * * /venv/bin/wis2-gdc archive $WIS2_GDC_METADATA_ARCHIVE_ZIPFILE
+0 1 * * * /venv/bin/wis2-gdc metrics analyze
 30 * * * * /venv/bin/pywcmp bundle sync
