@@ -149,8 +149,13 @@
         var datetime_end = document.getElementById('datetime_end').value;
 
         if (q) {
-            query_string.push('q=' + encodeURIComponent(q));
+            if (q.includes('-')) {  // centre-id
+                query_string.push('q="' + encodeURIComponent(q) + '"');
+            } else {
+                query_string.push('q=' + encodeURIComponent(q));
+            }
         }
+
         if (datetime_begin !== "") {
             datetime.push(datetime_begin + 'T00:00:00Z');
         } else {
