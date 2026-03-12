@@ -514,6 +514,7 @@ def register(ctx, path, verbosity='NOTSET'):
 
         if isinstance(w2p, str) and w2p.startswith('http'):
             metadata = requests.get(w2p).content
+            r.wcmp2_url = w2p
         else:
             with w2p.open() as fh:
                 metadata = fh.read()
