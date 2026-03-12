@@ -513,8 +513,10 @@ def register(ctx, path, verbosity='NOTSET'):
         r = Registrar()
 
         if isinstance(w2p, str) and w2p.startswith('http'):
-            metadata = requests.get(w2p).content
+            response = requests.get(w2p)
+            metadata = response.content
             r.wcmp2_url = w2p
+            r.metadata_length = response.headers.get('Content-Length')
         else:
             with w2p.open() as fh:
                 metadata = fh.read()
