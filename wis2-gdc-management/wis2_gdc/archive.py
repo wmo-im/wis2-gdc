@@ -31,7 +31,7 @@ from typing import Union
 
 from pywis_pubsub import cli_options
 from pywis_pubsub.mqtt import MQTTPubSubClient
-from pywis_pubsub.publish import create_message
+from pywis_pubsub.publish import create_message, get_url_info
 
 from wis2_gdc.env import API_URL, API_URL_DOCKER, BROKER_URL, CENTRE_ID
 from wis2_gdc.registrar import Registrar
@@ -95,10 +95,12 @@ def archive_metadata(archive_zipfile: str) -> None:
 
     LOGGER.info(f"URL: {url}")
 
+    url_info = get_url_info(url)
+
     message = create_message(
         topic=metadata_archive_zipfile_topic,
         content_type='application/zip',
-        url=url,
+        url_info=url_info,
         identifier=str(uuid.uuid4())
     )
 
