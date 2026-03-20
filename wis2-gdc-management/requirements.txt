@@ -1,5 +1,5 @@
 click
-pywcmp
+pywcmp>=0.14.0
 pywis-pubsub
 redis[hiredis]
 requests

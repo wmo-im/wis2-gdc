@@ -1,2 +1,2 @@
-pywcmp
+pywcmp>=0.14.0
 requests
