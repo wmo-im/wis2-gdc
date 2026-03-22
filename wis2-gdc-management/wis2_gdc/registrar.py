@@ -97,15 +97,9 @@ class Registrar:
         except requests.exceptions.HTTPError as err:
             message_failure_reason = err
             LOGGER.warning(err)
-            self._process_record_metric(
-                'unknown', 'downloaded_errors_total',
-                [BROKER_URL, CENTRE_ID])
         except json.decoder.JSONDecodeError as err:
             message_failure_reason = err
             LOGGER.warning(err)
-            self._process_record_metric(
-                'unknown', 'failed_total',
-                [BROKER_URL, CENTRE_ID])
 
         LOGGER.debug(f'WCMP2 access failed: {message_failure_reason}')
 
@@ -138,13 +132,10 @@ class Registrar:
                 self.metadata = json.loads(metadata)
             except json.decoder.JSONDecodeError as err:
                 LOGGER.warning(err)
-                self._process_record_metric(
-                    'unknown', 'failed_total', [BROKER_URL, CENTRE_ID])
                 return
 
         self.centre_id = self.metadata['id'].split(':')[3]
         publish_report_topic = f'monitor/a/wis2/{self.centre_id}'
-        centre_id_labels = [self.centre_id, CENTRE_ID]
 
         if topic is None:
             LOGGER.warning('No incoming topic defined')
@@ -157,9 +148,6 @@ class Registrar:
 
             if incoming_topic_centre_id != self.centre_id:
                 LOGGER.warning('Topic mismatch')
-                self._process_record_metric(
-                    self.metadata['id'], 'failed_total', [BROKER_URL, CENTRE_ID])  # noqa
-
                 message = {
                     'description': f'Topic mismatch ({incoming_topic_centre_id} != {self.centre_id})'  # noqa
                 }
@@ -205,22 +193,11 @@ class Registrar:
             self.broker.pub(publish_report_topic, json.dumps(wme))
 
         if failed_ets:
-            self._process_record_metric(
-                self.metadata['id'], 'failed_total', centre_id_labels)
-
             if REJECT_ON_FAILING_ETS:
                 LOGGER.info('Stopping further processing')
                 return
 
-        self._process_record_metric(
-            self.metadata['id'], 'passed_total', centre_id_labels)
-
         data_policy = self.metadata['properties'].get('wmo:dataPolicy')
-
-        if data_policy is not None:
-            LOGGER.debug('Adding data policy metric')
-            self._process_record_metric(
-                self.metadata['id'], f'{data_policy}_total', centre_id_labels)
 
         LOGGER.info('Updating links')
         self.metadata['links'] = self.update_record_links(data_policy)
@@ -242,12 +219,6 @@ class Registrar:
                 wme = generate_wme(self.centre_id, 'INFO', 'WCMP2 KPI report',
                                    kpi_results)
                 self.broker.pub(publish_report_topic, json.dumps(wme))
-
-                kpi_labels = [self.metadata['id']] + centre_id_labels
-
-                self._process_record_metric(
-                    self.metadata['id'], 'kpi_percentage_total',
-                    kpi_labels, kpi_results['summary']['percentage'])
 
     def delete_record(self, topic: str, wnm: dict) -> None:
         """
@@ -285,38 +256,6 @@ class Registrar:
         self.broker.pub(publish_report_topic, json.dumps(wme))
 
         return
-
-    def _process_record_metric(self, identifier: str, metric_name: str,
-                               labels: list,
-                               value: Union[str, int, float] = None) -> None:
-        """
-        Helper function to process record metric
-
-        :param identifier: identifier of metadata record
-        :param metric_name: `str` of name of metric
-        :param labels: `list` of labels to apply
-        :param value: optional value(s) to set
-
-        :returns: `None`
-        """
-
-        publish_metric = True
-
-        message_payload = {
-            'labels': labels
-        }
-
-        if value is not None:
-            message_payload['value'] = value
-
-        if self.backend.record_exists(identifier) and len(labels) == 2:
-            LOGGER.debug('Record exists; not publishing metric')
-            publish_metric = False
-
-        if publish_metric:
-            LOGGER.debug('Record does not exist; publishing metric')
-            self.broker.pub(f'wis2-gdc/metrics/{metric_name}',
-                            json.dumps(message_payload))
 
     def _run_ets(self) -> dict:
         """

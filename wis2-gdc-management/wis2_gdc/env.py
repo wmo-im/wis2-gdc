@@ -54,6 +54,7 @@ CACHE_RETENTION_SECONDS = int(os.environ.get('WIS2_GDC_CACHE_RETENTION_SECONDS',
 GB = os.environ.get('WIS2_GDC_GB')
 GB_CENTRE_ID = None
 GB_TOPIC = os.environ.get('WIS2_GDC_GB_TOPIC')
+METADATA_ARCHIVE_ZIPFILE = os.environ.get('WIS2_GDC_METADATA_ARCHIVE_ZIPFILE')
 PUBLISH_REPORTS = str2bool(os.environ.get('WIS2_GDC_PUBLISH_REPORTS', 'false'))
 REJECT_ON_FAILING_ETS = str2bool(os.environ.get('WIS2_GDC_REJECT_ON_FAILING_ETS', 'true'))  # noqa
 RUN_KPI = str2bool(os.environ.get('WIS2_GDC_RUN_KPI', 'false'))

@@ -1,6 +1,7 @@
 click
 pywcmp>=0.14.0
 pywis-pubsub
+pywiscat
 redis[hiredis]
 requests
 unicodecsv

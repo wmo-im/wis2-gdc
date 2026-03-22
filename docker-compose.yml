@@ -147,7 +147,7 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://wis2-gdc-backend:9200/wis2-discovery-metadata"]
-      interval: 1m
+      interval: 5s
       retries: 3
     volumes:
       - wis2-gdc-management-data:/data
@@ -168,7 +168,7 @@ services:
       - wis2-gdc-management-data:/data
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/conformance"]
-      interval: 1m
+      interval: 5s
       retries: 3
     env_file:
       - wis2-gdc.env

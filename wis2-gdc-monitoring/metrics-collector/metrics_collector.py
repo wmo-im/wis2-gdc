@@ -28,7 +28,7 @@ from urllib.parse import urlparse
 
 import paho.mqtt.client as mqtt_client
 from prometheus_client import (
-    Counter, Gauge, start_http_server, REGISTRY, GC_COLLECTOR,
+    Gauge, start_http_server, REGISTRY, GC_COLLECTOR,
     PLATFORM_COLLECTOR, PROCESS_COLLECTOR
 )
 
@@ -51,33 +51,27 @@ LOGGER.setLevel(LOGGING_LEVEL)
 
 # sets metrics as per https://github.com/wmo-im/wis2-metric-hierarchy/blob/main/metric-hierarchy/gdc.csv  # noqa
 
-METRIC_PASSED_TOTAL = Counter(
-    'wmo_wis2_gdc_passed_total',
-    'Number of metadata records passed validation',
-    ['centre_id', 'report_by']
-)
-
-METRIC_FAILED_TOTAL = Counter(
-    'wmo_wis2_gdc_failed_total',
-    'Number of metadata records failed validation',
-    ['centre_id', 'report_by']
-)
-
-METRIC_CORE_TOTAL = Counter(
+METRIC_CORE_TOTAL = Gauge(
     'wmo_wis2_gdc_core_total',
     'Number of core metadata records',
     ['centre_id', 'report_by']
 )
 
-METRIC_RECOMMENDED_TOTAL = Counter(
+METRIC_RECOMMENDED_TOTAL = Gauge(
     'wmo_wis2_gdc_recommended_total',
     'Number of recommended metadata records',
     ['centre_id', 'report_by']
 )
 
+METRIC_EARTH_SYSTEM_DISCIPLINE_TOTAL = Gauge(
+    'wmo_wis2_gdc_earth_system_discipline_total',
+    'Number of metadata records for an Earth system discipline',
+    ['earth_system_discipline', 'centre_id', 'report_by']
+)
+
 METRIC_KPI_PERCENTAGE_TOTAL = Gauge(
     'wmo_wis2_gdc_kpi_percentage_total',
-    'KPI percentage for a single metadata record (metadata_id equals WCMP2 id)',  # noqa
+    'KPI percentage for a single metadata record (metadata_id = WCMP2 id)',
     ['metadata_id', 'centre_id', 'report_by']
 )
 
@@ -87,55 +81,11 @@ METRIC_KPI_PERCENTAGE_AVERAGE = Gauge(
     ['centre_id', 'report_by']
 )
 
-METRIC_KPI_PERCENTAGE_OVER80_TOTAL = Counter(
+METRIC_KPI_PERCENTAGE_OVER80_TOTAL = Gauge(
     'wmo_wis2_gdc_kpi_percentage_over80_total',
     'Number of metadata records with KPI percentage over 80',
     ['centre_id', 'report_by']
 )
-
-METRIC_SEARCH_TOTAL = Gauge(
-    'wmo_wis2_gdc_search_total',
-    'Number of search requests (during last monitoring period)',
-    ['centre_id', 'report_by']
-)
-
-METRIC_SEARCH_TERMS = Gauge(
-    'wmo_wis2_gdc_search_terms',
-    'Most popular search terms (e.g. top=1 to top=5)',
-    ['top', 'centre_id', 'report_by']
-)
-
-METRIC_CONNECTED_FLAG = Gauge(
-    'wmo_wis2_gdc_connected_flag',
-    'Connection status from GDC to to centre',
-    ['centre_id', 'report_by']
-)
-
-METRIC_API_STATUS = Gauge(
-    'wmo_wis2_gdc_api_status',
-    'Status of GDC API',
-    ['centre_id']
-)
-
-METRIC_DOWNLOADED_ERRORS_TOTAL = Counter(
-    'wmo_wis2_gdc_downloaded_errors_total',
-    'Number of metadata download errors',
-    ['centre_id', 'report_by']
-)
-
-
-def get_gb_centre_id() -> str:
-    """
-    Derive GB centre id from WIS2_GDC_GB_LINK environment variables
-
-    :returns: centre-id of matching GB
-    """
-
-    for key, value in os.environ.items():
-        if key.startswith('WIS2_GDC_GB_LINK'):
-            centre_id, url, title = value.split(',', 2)
-            if GB == url:
-                return centre_id
 
 
 def init_metrics() -> None:
@@ -145,23 +95,13 @@ def init_metrics() -> None:
     :returns: `None`
     """
 
-    gb_centre_id = get_gb_centre_id()
-
-    METRIC_CONNECTED_FLAG.labels(
-        centre_id=gb_centre_id, report_by=CENTRE_ID).inc(1)
-
-    METRIC_API_STATUS.labels(
-        centre_id=CENTRE_ID).inc(1)
-
     with open(CENTRE_ID_CSV) as fh:
         reader = csv.DictReader(fh)
         for row in reader:
             labels = [row['Name'], CENTRE_ID]
 
-            METRIC_PASSED_TOTAL.labels(*labels).inc(0)
-            METRIC_FAILED_TOTAL.labels(*labels).inc(0)
-            METRIC_CORE_TOTAL.labels(*labels).inc(0)
-            METRIC_RECOMMENDED_TOTAL.labels(*labels).inc(0)
+            METRIC_CORE_TOTAL.labels(*labels).set(0)
+            METRIC_RECOMMENDED_TOTAL.labels(*labels).set(0)
 
 
 def collect_metrics() -> None:
@@ -185,16 +125,28 @@ def collect_metrics() -> None:
         LOGGER.debug(f"Labels: {payload['labels']}")
         LOGGER.debug(f"Value: {payload.get('labels')}")
 
-        if topic == 'wis2-gdc/metrics/passed_total':
-            METRIC_PASSED_TOTAL.labels(*labels).inc()
-        if topic == 'wis2-gdc/metrics/failed_total':
-            METRIC_FAILED_TOTAL.labels(*labels).inc()
+        if topic == 'wis2-gdc/metrics/clear':
+            LOGGER.info('Clearing all metrics')
+            METRIC_CORE_TOTAL.clear()
+            METRIC_RECOMMENDED_TOTAL.clear()
+            METRIC_EARTH_SYSTEM_DISCIPLINE_TOTAL.clear()
+            METRIC_KPI_PERCENTAGE_TOTAL.clear()
+            METRIC_KPI_PERCENTAGE_OVER80_TOTAL.clear()
+        elif topic == 'wis2-gdc/metrics/init':
+            LOGGER.info('Initializing metrics')
+            init_metrics()
         elif topic == 'wis2-gdc/metrics/core_total':
-            METRIC_CORE_TOTAL.labels(*labels).inc()
+            METRIC_CORE_TOTAL.labels(*labels).set(value)
         elif topic == 'wis2-gdc/metrics/recommended_total':
-            METRIC_RECOMMENDED_TOTAL.labels(*labels).inc()
+            METRIC_RECOMMENDED_TOTAL.labels(*labels).set(value)
+        elif topic == 'wis2-gdc/metrics/earth_system_discipline_total':
+            METRIC_EARTH_SYSTEM_DISCIPLINE_TOTAL.labels(*labels).set(value)
         elif topic == 'wis2-gdc/metrics/kpi_percentage_total':
             METRIC_KPI_PERCENTAGE_TOTAL.labels(*labels).set(value)
+        elif topic == 'wis2-gdc/metrics/kpi_percentage_average':
+            METRIC_KPI_PERCENTAGE_AVERAGE.labels(*labels).set(value)
+        elif topic == 'wis2-gdc/metrics/kpi_over80_total':
+            METRIC_KPI_PERCENTAGE_OVER80_TOTAL.labels(*labels).set(value)
 
     url = urlparse(BROKER_URL)
 
