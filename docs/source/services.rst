@@ -154,20 +154,19 @@ Interfaces for both ETS validation and KPI quality assessment take the same inpu
    :width: 80%
    :alt: GDC API Swagger Process for WCMP2 validation
 
-Additional endpoints
-^^^^^^^^^^^^^^^^^^^^
-
-In addition to OGC API interfaces, wis2-gdc provides the following additional endpoints:
-
-- ``/wis2-discovery-metadata-archive.zip``: Metadata archive (generated daily)
-- ``/wis2-gdc-metrics.txt``: OpenMetrics
-- ``/wis2-gdc-all-channels-latest.txt``: Live channel list
-
-
 Metrics
 -------
 
 wis2-gdc generates metrics on a daily basis (at 1h) as per the WIS2 Guide Technical Considerations for GDC.  The reuslting metrics are made available at ``/wis2-gdc-metrics.txt`` and made available as per the `OpenMetrics`_ standard.
+
+Additional endpoints
+--------------------
+
+In addition to OGC API interfaces, wis2-gdc provides the following additional endpoints:
+
+- ``/wis2-discovery-metadata-archive.zip``: Metadata archive (generated daily)
+- ``/wis2-gdc-all-channels-latest.txt``: Live channel list
+
 
 .. _`technical considerations`: https://wmo-im.github.io/wis2-guide/guide/wis2-guide-APPROVED.html#_2_7_5_global_discovery_catalogue
 .. _`OGC API - Records`: https://docs.ogc.org/is/20-004r1/20-004r1.html
