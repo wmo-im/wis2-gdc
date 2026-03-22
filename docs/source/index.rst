@@ -26,7 +26,7 @@ reference documentation on all aspects of the project.
    configuration
    administration
    running
-   api
+   services
    contributing
    support
    license

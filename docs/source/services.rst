@@ -1,13 +1,16 @@
-.. _api:
+.. _services:
+
+Services
+========
 
 API
-===
+---
 
 The WIS2 GDC provides a search API according to the GDC `technical considerations`_ in the WIS2 Guide, supporting
 the `OGC API - Records`_ standard.
 
 Overview
---------
+^^^^^^^^
 
 The wis2-gdc OGC API - Records API is powered by `pygeoapi`_, an OGC API Reference Implementation, and contains
 the following resources:
@@ -28,7 +31,7 @@ the following resources:
      - ``/processes/pywcmp-wis2-wcmp2-kpi/execution``
 
 OpenAPI/Swagger
----------------
+^^^^^^^^^^^^^^^
 
 The easiest way to test the GDC API is using the Swagger endpoint, which allows for testing various capabilities
 and queries into the GDC.
@@ -38,7 +41,7 @@ and queries into the GDC.
    :alt: GDC API Swagger endpoint
 
 Discovery
----------
+^^^^^^^^^
 
 The GDC API allows for a wide range of query predicates to search for data in WIS2 as per the OGC API - Records - Part 1: Core specification.
 
@@ -47,7 +50,7 @@ The GDC can be searched via the ``/collections/wis2-discovery-metadata/items`` e
 **NOTE**: examples below are not URL encoded for clarity / readability, but should be when interacting with the GDC API.
 
 Spatial queries
-^^^^^^^^^^^^^^^
+"""""""""""""""
 
 - search for metadata records of data in Canada: ``bbox=-142,42,-52,84``
 
@@ -59,21 +62,21 @@ Note that the format of `bbox` is comma-separated values in the following order:
 - maximum latitude
 
 Temporal queries
-^^^^^^^^^^^^^^^^
+""""""""""""""""
 
 - search for metadata records updated since 29 July 2024: ``datetime=2024-07-29/..``
 - search for metadata records updated before 29 July 2024: ``datetime=../2024-07-29``
 - search for metadata records updated on 29 July 2024: ``datetime=2024-07-29``
 
 Equality queries
-^^^^^^^^^^^^^^^^
+""""""""""""""""
 
 - search for metadata records whose title contains the terms hourly observations: ``title=hourly observations``
 - search for metadata records whose title contains the terms hourly or observations: ``title=hourly | observations``
 - search for metadata records for a specific contact organization ``contacts.addresses.organization=Direction Generale de la Météorologie``
 
 Freetext search
-^^^^^^^^^^^^^^^
+"""""""""""""""
 
 - search metadata records for temperature: `q=temperature``
 - search metadata records for GRIB2 data: ``q=GRIB2``
@@ -83,20 +86,20 @@ Freetext search
 - search for data from Belize with MQTT subscription capabilities: ``q="cache/a/wis2/bz-nms"``
 
 Sorting
-^^^^^^^
+"""""""
 
 - sort search results by title, ascending: ``sortby=title``
 - sort search results by title, descending: ``sortby=-title``
 
 Paging
-^^^^^^
+""""""
 
 - present search results 1-10: ``limit=10``
 - present search results 11-20: ``limit=10&offset=10``
 - limit to 3 search results: ``limit=3``
 
 Finding data subscription services
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""""""""""""""
 
 The GDC API contains both real-time and non real-time data.  A typical WCMP2 distribution link for data subscriptions can be found below:
 
@@ -136,7 +139,7 @@ Programmatically, a GDC client can query the catalogue and filter the results fo
 Using the ``href`` and ``channel`` properties of a matching link object, a client can connect and subscribe to data notifications for a given dataset.
 
 Validation and quality assessment
----------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The GDC API provides processes to validate WCMP2 records (required by WIS2) and perform quality assessment as a value added service.  Both processes
 utilize the `pywcmp`_ package to achieve this capability.
@@ -152,7 +155,7 @@ Interfaces for both ETS validation and KPI quality assessment take the same inpu
    :alt: GDC API Swagger Process for WCMP2 validation
 
 Additional endpoints
---------------------
+^^^^^^^^^^^^^^^^^^^^
 
 In addition to OGC API interfaces, wis2-gdc provides the following additional endpoints:
 
@@ -161,9 +164,15 @@ In addition to OGC API interfaces, wis2-gdc provides the following additional en
 - ``/wis2-gdc-all-channels-latest.txt``: Live channel list
 
 
+Metrics
+-------
+
+wis2-gdc generates metrics on a daily basis (at 1h) as per the WIS2 Guide Technical Considerations for GDC.  The reuslting metrics are made available at ``/wis2-gdc-metrics.txt`` and made available as per the `OpenMetrics`_ standard.
+
 .. _`technical considerations`: https://wmo-im.github.io/wis2-guide/guide/wis2-guide-APPROVED.html#_2_7_5_global_discovery_catalogue
 .. _`OGC API - Records`: https://docs.ogc.org/is/20-004r1/20-004r1.html
 .. _`pygeoapi`: https://pygeoapi.io
 .. _`WCMP2 Abstract Test Suite`: https://wmo-im.github.io/wcmp2/standard/wcmp2-STABLE.html#_conformance_class_abstract_test_suite_normative
 .. _`WCMP2 Key Performance Indicators`: https://wmo-im.github.io/wcmp2/kpi/wcmp2-kpi-DRAFT.html
 .. _`pywcmp`: https://github.com/World-Meteorological-Organization/pywcmp
+.. _`OpenMetrics`: https://openmetrics.io
