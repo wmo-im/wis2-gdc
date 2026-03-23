@@ -4,7 +4,7 @@ server:
         port: 5000
     url: ${WIS2_GDC_API_URL:-http://localhost}
     icon: ${WIS2_GDC_SERVER_ICON:-https://wmo.int/themes/custom/server_theme/dist/images/favicons//favicon-32x32.png}
-    logo: ${WIS2_GDC_SERVER_LOGO:-https://upload.wikimedia.org/wikipedia/en/thumb/b/b6/World_Meteorological_Organization_Logo.svg/2560px-World_Meteorological_Organization_Logo.svg.png}
+    logo: ${WIS2_GDC_SERVER_LOGO:-https://upload.wikimedia.org/wikipedia/en/thumb/b/b6/World_Meteorological_Organization_Logo.svg/3840px-World_Meteorological_Organization_Logo.svg.png}
     mimetype: application/json; charset=UTF-8
     encoding: utf-8
     language: en-US
