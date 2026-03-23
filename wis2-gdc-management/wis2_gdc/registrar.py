@@ -303,7 +303,7 @@ class Registrar:
         """
 
         def is_wis2_mqtt_link(link) -> bool:
-            if link['href'].startswith('mqtt'):
+            if link['href'].startswith(('mqtt', 'ws')):
                 if link.get('channel', '').startswith('origin/a/wis2'):
                     LOGGER.debug('Found MQTT link')
                     return True
