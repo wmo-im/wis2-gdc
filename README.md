@@ -99,9 +99,9 @@ The Docker setup uses Docker and Docker Compose to manage the following services
 
 - **wis2-gdc-api**: API powered by [pygeoapi](https://pygeoapi.io)
 - **wis2-gdc-monitoring**: monitoring
-  - **metrics-collector**: metrics collector
-  - **prometheus**: metrics scraper
-  - **grafana**: analytics and visualization
+  - **wis2-gdc-metrics-collector**: metrics collector
+  - **wis2-gdc-prometheus**: metrics scraper
+  - **wis2-gdc-grafana**: analytics and visualization
 - **wis2-gdc-broker**: MQTT broker
 - **wis2-gdc-management**: management service to ingest, validate and publish discovery metadata published from a WIS2 Global Broker instance
   - the default Global Broker connection is to NOAA.  This can be modified in `wis2-gdc.env` to point to a different Global Broker

@@ -60,18 +60,18 @@ services:
       - wis2-gdc-net
     <<: *logging
 
-  prometheus:
+  wis2-gdc-prometheus:
     image: prom/prometheus
-    container_name: prometheus
+    container_name: wis2-gdc-prometheus
     volumes:
       - ./wis2-gdc-monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
       - wis2-gdc-net
     <<: *logging
 
-  grafana:
+  wis2-gdc-grafana:
     image: grafana/grafana-oss
-    container_name: grafana
+    container_name: wis2-gdc-grafana
     env_file:
       - wis2-gdc.env
     networks:
