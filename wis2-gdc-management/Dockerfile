@@ -27,6 +27,7 @@ ENV TZ="Etc/UTC"
 ENV DEBIAN_FRONTEND="noninteractive"
 ENV DEBIAN_PACKAGES="bash curl git python3-pip python3-setuptools python3-venv sudo vim"
 ENV HOME=/app
+ENV WIS2_GDC_METADATA_ARCHIVE_SOURCE=/data/source
 ENV WIS2_GDC_METADATA_ARCHIVE_ZIPFILE=/data/wis2-discovery-metadata-archive.zip
 ENV PATH=$PATH:/venv/bin
 
@@ -55,8 +56,9 @@ RUN curl -fsSLO "https://github.com/aptible/supercronic/releases/download/v0.2.4
 RUN useradd -u 1001 -g 0 wis2-gdc && \
     chgrp -R 0 /app && \
     chmod -R g=u /app && \
-    mkdir /data && \
-    chmod 775 /data
+    mkdir -p /data/source && \
+    chmod 775 /data && \
+    chmod 775 /data/source
 
 USER 1001
 

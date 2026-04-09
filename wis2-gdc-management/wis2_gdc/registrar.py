@@ -36,8 +36,9 @@ from pywis_pubsub.mqtt import MQTTPubSubClient
 
 from wis2_gdc.backend import BACKENDS
 from wis2_gdc.env import (BACKEND_TYPE, BACKEND_CONNECTION, BROKER_URL,
-                          CENTRE_ID, GB_LINKS, PUBLISH_REPORTS,
-                          REJECT_ON_FAILING_ETS, RUN_KPI, EXPERIMENTAL)
+                          CENTRE_ID, GB_LINKS, METADATA_ARCHIVE_SOURCE,
+                          PUBLISH_REPORTS, REJECT_ON_FAILING_ETS, RUN_KPI,
+                          EXPERIMENTAL)
 from wis2_gdc.wme import generate_wme
 
 LOGGER = logging.getLogger(__name__)
@@ -53,6 +54,7 @@ class Registrar:
 
         self.broker = None
         self.wcmp2_url = None
+        self.source = None
         self.metadata = None
         self.backend = BACKENDS[BACKEND_TYPE](
                     {'connection': BACKEND_CONNECTION})
@@ -93,6 +95,7 @@ class Registrar:
         try:
             r = requests.get(self.wcmp2_url)
             r.raise_for_status()
+            self.source = r.content
             return r.json()
         except requests.exceptions.HTTPError as err:
             message_failure_reason = err
@@ -126,10 +129,12 @@ class Registrar:
         if isinstance(metadata, dict):
             LOGGER.debug('Metadata is already a dict')
             self.metadata = metadata
+            self.source = json.dumps(metadata, indent=4).encode('utf-8')
         elif isinstance(metadata, (bytes, str)):
             LOGGER.debug('Metadata is bytes or string; parsing')
             try:
                 self.metadata = json.loads(metadata)
+                self.source = metadata.encode('utf-8')
             except json.decoder.JSONDecodeError as err:
                 LOGGER.warning(err)
                 return
@@ -197,9 +202,14 @@ class Registrar:
                 LOGGER.info('Stopping further processing')
                 return
 
-        data_policy = self.metadata['properties'].get('wmo:dataPolicy')
+        source_filename = f"{self.metadata['id']}.json"
+        source_filename = METADATA_ARCHIVE_SOURCE / source_filename
+        LOGGER.debug(f'Saving source record to {source_filename}')
+        with source_filename.open('wb') as fh:
+            fh.write(self.source)
 
         LOGGER.info('Updating links')
+        data_policy = self.metadata['properties'].get('wmo:dataPolicy')
         self.metadata['links'] = self.update_record_links(data_policy)
 
         LOGGER.info('Adding centre-id property')
@@ -250,7 +260,12 @@ class Registrar:
                 message['description'] = f'metadata {metadata_id} not found'
                 severity = 'ERROR'
 
-        LOGGER.info('Publishing missing metadata_id report to broker')
+            source_filename = f"{metadata_id}.json"
+            source_filename = METADATA_ARCHIVE_SOURCE / source_filename
+            LOGGER.debug(f'Deleting source record {source_filename}')
+            source_filename.unlink(missing_ok=True)
+
+        LOGGER.info('Publishing metadata deletion report to broker')
         wme = generate_wme(centre_id, severity,
                            'WIS2 GDC WCMP2 deletion report', message)
         self.broker.pub(publish_report_topic, json.dumps(wme))

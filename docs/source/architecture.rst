@@ -42,6 +42,10 @@ Workflows
 
 ``wis2-gdc`` starts up by connecting to one or more WIS2 Global Brokers (GB), subscribing to notifications for WIS2 metadata (WMO Core Metadata Profile [WCMP2]).  On receipt of WIS2 Notification Messages (WNM) for metadata, ``wis2-gdc`` will perform message deduplication, validate, ingest and publish a WCMP2 record to its catalogue API.  In addition, WCMP2 update and deletion is supported with the appropriate WNM.
 
+.. note::
+
+   Valid WCMP2 record sources are always saved in their original form in the ``wis2-gdc-management`` container, in ``data/source``.
+
 The ``wis2-gdc`` monitoring capability collects and provides metrics on WCMP2 that is scraped by the WIS2 Global Monitor (GM).
 
 ``wis2-gdc`` also provides its own MQTT broker that provides WCMP2 compliance and key performance indicator (KPI) reports.  The WIS2 GB subscribes to the ``wis2-gdc`` broker in order to publish these reports back to users (available on WIS2 topic ``monitor/a/wis2/CENTRE_ID_OF_DATA_PUBLISHER>`` for data providers in support of quality assessment, scoring and corrective action.  The ``wis2-gdc`` broker also acts as an internal message bus for inter-application event handling.

@@ -96,6 +96,7 @@ A default installation with minimal configuration changes per below satisfies mo
 
 .. note::
 
+   The ``WIS2_GDC_METADATA_ARCHIVE_SOURCE`` environment variable is always set by wis2-gdc to ``/data/source`` for the ``wis2-gdc-management`` container.
    The ``WIS2_GDC_METADATA_ARCHIVE_ZIPFILE`` environment variable is always set by wis2-gdc to ``/data/wis2-discovery-metadata-archive.zip`` for the ``wis2-gdc-management`` and ``wis2-gdc-api`` containers.
 
 Application specific configurations
