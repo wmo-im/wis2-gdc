@@ -26,7 +26,7 @@ from wis2_gdc.metrics import metrics
 from wis2_gdc.archive import archive, restore
 from wis2_gdc.sync import sync
 
-__version__ = '0.9.0'
+__version__ = '0.10.dev0'
 
 
 @click.group()
