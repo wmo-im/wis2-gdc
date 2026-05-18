@@ -109,7 +109,8 @@ class Registrar:
         message['description'] = str(message_failure_reason)
 
         LOGGER.info('Publishing URL error report to broker')
-        wme = generate_wme(centre_id, 'ERROR', 'WCMP2 access failure',
+        wme = generate_wme(centre_id, 'item.download',
+                           'ERROR', 'WCMP2 access failure',
                            message, [self._get_link()])
         publish_report_topic = f'monitor/a/wis2/{centre_id}'
         self.broker.pub(publish_report_topic, json.dumps(wme))
@@ -157,8 +158,8 @@ class Registrar:
                     'description': f'Topic mismatch ({incoming_topic_centre_id} != {self.centre_id})'  # noqa
                 }
 
-                wme = generate_wme(self.centre_id, 'ERROR', message,
-                                   [self._get_link()])
+                wme = generate_wme(self.centre_id, 'wcmp2.ets', 'ERROR',
+                                   message, [self._get_link()])
 
                 self.broker.pub(publish_report_topic, json.dumps(wme))
 
@@ -193,7 +194,8 @@ class Registrar:
                 severity = 'ERROR'
 
             LOGGER.info('Publishing ETS report to broker')
-            wme = generate_wme(self.centre_id, severity, 'WCMP2 ETS report',
+            wme = generate_wme(self.centre_id, 'wcmp2.ets',
+                               severity, 'WCMP2 ETS report',
                                ets_results, [self._get_link()])
             self.broker.pub(publish_report_topic, json.dumps(wme))
 
@@ -226,8 +228,8 @@ class Registrar:
 
             if PUBLISH_REPORTS and 'summary' in kpi_results:
                 LOGGER.info('Publishing KPI report to broker')
-                wme = generate_wme(self.centre_id, 'INFO', 'WCMP2 KPI report',
-                                   kpi_results)
+                wme = generate_wme(self.centre_id, 'wcmp2.kpi', 'INFO',
+                                   'WCMP2 KPI report', kpi_results)
                 self.broker.pub(publish_report_topic, json.dumps(wme))
 
     def delete_record(self, topic: str, wnm: dict) -> None:
@@ -266,7 +268,7 @@ class Registrar:
             source_filename.unlink(missing_ok=True)
 
         LOGGER.info('Publishing metadata deletion report to broker')
-        wme = generate_wme(centre_id, severity,
+        wme = generate_wme(centre_id, 'item.download', severity,
                            'WIS2 GDC WCMP2 deletion report', message)
         self.broker.pub(publish_report_topic, json.dumps(wme))
 

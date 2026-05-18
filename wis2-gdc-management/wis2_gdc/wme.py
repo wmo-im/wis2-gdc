@@ -30,12 +30,13 @@ LOGGER = logging.getLogger(__name__)
 WME_DATA_SCHEMA = 'https://schemas.wmo.int/wme/1.0.0/schemas/wis2-event-message-bundled.json'  # noqa
 
 
-def generate_wme(subject: str, severity, title: str,
+def generate_wme(subject: str, type_: str, severity, title: str,
                  data: dict, links: list = []) -> dict:
     """
     Generate WIS2 Monitoring Event Message of WCMP2 report
 
     :param subject: `str` of centre-id being reported
+    :param type_: `str` of CloudEvent type
     :param severity: `str` of severity (default `INFO`)
     :param title : `str` of title of event message
     :param data: `dict` of data payload
@@ -48,7 +49,7 @@ def generate_wme(subject: str, severity, title: str,
 
     message = {
         'specversion': '1.0',
-        'type': 'int.wmo.wis.wme.event',
+        'type': f'int.wmo.wis.wme.event.{type_}',
         'source': CENTRE_ID,
         'subject': subject,
         'id': str(uuid.uuid4()),
