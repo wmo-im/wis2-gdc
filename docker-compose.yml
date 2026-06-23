@@ -126,6 +126,10 @@ services:
       context: ./wis2-gdc-monitoring/metrics-collector/
     env_file:
       - wis2-gdc.env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8006"]
+      interval: 5s
+      retries: 3
     networks:
       - wis2-gdc-net
     depends_on:
