@@ -26,13 +26,13 @@ COPY ./requirements.txt /app/requirements.txt
 
 RUN apk update && \
     apk upgrade --no-cache && \
-    apk add --no-cache wget unzip && \
+    apk add --no-cache curl unzip && \
     rm -rf /var/cache/apk/* && \
     pip3 install -r /app/requirements.txt && \
     mkdir -p /data && \
-    wget -P /data https://wmo-im.github.io/wis2-topic-hierarchy/wth-bundle.zip && \
     cd /data && \
-    unzip /data/wth-bundle.zip
+    curl -O https://wmo-im.github.io/wis2-topic-hierarchy/wth-bundle.zip && \
+    unzip wth-bundle.zip
 
 ENV WIS2_GDC_CENTRE_ID_CSV="/data/centre-id.csv"
 ENV PYTHONUNBUFFERED="true"
