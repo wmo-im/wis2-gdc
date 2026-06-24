@@ -21,7 +21,7 @@
 
 import os
 
-from flask import Flask, Response, send_file
+from flask import Flask, Response, request, send_file
 from pygeoapi.flask_app import BLUEPRINT as pygeoapi_blueprint
 import requests
 
@@ -91,3 +91,61 @@ def wis2_gdc_all_channels_latest():
     LIVE_CHANNELS = list(sorted(set(LIVE_CHANNELS)))
 
     return Response('\n'.join(LIVE_CHANNELS), mimetype='text/plain')
+
+
+@app.route('/wcmp2-editor', defaults={'path': ''})
+@app.route('/wcmp2-editor/', defaults={'path': ''})
+@app.route('/wcmp2-editor/<path:path>')
+def proxy(path):
+    #url = f'http://wis2-gdc-wcmp2-editor:4173/wcmp2-editor/{path}'
+    url = f'http://wis2-gdc-wcmp2-editor:4173/{path}'
+
+    if path:
+        url = f'{url}/{path}'
+    else:
+        url += '/'
+
+    resp = requests.request(
+        method=request.method,
+        url=url,
+        headers={
+            key: value
+            for key, value in request.headers
+            if key.lower() != 'host'
+        },
+        params=request.args,
+        data=request.get_data(),
+        cookies=request.cookies,
+        allow_redirects=False,
+        stream=True
+    )
+
+    excluded_headers = [
+        'content-encoding',
+        'content-length',
+        'transfer-encoding',
+        'connection'
+    ]
+
+    headers = []
+
+    for name, value in resp.raw.headers.items():
+
+        if name.lower() in excluded_headers:
+            continue
+
+        if name.lower() == 'location':
+            if value.startswith('/'):
+                value = '/wcmp2-editor' + value
+
+        headers.append((name, value))
+
+    headers.append(('X-Forwarded-Prefix', '/wcmp2-editor'))
+    headers.append(('X-Forwarded-Proto', request.scheme))
+    headers.append(('X-Forwarded-Host', request.host))
+
+    return Response(
+        resp.content,
+        resp.status_code,
+        headers
+    )

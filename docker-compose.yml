@@ -94,7 +94,7 @@ services:
       - GF_ALERTING_ENABLED=true
       - GF_USERS_DEFAULT_THEME=dark
       - GF_DISABLE_SIGNOUT_MENU=true
-      - GF_SERVER_ROOT_URL=${WIS2_GDC_API_URL}/grafana/
+      - GF_SERVER_ROOT_URL=${WIS2_GDC_API_URL:-http://localhost:3000}
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
     <<: *logging
 
@@ -180,6 +180,20 @@ services:
       retries: 3
     env_file:
       - wis2-gdc.env
+    restart: unless-stopped
+    networks:
+      - wis2-gdc-net
+    <<: *logging
+
+  wis2-gdc-wcmp2-editor:
+    container_name: wis2-gdc-wcmp2-editor
+    image: ghcr.io/6a6d74/wcmp2-editor:latest
+    #environment:
+    #  - VITE_BASE_PATH=/wcmp2-editor/
+    #build:
+    #  context: ./wcmp2-editor2/
+    #  args:
+    #    VITE_BASE_PATH: ./
     restart: unless-stopped
     networks:
       - wis2-gdc-net

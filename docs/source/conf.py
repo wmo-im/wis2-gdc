@@ -2,7 +2,7 @@
 #
 # Authors: Tom Kralidis <tomkralidis@gmail.com>
 #
-# Copyright (c) 2024 Tom Kralidis
+# Copyright (c) 2026 Tom Kralidis
 # Copyright (c) 2024 Angelos Tzotsos
 #
 # Permission is hereby granted, free of charge, to any person
@@ -40,7 +40,7 @@ project = 'wis2-gdc'
 author = 'Tom Kralidis'
 license = 'This work is licensed under a Creative Commons Attribution 4.0 International License'  # noqa
 release = '0.1.0'
-copyright = '2023-present, ' + author + ' ' + license
+copyright = '2023-2026, ' + author + ' ' + license
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

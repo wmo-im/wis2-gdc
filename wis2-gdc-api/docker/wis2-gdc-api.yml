@@ -84,6 +84,11 @@ resources:
               hreflang: en-CA
             - type: text/html
               rel: related
+              title: WCMP2 editor
+              href: ${WIS2_GDC_API_URL:-http://localhost}/wcmp2-editor
+              hreflang: en-CA
+            - type: text/html
+              rel: related
               title: Analytics and monitoring dashboard
               href: ${WIS2_GDC_API_URL:-http://localhost}/grafana
               hreflang: en-CA

@@ -54,6 +54,8 @@ The ``wis2-gdc`` API provides an OGC API - Records endpoint that is OGC complian
 
 The ``wis2-gdc-management`` container provides functionality to restore a WCMP2 metadata archive zipfile from another GDC.  Note that ETS and KPI validations are not performed during a restore workflow.
 
+The ``wcmp2-editor`` container provides a Web-based editor for creating, editing, and publishing discovery metadata records that conform to WCMP2.
+
 .. _`Twelve-Factor App methodology`: https://12factor.net
 .. _`Docker`: https://www.docker.com
 .. _`Python`: https://www.python.org

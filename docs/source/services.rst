@@ -167,6 +167,22 @@ In addition to OGC API interfaces, wis2-gdc provides the following additional en
 - ``/wis2-discovery-metadata-archive.zip``: Metadata archive (generated daily)
 - ``/wis2-gdc-all-channels-latest.txt``: Live channel list
 
+WCMP2 editor
+------------
+
+wis2-gdc includes metadata management capability via `wcmp2-editor`_, a Web-based editor for creating, editing, and publishing discovery metadata records that conform to `WCMP2`_.  wcmp2-editor also performs WCMP2 validation, KPI quality assessment, as well as publishing WCMP2 records to GitHub.
+
+.. image:: /_static/wcmp2-editor.png
+   :width: 80%
+   :alt: WCMP2 editor
+
+wcmp2-editor is available at ``/wcmp2-editor``, and is advertised as a link from the ``/collections/wis2-discovery-metadata`` endpoint.
+
+
+.. note::
+
+   wcmp2-editor does not directly publish to wis2-gdc or WIS2.  Created WCMP2 records should be published to WIS2 using the publication mechanisms described in the WIS2 Manual and Guide.
+
 
 .. _`technical considerations`: https://wmo-im.github.io/wis2-guide/guide/wis2-guide-APPROVED.html#_2_7_5_global_discovery_catalogue
 .. _`OGC API - Records`: https://docs.ogc.org/is/20-004r1/20-004r1.html
@@ -175,3 +191,5 @@ In addition to OGC API interfaces, wis2-gdc provides the following additional en
 .. _`WCMP2 Key Performance Indicators`: https://wmo-im.github.io/wcmp2/kpi/wcmp2-kpi-DRAFT.html
 .. _`pywcmp`: https://github.com/World-Meteorological-Organization/pywcmp
 .. _`OpenMetrics`: https://openmetrics.io
+.. _`WCMP2`: https://wmo-im.github.io/wcmp2/standard/wcmp2-STABLE.html
+.. _`wcmp2-editor`: https://github.com/6a6d74/wcmp2-editor
