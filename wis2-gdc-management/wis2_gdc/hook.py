@@ -33,7 +33,7 @@ LOGGER = logging.getLogger(__name__)
 class DiscoveryMetadataHook(Hook):
     def execute(self, topic: str, msg_dict: dict) -> None:
         wcmp2_dict = None
-        self.cache = redis.Redis().from_url(CACHE_URL)
+        self.cache = redis.Redis().from_url(CACHE_URL, protocol=2)
 
         LOGGER.debug('Checking for duplicate message')
         if self.cache.get(msg_dict['id']) is not None:
