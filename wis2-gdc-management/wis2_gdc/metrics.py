@@ -181,7 +181,7 @@ def metrics():
 @click.pass_context
 @cli_options.OPTION_VERBOSITY
 def analyze(ctx, verbosity='NOTSET'):
-    """Analyze WCMP2 metadata arcvhie"""
+    """Analyze WCMP2 metadata archive"""
 
     click.echo(f'Analyzing {METADATA_ARCHIVE_ZIPFILE}')
     with tempfile.TemporaryDirectory() as tmpdirname:
