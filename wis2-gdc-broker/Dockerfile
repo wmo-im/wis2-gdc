@@ -19,7 +19,7 @@
 #
 ###############################################################################
 
-FROM eclipse-mosquitto:latest
+FROM eclipse-mosquitto:2.0.22
 
 COPY ./docker/mosquitto.conf /mosquitto/config/mosquitto.conf
 COPY ./docker/mosquitto-ssl.inc /mosquitto/config/mosquitto-ssl.inc
