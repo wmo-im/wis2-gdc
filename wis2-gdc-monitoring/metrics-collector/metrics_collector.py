@@ -122,8 +122,8 @@ def collect_metrics() -> None:
         labels = payload['labels']
         value = payload.get('value')
         LOGGER.debug(f'Topic: {topic}')
-        LOGGER.debug(f"Labels: {payload['labels']}")
-        LOGGER.debug(f"Value: {payload.get('labels')}")
+        LOGGER.debug(f"Labels: {labels}")
+        LOGGER.debug(f"Value: {value}")
 
         if topic == 'wis2-gdc/metrics/clear':
             LOGGER.info('Clearing all metrics')
