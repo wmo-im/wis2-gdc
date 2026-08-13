@@ -24,8 +24,8 @@
 
 echo "START /entrypoint.sh"
 
-echo "Caching WNM schema"
-/venv/bin/pywis-pubsub schema sync
+echo "Caching schemas and codelists bundle"
+/venv/bin/pywis-pubsub bundle sync
 
 echo "Caching WCMP schemas"
 /venv/bin/pywcmp bundle sync
