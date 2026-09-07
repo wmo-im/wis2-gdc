@@ -31,7 +31,7 @@ from typing import Union
 
 from pywis_pubsub import cli_options
 from pywis_pubsub.mqtt import MQTTPubSubClient
-from pywis_pubsub.publish import create_message, get_url_info
+from pywis_pubsub.wnm.publish import create_message, get_url_info
 
 from wis2_gdc.env import API_URL, API_URL_DOCKER, BROKER_URL, CENTRE_ID
 from wis2_gdc.registrar import Registrar
