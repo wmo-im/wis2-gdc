@@ -50,6 +50,14 @@ cd /pygeoapi
 # Lock all Python files (for gunicorn hot reload)
 # find . -type f -name "*.py" | xargs chmod -R 0444
 
+if [[ $WMO_RESOURCE_CATALOGUE_WIS2_GDC_ENABLE -eq "true" ]]; then
+    cat /tmp/wis2-gdc.yml.inc >> $PYGEOAPI_CONFIG
+fi
+
+if [[ $WMO_RESOURCE_CATALOGUE_WIGOS_GSC_ENABLE -eq "true" ]]; then
+    cat /tmp/wigos-gsc.yml.inc >> $PYGEOAPI_CONFIG
+fi
+
 echo "Trying to generate OpenAPI document"
 /venv/bin/pygeoapi openapi generate ${PYGEOAPI_CONFIG} --output-file ${PYGEOAPI_OPENAPI}
 

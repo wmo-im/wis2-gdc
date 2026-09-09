@@ -35,6 +35,8 @@ COPY ./pygeoapi_provider_elasticsearch_2025-03-30.py /pygeoapi/pygeoapi/provider
 COPY ./requirements.txt /app/docker/wmo-resource-catalogue-api/requirements.txt
 COPY ./docker/entrypoint.sh /app/docker/wmo-resource-catalogue-api/entrypoint.sh
 COPY ./docker/wmo-resource-catalogue-api.yml /pygeoapi/local.config.yml
+COPY ./docker/wis2-gdc.yml.inc /tmp/wis2-gdc.yml.inc
+COPY ./docker/wigos-gsc.yml.inc /tmp/wigos-gsc.yml.inc
 COPY ./templates/collections/items/index.html /pygeoapi/pygeoapi/templates/collections/items/index.html
 COPY ./templates/collections/items/item.html /pygeoapi/pygeoapi/templates/collections/items/item.html
 
