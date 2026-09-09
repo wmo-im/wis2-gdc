@@ -6,16 +6,15 @@ Services
 API
 ---
 
-The WIS2 GDC provides a search API according to the GDC `technical considerations`_ in the WIS2 Guide, supporting
-the `OGC API - Records`_ standard.
+wmo-resource-catalogue provides a search API according to the GDC `technical considerations`_ in the WIS2 Guide, as awell as the GOFC technical considurations (TODO: link) supporting the `OGC API - Records`_ standard.
 
 Overview
 ^^^^^^^^
 
-The wis2-gdc OGC API - Records API is powered by `pygeoapi`_, an OGC API Reference Implementation, and contains
+The wmo-resource-catalogue OGC API - Records API is powered by `pygeoapi`_, an OGC API Reference Implementation, and contains
 the following resources:
 
-.. list-table:: GDC API main endpoints
+.. list-table:: WMO Resource Catalogue API main endpoints
    :widths: 30, 70
    :header-rows: 1
 
@@ -29,14 +28,18 @@ the following resources:
      - ``/processes/pywcmp-wis2-wcmp2-ets/execution``
    * - WCMP2 quality assessment
      - ``/processes/pywcmp-wis2-wcmp2-kpi/execution``
+   * - WMDR2 records
+     - ``/collections/wigos-observing-facility-metadata``
+   * - WMDR2 validation
+     - ``/processes/pywmdr-wigos-wmdr2-ets/execution``
 
 OpenAPI/Swagger
 ^^^^^^^^^^^^^^^
 
-The easiest way to test the GDC API is using the Swagger endpoint, which allows for testing various capabilities
+The easiest way to test the WMO Resource Catalogue API is using the Swagger endpoint, which allows for testing various capabilities
 and queries into the GDC.
 
-.. image:: /_static/gdc-api-swagger.png
+.. image:: /_static/wmo-resource-catalogue-api-swagger.png
    :width: 80%
    :alt: GDC API Swagger endpoint
 
@@ -150,9 +153,9 @@ as the value of the ``record`` property.
 
 Interfaces for both ETS validation and KPI quality assessment take the same inputs and provide similar output reports.
 
-.. image:: /_static/gdc-api-swagger-process-ets.png
+.. image:: /_static/wmo-resource-catalogue-api-swagger-process-ets.png
    :width: 80%
-   :alt: GDC API Swagger Process for WCMP2 validation
+   :alt: WMO Resource Catalogue API Swagger Process for WCMP2 validation
 
 Metrics
 -------
@@ -164,8 +167,9 @@ Additional endpoints
 
 In addition to OGC API interfaces, wis2-gdc provides the following additional endpoints:
 
-- ``/wis2-discovery-metadata-archive.zip``: Metadata archive (generated daily)
-- ``/wis2-gdc-all-channels-latest.txt``: Live channel list
+- ``/wis2-discovery-metadata-archive.zip``: WIS2 Discovery Metadata archive (generated daily)
+- ``/wigos-observing-facility-metadata-archive.zip``: WIGOS Observing Facility Metadata archive (generated daily)
+- ``wmo-resource-catalogue-wis2-gdc-all-channels-latest.txt``: WIS2 live channel list
 
 
 .. _`technical considerations`: https://wmo-im.github.io/wis2-guide/guide/wis2-guide-APPROVED.html#_2_7_5_global_discovery_catalogue

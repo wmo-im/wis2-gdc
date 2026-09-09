@@ -1,5 +1,5 @@
 services:
-  wis2-gdc-broker:
+  wmo-resource-catalogue-broker:
     volumes:
       - ./path/to/your.ca.crt:/mosquitto/config/certs/ca.crt
       - ./path/to/your.tls.crt:/mosquitto/config/certs/tls.crt
@@ -7,6 +7,6 @@ services:
 
     ports:
       - 8883:1883
-  wis2-gdc-api:
+  wmo-resource-catalogue-api:
     ports:
       - 443:8080

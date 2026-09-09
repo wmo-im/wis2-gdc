@@ -2,8 +2,7 @@
 #
 # Authors: Tom Kralidis <tomkralidis@gmail.com>
 #
-# Copyright (c) 2024 Tom Kralidis
-# Copyright (c) 2024 Angelos Tzotsos
+# Copyright (c) 2026 Tom Kralidis
 #
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation
@@ -36,10 +35,10 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'wis2-gdc'
+project = 'wmo-resource-catalogue'
 author = 'Tom Kralidis'
 license = 'This work is licensed under a Creative Commons Attribution 4.0 International License'  # noqa
-release = '0.1.0'
+release = '0.10.dev0'
 copyright = '2023-present, ' + author + ' ' + license
 
 # -- General configuration ---------------------------------------------------

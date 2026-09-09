@@ -6,28 +6,32 @@ Configuration
 Main configuration environment variables
 ----------------------------------------
 
-``wis2-gdc`` configuration is driven by the following environment variables, which are managed in ``wis2-gdc.env``:
+``wmo-resource-catalogue`` configuration is driven by the following environment variables, which are managed in ``wmo-resource-catalogue.env``:
 
 .. csv-table:: Main environment variables
    :widths: 30 30 30
    :header: Name,Description,Default
 
-   ``WIS2_GDC_LOGGING_LEVEL``,logging level as per the standard `Python logging levels`_,``ERROR``
-   ``WIS2_GDC_API_URL``,public URL of the GDC API,``http://localhost``
-   ``WIS2_GDC_API_URL_DOCKER``,internal Docker URL of the API,``http://wis2-gdc-api``
-   ``WIS2_GDC_BACKEND_TYPE``,API backend type,``Elasticsearch``
-   ``WIS2_GDC_BACKEND_CONNECTION``,API backend connection,``http://wis2-gdc-backend:9200/wis2-discovery-metadata``
-   ``WIS2_GDC_BROKER_URL``,URL of the GDC broker,``mqtt://wis2-gdc:wis2-gdc@wis2-gdc-broker:1883``
-   ``WIS2_GDC_CENTRE_ID``,centre identifier of the GDC,``ca-eccc-msc-global-discovery-catalogue``
-   ``WIS2_GDC_COLLECTOR_URL``,URL of metrics collector,``http://wis2-gdc-metrics-collector:8006``
-   ``WIS2_GDC_GB``,WIS2 Global Broker that the GDC connects to,``mqtts://everyone:everyone@globalbroker.meteo.fr:8883``
-   ``WIS2_GDC_GB_TOPIC``,WIS2 topic that the GDC subscribes to,``cache/a/wis2/+/metadata``
-   ``WIS2_GDC_PUBLISH_REPORTS``,whether the GDC should publish ETS and KPI reports,``true``
-   ``WIS2_GDC_REJECT_ON_FAILING_ETS``,whether the GDC should stop ingest based on on failing record,``true``
-   ``WIS2_GDC_RUN_KPI``,whether the GDC should run KPI as part of ingest,``false``
-   ``WIS2_GDC_EXPERIMENTAL``,whether the GDC should in experimental mode,``false``
-   ``WIS2_GDC_CACHE_URL``,URL of the GDC cache,``redis://wis2-gdc-cache:6379``
-   ``WIS2_GDC_CACHE_RETENTION_SECONDS``,cache retention policy for notification messages in seconds,``3600``
+   ``WMO_RESOURCE_CATALOGUE_LOGGING_LEVEL``,logging level as per the standard `Python logging levels`_,``ERROR``
+   ``WMO_RESOURCE_CATALOGUE_API_URL``,public URL of the API,``http://localhost:8000``
+   ``WMO_RESOURCE_CATALOGUE_API_URL_DOCKER``,internal Docker URL of the API,``http://wmo-resource-catalogue-api``
+   ``WMO_RESOURCE_CATALOGUE_BACKEND_TYPE``,API backend type,``Elasticsearch``
+   ``WMO_RESOURCE_CATALOGUE_BACKEND_CONNECTION``,API backend connection,``http://wmo-resource-catalogue-backend:9200``
+   ``WMO_RESOURCE_CATALOGUE_BROKER_URL``,URL of the catalogue broker,``mqtt://wmo-resource-catalogue:wmo-resource-catalogue@wmo-resource-catalogue-broker:1883``
+   ``WMO_RESOURCE_CATALOGUE_WIS2_GDC_CENTRE_ID``,centre identifier of the WIS2 GDC,``ca-eccc-msc-global-discovery-catalogue``
+   ``WMO_RESOURCE_CATALOGUE_WIGOS_GOFC_CENTRE_ID``,centre identifier of the WIGOS GOFC,``ca-eccc-msc-global-observing-facility-catalogue``
+   ``WMO_RESOURCE_CATALOGUE_COLLECTOR_URL``,URL of metrics collector,``http://wmo-resource-catalogue-metrics-collector:8006``
+   ``WMO_RESOURCE_CATALOGUE_GB``,WIS2 Global Broker that the catalogue connects to,``mqtts://everyone:everyone@globalbroker.meteo.fr:8883``
+   ``WMO_RESOURCE_CATALOGUE_WIS2_GDC_GB_TOPIC``,WIS2 topic that the GDC subscribes to,``cache/a/wis2/+/metadata``
+   ``WMO_RESOURCE_CATALOGUE_WIGOS_GOFC_GB_TOPIC``,WIGOS topic that the GOFC subscribes to,``cache/a/wigos/+/metadata``
+   ``WMO_RESOURCE_CATALOGUE_PUBLISH_REPORTS``,whether the catalogue should publish ETS and KPI reports,``true``
+   ``WMO_RESOURCE_CATALOGUE_REJECT_ON_FAILING_ETS``,whether the catalogue should stop ingest based on on failing record,``true``
+   ``WMO_RESOURCE_CATALOGUE_RUN_KPI``,whether the catalogue should run KPI as part of ingest,``false``
+   ``WMO_RESOURCE_CATALOGUE_EXPERIMENTAL``,whether the catalogue should in experimental mode,``false``
+   ``WMO_RESOURCE_CATALOGUE_CACHE_URL``,URL of the catalogue cache,``redis://wmo-resource-catalogue-cache:6379``
+   ``WMO_RESOURCE_CATALOGUE_CACHE_RETENTION_SECONDS``,cache retention policy for notification messages in seconds,``3600``
+   ``WMO_RESOURCE_CATALOGUE_WIS2_GDC_ENABLED``,whether to enable WIS2 GDC functionality,``true``
+   ``WMO_RESOURCE_CATALOGUE_WIGOS_GOFC_ENABLED``,whether to enable WIGOS GOFC functionality,``true``
 
 API configuration environment variables
 ---------------------------------------
@@ -38,35 +42,35 @@ If you wish to update the API configuration, you can set the below values accord
    :widths: 30 30
    :header: Name,Description
 
-   ``WIS2_GDC_SERVER_ICON``,Icon for HTML templates
-   ``WIS2_GDC_SERVER_LOGO``,Logo/banner for HTML templates
-   ``WIS2_GDC_METADATA_IDENTIFICATION_TITLE``,Title
-   ``WIS2_GDC_METADATA_IDENTIFICATION_DESCRIPTION``,Description 
-   ``WIS2_GDC_METADATA_IDENTIFICATION_TERMS_OF_SERVICE``,Terms of service
-   ``WIS2_GDC_METADATA_IDENTIFICATION_URL``,URL related to API
-   ``WIS2_GDC_METADATA_LICENSE_NAME``,License name
-   ``WIS2_GDC_METADATA_LICENSE_URL``,License URL
-   ``WIS2_GDC_METADATA_PROVIDER_NAME``,Provider name
-   ``WIS2_GDC_METADATA_PROVIDER_URL``,Provider URL
-   ``WIS2_GDC_METADATA_CONTACT_NAME``,Contact name
-   ``WIS2_GDC_METADATA_CONTACT_POSITION``,Contact position
-   ``WIS2_GDC_METADATA_CONTACT_ADDRESS``,Contact address
-   ``WIS2_GDC_METADATA_CONTACT_CITY``,Contact city
-   ``WIS2_GDC_METADATA_CONTACT_STATEORPROVINCE``,Contact state or province
-   ``WIS2_GDC_METADATA_CONTACT_POSTALCODE``,Contact postal code
-   ``WIS2_GDC_METADATA_CONTACT_COUNTRY``,Contact country
-   ``WIS2_GDC_METADATA_CONTACT_PHONE``,Contact phone number (in format ``+xx-xxx-xxx-xxxx``)
-   ``WIS2_GDC_METADATA_CONTACT_FAX``,Contact fax number (in format ``+xx-xxx-xxx-xxxx``)
-   ``WIS2_GDC_METADATA_CONTACT_EMAIL``,Contact email
-   ``WIS2_GDC_METADATA_CONTACT_URL``,Contact URL
-   ``WIS2_GDC_METADATA_CONTACT_HOURS``,Contact hours of service
-   ``WIS2_GDC_METADATA_CONTACT_INSTRUCTIONS``,Contact instructions
-   ``WIS2_GDC_METADATA_CONTACT_ROLE``,Contact role
+   ``WMO_RESOURCE_CATALOGUE_SERVER_ICON``,Icon for HTML templates
+   ``WMO_RESOURCE_CATALOGUE_SERVER_LOGO``,Logo/banner for HTML templates
+   ``WMO_RESOURCE_CATALOGUE_METADATA_IDENTIFICATION_TITLE``,Title
+   ``WMO_RESOURCE_CATALOGUE_METADATA_IDENTIFICATION_DESCRIPTION``,Description 
+   ``WMO_RESOURCE_CATALOGUE_METADATA_IDENTIFICATION_TERMS_OF_SERVICE``,Terms of service
+   ``WMO_RESOURCE_CATALOGUE_METADATA_IDENTIFICATION_URL``,URL related to API
+   ``WMO_RESOURCE_CATALOGUE_METADATA_LICENSE_NAME``,License name
+   ``WMO_RESOURCE_CATALOGUE_METADATA_LICENSE_URL``,License URL
+   ``WMO_RESOURCE_CATALOGUE_METADATA_PROVIDER_NAME``,Provider name
+   ``WMO_RESOURCE_CATALOGUE_METADATA_PROVIDER_URL``,Provider URL
+   ``WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_NAME``,Contact name
+   ``WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_POSITION``,Contact position
+   ``WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_ADDRESS``,Contact address
+   ``WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_CITY``,Contact city
+   ``WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_STATEORPROVINCE``,Contact state or province
+   ``WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_POSTALCODE``,Contact postal code
+   ``WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_COUNTRY``,Contact country
+   ``WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_PHONE``,Contact phone number (in format ``+xx-xxx-xxx-xxxx``)
+   ``WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_FAX``,Contact fax number (in format ``+xx-xxx-xxx-xxxx``)
+   ``WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_EMAIL``,Contact email
+   ``WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_URL``,Contact URL
+   ``WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_HOURS``,Contact hours of service
+   ``WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_INSTRUCTIONS``,Contact instructions
+   ``WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_ROLE``,Contact role
 
 Global Broker environment variables
 -----------------------------------
 
-WIS2 Global Broker environment variables are defined as comma-separated values (centre=id,url,centre-name).  ``wis2-gdc`` allows for 1..n Global Broker environment variables as required.
+WIS2 Global Broker environment variables are defined as comma-separated values (centre=id,url,centre-name).  ``wmo-resource-catalogue`` allows for 1..n Global Broker environment variables as required.
 
 .. note::
 
@@ -78,26 +82,28 @@ An example can be found below:
 
 .. code-block:: text
 
-   WIS2_GDC_GB_LINK_METEOFRANCE,"fr-meteo-france-global-broker,mqtts://everyone:everyone@globalbroker.meteo.fr:8883,Météo-France, Global Broker Service"
+   WMO_RESOURCE_CATALOGUE_GB_LINK_METEOFRANCE,"fr-meteo-france-global-broker,mqtts://everyone:everyone@globalbroker.meteo.fr:8883,Météo-France, Global Broker Service"
 
 Key settings
 ------------
 
 A default installation with minimal configuration changes per below satisfies most use casess:
 
-- ``WIS2_GDC_API_URL``
-- ``WIS2_GDC_CENTRE_ID``
-- ``WIS2_GDC_GB``
-- ``WIS2_GDC_GB_LINK...``
+- ``WMO_RESOURCE_CATALOGUE_API_URL``
+- ``WMO_RESOURCE_CATALOGUE_CENTRE_ID``
+- ``WMO_RESOURCE_CATALOGUE_GB``
+- ``WMO_RESOURCE_CATALOGUE_GB_LINK...``
 
 .. note::
 
-   The ``wis2-gdc`` Docker Compose file also contains additional environment variables (see ``docker-compose.yml`` to adjust accordingly).  In most cases, these values do not need adjustment.
+   The ``wmo-resource-catalogue`` Docker Compose file also contains additional environment variables (see ``docker-compose.yml`` to adjust accordingly).  In most cases, these values do not need adjustment.
 
 .. note::
 
-   The ``WIS2_GDC_METADATA_ARCHIVE_SOURCE`` environment variable is always set by wis2-gdc to ``/data/source`` for the ``wis2-gdc-management`` container.
-   The ``WIS2_GDC_METADATA_ARCHIVE_ZIPFILE`` environment variable is always set by wis2-gdc to ``/data/wis2-discovery-metadata-archive.zip`` for the ``wis2-gdc-management`` and ``wis2-gdc-api`` containers.
+   The ``WMO_RESOURCE_CATALOGUE_WIS2_GDC_METADATA_ARCHIVE_SOURCE`` environment variable is always set by wmo-resource-catalogue to ``/data/source/wis2-gdc`` for the ``wmo-resource-catalogue-management`` container.
+   The ``WMO_RESOURCE_CATALOGUE_WIS2_GDC_METADATA_ARCHIVE_ZIPFILE`` environment variable is always set by wmo-resource-catalogue to ``/data/wis2-discovery-metadata-archive.zip`` for the ``wmo-resource-catalogue-management`` and ``wmo-resource-catalogue-api`` containers.
+   The ``WMO_RESOURCE_CATALOGUE_WIGOS_GOFC_METADATA_ARCHIVE_SOURCE`` environment variable is always set by wmo-resource-catalogue to ``/data/source/wigos-gofc`` for the ``wmo-resource-catalogue-management`` container.
+   The ``WMO_RESOURCE_CATALOGUE_WIGOS_GOFC_METADATA_ARCHIVE_ZIPFILE`` environment variable is always set by wmo-resource-catalogue to ``/data/wigos-observing-facility-metadata-archive.zip`` for the ``wmo-resource-catalogue-management`` and ``wmo-resource-catalogue-api`` containers.
 
 Application specific configurations
 -----------------------------------
@@ -108,13 +114,13 @@ Application specific configurations can be found in the following files (for dir
    :widths: 30 30
    :header: Filepath,Description
 
-   ``wis2-gdc-api/docker/wis2-gdc-config.yml``,pygeoapi configuration (`documentation`_)
-   ``wis2-gdc-broker/docker/mosquitto.conf``,mosquitto main configuration
-   ``wis2-gdc-broker/docker/acl.conf``,mosquitto access control list
-   ``wis2-gdc-management/docker/pywis-pubsub.yml``,pywis-pubsub configuration
-   ``wis2-gdc-monitoring/grafana/datasource.yml``,Grafana configuration
-   ``wis2-gdc-monitoring/grafana/datasource.yml``,Grafana configuration
-   ``wis2-gdc-monitoring/prometheus/datasource.yml``,Prometheus configuration
+   ``wmo-resource-catalogue-api/docker/wmo-resource-catalogue-config.yml``,pygeoapi configuration (`documentation`_)
+   ``wmo-resource-catalogue-broker/docker/mosquitto.conf``,mosquitto main configuration
+   ``wmo-resource-catalogue-broker/docker/acl.conf``,mosquitto access control list
+   ``wmo-resource-catalogue-management/docker/pywis-pubsub.yml``,pywis-pubsub configuration
+   ``wmo-resource-catalogue-monitoring/grafana/datasource.yml``,Grafana configuration
+   ``wmo-resource-catalogue-monitoring/grafana/datasource.yml``,Grafana configuration
+   ``wmo-resource-catalogue-monitoring/prometheus/datasource.yml``,Prometheus configuration
    
 .. note::
 
@@ -126,36 +132,36 @@ Application specific configurations can be found in the following files (for dir
 Connections to additional Global Brokers
 ----------------------------------------
 
-By default, wis2-gdc interacts with a single Global Broker via the ``wis2-gdc-management`` service.
+By default, wmo-resource-catalogue interacts with a single Global Broker via the ``wmo-resource-catalogue-management`` service.
 
-To connect to additional Global Brokers, any number of additional ``wis2-gdc-management`` services may be added.  For example, adding in ``docker-compose.yml``:
+To connect to additional Global Brokers, any number of additional ``wmo-resource-catalogue-management`` services may be added.  For example, adding in ``docker-compose.yml``:
 
 .. code-block:: yaml
 
-   wis2-gdc-management2:  # update name accordingly
-     container_name: wis2-gdc-management2  # update name accordingly
+   wmo-resource-catalogue-management2:  # update name accordingly
+     container_name: wmo-resource-catalogue-management2  # update name accordingly
      build:
-       context: ./wis2-gdc-management/
+       context: ./wmo-resource-catalogue-management/
      env_file:
-       - wis2-gdc.env
+       - wmo-resource-catalogue.env
      environment:
-       - WIS2_GDC_API_URL_DOCKER=http://wis2-gdc-api:8080
-       - WIS2_GDC_GB=mqtts://everyone:everyone@globalbroker.inmet.br:8883  # override default WIS2_GDC_GB
+       - WMO_RESOURCE_CATALOGUE_API_URL_DOCKER=http://wmo-resource-catalogue-api:8080
+       - WMO_RESOURCE_CATALOGUE_GB=mqtts://everyone:everyone@globalbroker.inmet.br:8883  # override default WMO_RESOURCE_CATALOGUE_GB
      depends_on:
-       wis2-gdc-backend:
+       wmo-resource-catalogue-backend:
          condition: service_healthy
-       wis2-gdc-cache:
+       wmo-resource-catalogue-cache:
          condition: service_healthy
      healthcheck:
-       test: ["CMD", "curl", "-f", "http://wis2-gdc-backend:9200/wis2-discovery-metadata"]
+       test: ["CMD", "curl", "-f", "http://wmo-resource-catalogue-backend:9200/wis2-discovery-metadata"]
        interval: 1m
        retries: 3
      volumes:
-       - wis2-gdc-management-data2:/data  # update volume accordingly
+       - wmo-resource-catalogue-management-data2:/data  # update volume accordingly
      restart: always
      command: ["/venv/bin/pywis-pubsub", "subscribe", "--config", "/app/docker/pywis-pubsub.yml", "--verbosity", "DEBUG"]
      networks:
-       - wis2-gdc-net
+       - wmo-resource-catalogue-net
      <<: *logging
 
 ...then adding the associated volume:
@@ -163,6 +169,6 @@ To connect to additional Global Brokers, any number of additional ``wis2-gdc-man
 .. code-block:: yaml
 
    volumes:
-     wis2-gdc-backend-data:
-     wis2-gdc-management-data:
-     wis2-gdc-management2-data:  # added volume
+     wmo-resource-catalogue-backend-data:
+     wmo-resource-catalogue-management-data:
+     wmo-resource-catalogue-management2-data:  # added volume

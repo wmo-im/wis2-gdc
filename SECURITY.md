@@ -1,4 +1,4 @@
-# wis2-gdc Security Policy
+# wmo-resource-catalogue Security Policy
 
 ## Reporting
 
@@ -7,7 +7,7 @@ to **tomkralidis nospam @ gmail.com** - (remove the blanks and 'nospam').
 
 ## Supported Versions
 
-wis2-gdc developers will release patches for security vulnerabilities for the following versions:
+wmo-resource-catalogue developers will release patches for security vulnerabilities for the following versions:
 
 | Version | Supported          |
 | ------- | ------------------ |
