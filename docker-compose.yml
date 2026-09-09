@@ -29,8 +29,8 @@ x-logging: &logging
       max-file: 1
 
 services:
-  wis2-gdc-backend:
-    container_name: wis2-gdc-backend
+  wmo-resource-catalogue-backend:
+    container_name: wmo-resource-catalogue-backend
     image: docker.elastic.co/elasticsearch/elasticsearch:8.6.2
     restart: always
     environment:
@@ -39,12 +39,12 @@ services:
       - node.name=elasticsearch-01
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - cluster.name=es-wis2-gdc
+      - cluster.name=es-wmo-resource-catalogue
       - xpack.security.enabled=false
     mem_limit: 1.5g
     memswap_limit: 1.5g
     volumes:
-      - wis2-gdc-backend-data:/usr/share/elasticsearch/data:rw
+      - wmo-resource-catalogue-backend-data:/usr/share/elasticsearch/data:rw
     # ulimits:
     #   nofile:
     #     soft: 524288
@@ -57,31 +57,31 @@ services:
       interval: 5s
       retries: 100
     networks:
-      - wis2-gdc-net
+      - wmo-resource-catalogue-net
     <<: *logging
 
-  wis2-gdc-prometheus:
+  wmo-resource-catalogue-prometheus:
     image: prom/prometheus
-    container_name: wis2-gdc-prometheus
+    container_name: wmo-resource-catalogue-prometheus
     volumes:
-      - ./wis2-gdc-monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./wmo-resource-catalogue-monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
-      - wis2-gdc-net
+      - wmo-resource-catalogue-net
     <<: *logging
 
-  wis2-gdc-grafana:
+  wmo-resource-catalogue-grafana:
     image: grafana/grafana-oss
-    container_name: wis2-gdc-grafana
+    container_name: wmo-resource-catalogue-grafana
     env_file:
-      - wis2-gdc.env
+      - wmo-resource-catalogue.env
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
       interval: 5s
       retries: 100
     networks:
-      - wis2-gdc-net
+      - wmo-resource-catalogue-net
     volumes:
-      - ./wis2-gdc-monitoring/grafana/datasource.yml:/etc/grafana/provisioning/datasources/grafana-datasource.yml
+      - ./wmo-resource-catalogue-monitoring/grafana/datasource.yml:/etc/grafana/provisioning/datasources/grafana-datasource.yml
     environment:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
@@ -94,100 +94,100 @@ services:
       - GF_ALERTING_ENABLED=true
       - GF_USERS_DEFAULT_THEME=dark
       - GF_DISABLE_SIGNOUT_MENU=true
-      - GF_SERVER_ROOT_URL=${WIS2_GDC_API_URL}/grafana/
+      - GF_SERVER_ROOT_URL=${WMO_RESOURCE_CATALOGUE_API_URL}/grafana/
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
     <<: *logging
 
-  wis2-gdc-cache:
+  wmo-resource-catalogue-cache:
     image: redis:latest
-    container_name: wis2-gdc-cache
+    container_name: wmo-resource-catalogue-cache
     env_file:
-      - wis2-gdc.env
+      - wmo-resource-catalogue.env
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       retries: 100
     networks:
-      - wis2-gdc-net
+      - wmo-resource-catalogue-net
     <<: *logging
 
-  wis2-gdc-broker:
-    container_name: wis2-gdc-broker
+  wmo-resource-catalogue-broker:
+    container_name: wmo-resource-catalogue-broker
     restart: always
     build:
-      context: ./wis2-gdc-broker/
+      context: ./wmo-resource-catalogue-broker/
     env_file:
-      - wis2-gdc.env
+      - wmo-resource-catalogue.env
     networks:
-      - wis2-gdc-net
+      - wmo-resource-catalogue-net
     <<: *logging
 
-  wis2-gdc-metrics-collector:
-    container_name: wis2-gdc-metrics-collector
+  wmo-resource-catalogue-metrics-collector:
+    container_name: wmo-resource-catalogue-metrics-collector
     restart: unless-stopped
     build:
-      context: ./wis2-gdc-monitoring/metrics-collector/
+      context: ./wmo-resource-catalogue-monitoring/metrics-collector/
     env_file:
-      - wis2-gdc.env
+      - wmo-resource-catalogue.env
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8006"]
       interval: 5s
       retries: 3
     networks:
-      - wis2-gdc-net
+      - wmo-resource-catalogue-net
     depends_on:
-      - wis2-gdc-broker
+      - wmo-resource-catalogue-broker
     <<: *logging
 
-  wis2-gdc-management:
-    container_name: wis2-gdc-management
+  wmo-resource-catalogue-management:
+    container_name: wmo-resource-catalogue-management
     build:
-      context: ./wis2-gdc-management/
+      context: ./wmo-resource-catalogue-management/
     env_file:
-      - wis2-gdc.env
+      - wmo-resource-catalogue.env
     environment:
-      - WIS2_GDC_API_URL_DOCKER=http://wis2-gdc-api:8080
+      - WMO_RESOURCE_CATALOGUE_API_URL_DOCKER=http://wmo-resource-catalogue-api:8080
     depends_on:
-      wis2-gdc-backend:
+      wmo-resource-catalogue-backend:
         condition: service_healthy
-      wis2-gdc-cache:
+      wmo-resource-catalogue-cache:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://wis2-gdc-backend:9200/wis2-discovery-metadata"]
+      test: ["CMD", "curl", "-f", "http://wmo-resource-catalogue-backend:9200/wis2-discovery-metadata"]
       interval: 5s
       retries: 3
     volumes:
-      - wis2-gdc-management-data:/data
+      - wmo-resource-catalogue-management-data:/data
     restart: always
     command: ["/venv/bin/pywis-pubsub", "subscribe", "--config", "/app/docker/pywis-pubsub.yml", "--verbosity", "DEBUG"]
     networks:
-      - wis2-gdc-net
+      - wmo-resource-catalogue-net
     <<: *logging
 
-  wis2-gdc-api:
-    container_name: wis2-gdc-api
+  wmo-resource-catalogue-api:
+    container_name: wmo-resource-catalogue-api
     build:
-      context: ./wis2-gdc-api/
+      context: ./wmo-resource-catalogue-api/
     depends_on:
-      wis2-gdc-management:
+      wmo-resource-catalogue-management:
         condition: service_healthy
     volumes:
-      - wis2-gdc-management-data:/data
+      - wmo-resource-catalogue-management-data:/data
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/conformance"]
       interval: 5s
       retries: 3
     env_file:
-      - wis2-gdc.env
+      - wmo-resource-catalogue.env
     restart: unless-stopped
     networks:
-      - wis2-gdc-net
+      - wmo-resource-catalogue-net
     <<: *logging
 
 volumes:
-  wis2-gdc-backend-data:
-  wis2-gdc-management-data:
+  wmo-resource-catalogue-backend-data:
+  wmo-resource-catalogue-management-data:
 
 networks:
-  wis2-gdc-net:
+  wmo-resource-catalogue-net:

@@ -19,39 +19,31 @@
 #
 ###############################################################################
 
-DOCKER_COMPOSE_ARGS=--project-name wmo-resource-catalogue --file docker-compose.yml --file docker-compose.override.yml
+import logging
 
-build:
-	docker compose $(DOCKER_COMPOSE_ARGS) build
+import click
 
-build-management:
-	docker compose $(DOCKER_COMPOSE_ARGS) build wmo-resource-catalogue-management
+from pywis_pubsub import cli_options
 
-force-build:
-	docker compose $(DOCKER_COMPOSE_ARGS) build --no-cache --pull
+from wmo_resource_catalogue.wis2_gdc.harvester import HARVESTERS
 
-up:
-	docker compose $(DOCKER_COMPOSE_ARGS) up --detach
+LOGGER = logging.getLogger(__name__)
 
-down:
-	docker compose $(DOCKER_COMPOSE_ARGS) down
 
-restart: down up
+@click.command
+@click.argument('harvest_type', nargs=1,
+                type=click.Choice(list(HARVESTERS.keys())))
+@cli_options.OPTION_VERBOSITY
+def sync(harvest_type, verbosity):
+    """Synchronization utilities"""
 
-login:
-	docker exec -it wmo-resource-catalogue-management /bin/bash
+    harvesters = list(HARVESTERS.keys())
 
-reinit-backend:
-	docker exec -it wmo-resource-catalogue-management sh -c "/venv/bin/wmo-resource-catalogue setup --force"
+    if harvest_type not in harvesters:
+        msg = f'Invalid harvester (supported harvesters: {harvesters})'
+        raise click.ClickException(msg)
 
-logs:
-	docker compose $(DOCKER_COMPOSE_ARGS) logs --follow
+    click.echo(f'Harvesting {harvest_type}')
+    harvester = HARVESTERS[harvest_type]()
 
-clean:
-	docker system prune -f
-	docker volume prune -f
-
-rm:
-	docker volume rm $(shell docker volume ls --filter name=wmo-resource-catalogue -q)
-
-.PHONY: build build-management up login down restart reinit-backend force-build logs rm clean
+    harvester.sync()

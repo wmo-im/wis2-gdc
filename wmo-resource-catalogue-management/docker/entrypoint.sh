@@ -1,3 +1,4 @@
+#!/bin/bash
 ###############################################################################
 #
 # Licensed to the Apache Software Foundation (ASF) under one
@@ -19,39 +20,24 @@
 #
 ###############################################################################
 
-DOCKER_COMPOSE_ARGS=--project-name wmo-resource-catalogue --file docker-compose.yml --file docker-compose.override.yml
+# wmo-resource-catalogue entry script
 
-build:
-	docker compose $(DOCKER_COMPOSE_ARGS) build
+echo "START /entrypoint.sh"
 
-build-management:
-	docker compose $(DOCKER_COMPOSE_ARGS) build wmo-resource-catalogue-management
+echo "Caching schemas and codelists bundle"
+/venv/bin/pywis-pubsub bundle sync
 
-force-build:
-	docker compose $(DOCKER_COMPOSE_ARGS) build --no-cache --pull
+echo "Caching WCMP schemas"
+/venv/bin/pywcmp bundle sync
 
-up:
-	docker compose $(DOCKER_COMPOSE_ARGS) up --detach
+echo "Caching WMDR schemas"
+/venv/bin/pywmdr bundle sync
 
-down:
-	docker compose $(DOCKER_COMPOSE_ARGS) down
+echo "Setting up discovery metadata backend"
+/venv/bin/wmo-resource-catalogue wis2-gdc setup -y
 
-restart: down up
+echo "Starting cron"
+/usr/local/bin/supercronic /app/docker/wmo-resource-catalogue-management.cron &
 
-login:
-	docker exec -it wmo-resource-catalogue-management /bin/bash
-
-reinit-backend:
-	docker exec -it wmo-resource-catalogue-management sh -c "/venv/bin/wmo-resource-catalogue setup --force"
-
-logs:
-	docker compose $(DOCKER_COMPOSE_ARGS) logs --follow
-
-clean:
-	docker system prune -f
-	docker volume prune -f
-
-rm:
-	docker volume rm $(shell docker volume ls --filter name=wmo-resource-catalogue -q)
-
-.PHONY: build build-management up login down restart reinit-backend force-build logs rm clean
+echo "END /entrypoint.sh"
+exec "$@"

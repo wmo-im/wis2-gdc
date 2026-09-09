@@ -1,0 +1,143 @@
+server:
+    bind:
+        host: 0.0.0.0
+        port: 5000
+    url: ${WMO_RESOURCE_CATALOGUE_API_URL:-http://localhost}
+    icon: ${WMO_RESOURCE_CATALOGUE_SERVER_ICON:-https://wmo.int/themes/custom/server_theme/dist/images/favicons//favicon-32x32.png}
+    logo: ${WMO_RESOURCE_CATALOGUE_SERVER_LOGO:-https://upload.wikimedia.org/wikipedia/en/thumb/b/b6/World_Meteorological_Organization_Logo.svg/3840px-World_Meteorological_Organization_Logo.svg.png}
+    mimetype: application/json; charset=UTF-8
+    encoding: utf-8
+    language: en-US
+    cors: true
+    pretty_print: true
+    limits:
+        default_items: 100
+        max_items: 1000
+    map:
+      url: https://tile.openstreetmap.org/{z}/{x}/{y}.png
+      attribution: 'Map data &copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+    manager:
+        name: TinyDB
+        connection: /tmp/wmo-resource-catalogue-process-manager.db
+        output_dir: /tmp/
+
+logging:
+    level: ${WMO_RESOURCE_CATALOGUE_LOGGING_LEVEL:-ERROR}
+
+metadata:
+    identification:
+        title: ${WMO_RESOURCE_CATALOGUE_METADATA_IDENTIFICATION_TITLE:-WMO Resource Catalogue instance}
+        description: ${WMO_RESOURCE_CATALOGUE_METADATA_IDENTIFICATION_DESCRIPTION:-WMO Resource Catalogue instance}
+        keywords:
+            - world meteorological organization
+            - resource catalogue
+            - wmo information system
+            - wis2
+            - global discovery catalogue
+            - gdc
+            - wmo core metadata profile
+            - wcmp2
+            - discovery metadata
+            - wmo integrated global observing system
+            - wigos
+            - gsc
+            - global station catalogue
+            - gsc
+            - wigos metadata record
+            - wmdr2
+            - station metadata
+        keywords_type: theme
+        terms_of_service: ${WMO_RESOURCE_CATALOGUE_METADATA_IDENTIFICATION_TERMS_OF_SERVICE:-https://creativecommons.org/licenses/by/4.0}
+        url: ${WMO_RESOURCE_CATALOGUE_METADATA_IDENTIFICATION_URL:-https://wmo-resource-catalogue.readthedocs.io}
+    license:
+        name: ${WMO_RESOURCE_CATALOGUE_METADATA_LICENSE_NAME:-WMO Unified Data Policy}
+        url: ${WMO_RESOURCE_CATALOGUE_METADATA_LICENSE_URL:-https://library.wmo.int/idurl/4/58009}
+    provider:
+        name: ${WMO_RESOURCE_CATALOGUE_METADATA_PROVIDER_NAME:-Resource Catalogue provider name}
+        url: ${WMO_RESOURCE_CATALOGUE_METADATA_PROVIDER_URL:-https://github.com/wmo-im/wmo-resource-catalogue}
+    contact:
+        name: ${WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_NAME:-Firstname Lastname}
+        position: ${WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_POSITION:Position name}
+        address: ${WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_ADDRESS:-Mailing Address}
+        city: ${WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_CITY:-City}
+        stateorprovince: ${WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_STATEORPROVINCE:-Administrative Area}
+        postalcode: ${WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_POSTALCODE:-Zip or Postal Code}
+        country: ${WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_COUNTRY:-Country}
+        phone: ${WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_PHONE:-+xx-xxx-xxx-xxxx}
+        fax: ${WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_FAX:-+xx-xxx-xxx-xxxx}
+        email: ${WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_EMAIL:-you@example.org}
+        url: ${WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_URL:-https://github.com/wmo-im/wmo-resource-catalogue}
+        hours: ${WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_HOURS:-Mo-Fr 08:00-17:00}
+        instructions: ${WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_INSTRUCTIONS:-During hours of service. Off on weekends.}
+        role: ${WMO_RESOURCE_CATALOGUE_METADATA_CONTACT_ROLE:-pointOfContact}
+
+resources:
+    wis2-discovery-metadata:
+        type: collection
+        title: WIS2 discovery metadata
+        description: WIS2 discovery metadata
+        keywords:
+            - wmo information system
+            - wis2
+            - global discovery catalogue
+            - gdc
+            - wmo core metadata profile
+            - wcmp2
+            - discovery metadata
+        crs:
+            - CRS84
+        links:
+            - type: application/zip
+              rel: archives
+              title: Metadata archive (generated daily)
+              href: ${WMO_RESOURCE_CATALOGUE_API_URL:-http://localhost}/wis2-discovery-metadata-archive.zip
+              hreflang: en-CA
+              length: -1
+            - type: text/plain
+              rel: related
+              title: OpenMetrics
+              href: ${WMO_RESOURCE_CATALOGUE_API_URL:-http://localhost}/wmo-resource-catalogue-metrics.txt
+              hreflang: en-CA
+            - type: text/plain
+              rel: related
+              title: Live channel list
+              href: ${WMO_RESOURCE_CATALOGUE_API_URL:-http://localhost}/wmo-resource-catalogue-all-channels-latest.txt
+              hreflang: en-CA
+            - type: text/html
+              rel: related
+              title: Analytics and monitoring dashboard
+              href: ${WMO_RESOURCE_CATALOGUE_API_URL:-http://localhost}/grafana
+              hreflang: en-CA
+            - type: text/html
+              rel: canonical
+              title: WMO Information System (WIS) | World Meteorological Organization
+              href: https://community.wmo.int/en/activity-areas/wis
+              hreflang: en-CA
+        extents:
+            spatial:
+                bbox: [-180, -90, 180, 90]
+                crs: http://www.opengis.net/def/crs/OGC/1.3/CRS84
+        providers:
+            - type: record
+              name: ${WMO_RESOURCE_CATALOGUE_BACKEND_TYPE:-Elasticsearch}
+              data: ${WMO_RESOURCE_CATALOGUE_BACKEND_CONNECTION:-http://wmo-resource-catalogue-backend:9200/wis2-discovery-metadata}
+              id_field: id
+              time_field: updated
+              title_field: title
+              include_extra_query_parameters: true
+
+    pywcmp-wis2-wcmp2-ets:
+        type: process
+        processor:
+            name: pywcmp.pygeoapi_plugin.WCMP2ETSProcessor
+
+    pywcmp-wis2-wcmp2-kpi:
+        type: process
+        processor:
+            name: pywcmp.pygeoapi_plugin.WCMP2KPIProcessor
+
+    pywmdr-wigos-wmdr2-ets:
+        type: process
+        processor:
+            name: pywmdr.pygeoapi_plugin.WMDR2ETSProcessor
+

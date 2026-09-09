@@ -1,0 +1,65 @@
+###############################################################################
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+###############################################################################
+
+FROM ubuntu:noble
+
+LABEL maintainer="tomkralidis@gmail.com"
+
+ENV TZ="Etc/UTC"
+ENV DEBIAN_FRONTEND="noninteractive"
+ENV DEBIAN_PACKAGES="bash curl git python3-pip python3-setuptools python3-venv sudo vim"
+ENV HOME=/app
+ENV WMO_RESOURCE_CATALOGUE_METADATA_ARCHIVE_SOURCE=/data/source
+ENV WMO_RESOURCE_CATALOGUE_METADATA_ARCHIVE_ZIPFILE=/data/wis2-discovery-metadata-archive.zip
+ENV PATH=$PATH:/venv/bin
+
+# copy the app
+COPY ./ /app
+
+RUN apt-get update -y && \
+    # install dependencies
+    apt-get install -y ${DEBIAN_PACKAGES} && \
+    python3 -m venv --system-site-packages /venv && \
+    # install wmo-resource-catalogue
+    cd /app && \
+    /venv/bin/pip3 install -e . && \
+    /venv/bin/pip3 install -e ".[backend]" && \
+    chmod +x /app/docker/entrypoint.sh && \
+    # cleanup
+    apt autoremove -y && \
+    apt-get -q clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Supercronic for job management
+RUN curl -fsSLO "https://github.com/aptible/supercronic/releases/download/v0.2.49/supercronic-linux-amd64" && \
+    chmod +x supercronic-linux-amd64 && \
+    mv supercronic-linux-amd64 /usr/local/bin/supercronic
+
+RUN useradd -u 1001 -g 0 wmo-resource-catalogue && \
+    chgrp -R 0 /app && \
+    chmod -R g=u /app && \
+    mkdir -p /data/source && \
+    chmod 775 /data && \
+    chmod 775 /data/source
+
+USER 1001
+
+ENTRYPOINT [ "/app/docker/entrypoint.sh" ]
