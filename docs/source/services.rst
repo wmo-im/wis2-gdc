@@ -164,8 +164,9 @@ Additional endpoints
 
 In addition to OGC API interfaces, wis2-gdc provides the following additional endpoints:
 
-- ``/wis2-discovery-metadata-archive.zip``: Metadata archive (generated daily)
-- ``/wis2-gdc-all-channels-latest.txt``: Live channel list
+- ``/wis2-discovery-metadata-archive.zip``: WIS2 Discovery Metadata archive (generated daily)
+- ``/wigos-observing-facility-metadata-archive.zip``: WIGOS Observing Facility Metadata archive (generated daily)
+- ``wmo-resource-catalogue-wis2-gdc-all-channels-latest.txt``: WIS2 live channel list
 
 
 .. _`technical considerations`: https://wmo-im.github.io/wis2-guide/guide/wis2-guide-APPROVED.html#_2_7_5_global_discovery_catalogue

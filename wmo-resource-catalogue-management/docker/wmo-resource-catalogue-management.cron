@@ -1,0 +1,4 @@
+0 0 * * * /venv/bin/wmo-resource-catalogue archive $WMO_RESOURCE_CATALOGUE_METADATA_ARCHIVE_ZIPFILE
+0 1 * * * /venv/bin/wmo-resource-catalogue metrics analyze
+30 * * * * /venv/bin/pywcmp bundle sync
+40 * * * * /venv/bin/pywmdr bundle sync

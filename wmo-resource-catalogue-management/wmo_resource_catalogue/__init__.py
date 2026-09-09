@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# Licensed to the Apache Software Foundation (ASF) under one 
+# Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
 # regarding copyright ownership.  The ASF licenses this file
@@ -12,21 +12,25 @@
 #
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
-# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY 
-# KIND, either express or implied.  See the License for the 
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
 #
 ###############################################################################
 
-services:
-  wmo-resource-catalogue-broker:
-    ports:
-      - 1883:1883  # default
-      - 1884:1884  # websockets
-  wmo-resource-catalogue-api:
-    ports:
-      - 8000:8080
-  wmo-resource-catalogue-grafana:
-    ports:
-      - 3000:3000
+import click
+
+from wmo_resource_catalogue.util import get_package_version
+from wmo_resource_catalogue.wis2_gdc import wis2_gdc
+
+
+@click.group()
+@click.version_option(version=get_package_version())
+def cli():
+    """WMO Resource Catalogue management utilities"""
+
+    pass
+
+
+cli.add_command(wis2_gdc)
