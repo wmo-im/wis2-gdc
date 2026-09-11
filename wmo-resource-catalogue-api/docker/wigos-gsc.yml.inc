@@ -2,3 +2,4 @@
         type: process
         processor:
             name: pywmdr.pygeoapi_plugin.WMDR2ETSProcessor
+        foo: bar
