@@ -246,24 +246,24 @@ class ElasticsearchProvider(BaseProvider):
         if properties:
             LOGGER.debug('processing properties')
             for prop in properties:
+                field = self.mask_prop(prop[0])
+                values = [v.strip() for v in prop[1].split('|') if v.strip()]
 
-                # PATCH TK 2025-03-30
-                # force exact matches if | is not found
-                if '|' in prop[1] or '.' in prop[0]:
-                    prop_name = self.mask_prop(prop[0])
-                else:
-                    prop_name = f'{self.mask_prop(prop[0])}.raw'
+                if not values:
+                    continue
 
-                pf = {
-                    'match': {
-                        prop_name: {
-                            'query': prop[1]
+                if len(values) > 1:
+                    pf = {
+                        'bool': {
+                            'should': [
+                                {'match_phrase': {field: v}}
+                                for v in values
+                            ],
+                            'minimum_should_match': 1
                         }
                     }
-                }
-
-                if '|' not in prop[1]:
-                    pf['match'][prop_name]['minimum_should_match'] = '100%'
+                else:
+                    pf = {'match_phrase': {field: values[0]}}
 
                 query['query']['bool']['filter'].append(pf)
 
