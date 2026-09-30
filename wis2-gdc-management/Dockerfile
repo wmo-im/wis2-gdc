@@ -19,7 +19,7 @@
 #
 ###############################################################################
 
-FROM ubuntu:noble
+FROM ubuntu:resolute
 
 LABEL maintainer="tomkralidis@gmail.com"
 
