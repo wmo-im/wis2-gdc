@@ -25,7 +25,8 @@ LABEL maintainer="Tom Kralidis <tomkralidis@gmail.com>"
 
 ENV PYGEOAPI_CONFIG=/pygeoapi/local.config.yml
 ENV PYGEOAPI_OPENAPI=/pygeoapi/local.openapi.yml
-ENV WMO_RESOURCE_CATALOGUE_METADATA_ARCHIVE_ZIPFILE=/data/wis2-discovery-metadata-archive.zip
+ENV WMO_RESOURCE_CATALOGUE_WIS2_GDC_METADATA_ARCHIVE_ZIPFILE=/data/wis2-discovery-metadata-archive.zip
+ENV WMO_RESOURCE_CATALOGUE_WIGOS_GOFC_METADATA_ARCHIVE_ZIPFILE=/data/wigos-observing-facility-metadata-archive.zip
 
 RUN apt-get update && \
     apt-get install -y curl

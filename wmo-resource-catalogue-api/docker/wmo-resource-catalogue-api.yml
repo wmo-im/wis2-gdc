@@ -26,8 +26,8 @@ logging:
 
 metadata:
     identification:
-        title: ${WMO_RESOURCE_CATALOGUE_METADATA_IDENTIFICATION_TITLE:-WMO Resource Catalogue instance}
-        description: ${WMO_RESOURCE_CATALOGUE_METADATA_IDENTIFICATION_DESCRIPTION:-WMO Resource Catalogue instance}
+        title: ${WMO_RESOURCE_CATALOGUE_METADATA_IDENTIFICATION_TITLE:-WMO Resource Catalogue}
+        description: ${WMO_RESOURCE_CATALOGUE_METADATA_IDENTIFICATION_DESCRIPTION:-WMO Resource Catalogue}
         keywords:
             - world meteorological organization
             - resource catalogue

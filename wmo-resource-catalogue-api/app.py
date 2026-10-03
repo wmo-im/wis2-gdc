@@ -38,9 +38,20 @@ except ImportError:  # CORS needs to be handled by upstream server
 
 
 @app.route('/wis2-discovery-metadata-archive.zip')
-def archive():
+def wis2_gdc_archive():
 
-    zip_file = os.environ.get('WIS2_GDC_METADATA_ARCHIVE_ZIPFILE')
+    zip_file = os.environ.get('WMO_RESOURCE_CATALOGUE_WIS2_GDC_METADATA_ARCHIVE_ZIPFILE')  # noqa
+
+    try:
+        return send_file(zip_file, mimetype='application/zip')
+    except FileNotFoundError:
+        return 'Not Found', 404
+
+
+@app.route('/wigos-observing-facility-metadata-archive.zip')
+def wigos_gofc_archive():
+
+    zip_file = os.environ.get('WMO_RESOURCE_CATALOGUE_WIGOS_GOFC_METADATA_ARCHIVE_ZIPFILE')  # noqa
 
     try:
         return send_file(zip_file, mimetype='application/zip')
@@ -66,7 +77,7 @@ def wis2_gdc_all_channels_latest():
     LIVE_CHANNELS = []
 
     URL = os.environ.get('WIS2_GDC_BACKEND_CONNECTION')
-    URL = f'{URL}/_search'
+    URL = f'{URL}/wis2-discovery-metadata/_search'
 
     PARAMS = {
         'size': 9999

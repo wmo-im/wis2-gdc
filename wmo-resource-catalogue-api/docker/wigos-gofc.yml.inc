@@ -41,7 +41,8 @@
         providers:
             - type: record
               name: ${WMO_RESOURCE_CATALOGUE_BACKEND_TYPE:-Elasticsearch}
-              data: ${WMO_RESOURCE_CATALOGUE_BACKEND_CONNECTION:-http://wmo-resource-catalogue-backend:9200/wigos-observing-facility-metadata}
+              data: ${WMO_RESOURCE_CATALOGUE_BACKEND_CONNECTION:-http://wmo-resource-catalogue-backend:9200}/wigos-observing-facility-metadata
+              editable: true
               id_field: id
               time_field: updated
               title_field: title

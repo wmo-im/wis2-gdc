@@ -22,6 +22,7 @@
 import click
 
 from wmo_resource_catalogue.util import get_package_version
+from wmo_resource_catalogue.wigos_gofc import wigos_gofc
 from wmo_resource_catalogue.wis2_gdc import wis2_gdc
 
 
@@ -34,3 +35,4 @@ def cli():
 
 
 cli.add_command(wis2_gdc)
+cli.add_command(wigos_gofc)

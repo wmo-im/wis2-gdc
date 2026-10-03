@@ -27,8 +27,10 @@ ENV TZ="Etc/UTC"
 ENV DEBIAN_FRONTEND="noninteractive"
 ENV DEBIAN_PACKAGES="bash curl git python3-pip python3-setuptools python3-venv sudo vim"
 ENV HOME=/app
-ENV WMO_RESOURCE_CATALOGUE_METADATA_ARCHIVE_SOURCE=/data/source
-ENV WMO_RESOURCE_CATALOGUE_METADATA_ARCHIVE_ZIPFILE=/data/wis2-discovery-metadata-archive.zip
+ENV WMO_RESOURCE_CATALOGUE_WIS2_GDC_METADATA_ARCHIVE_SOURCE=/data/source/wis2-gdc
+ENV WMO_RESOURCE_CATALOGUE_WIS2_GDC_METADATA_ARCHIVE_ZIPFILE=/data/wis2-discovery-metadata-archive.zip
+ENV WMO_RESOURCE_CATALOGUE_WIGOS_GOFC_METADATA_ARCHIVE_SOURCE=/data/source/wigos-gofc
+ENV WMO_RESOURCE_CATALOGUE_WIGOS_GOFC_METADATA_ARCHIVE_ZIPFILE=/data/wigos-observing-facility-metadata-archive.zip
 ENV PATH=$PATH:/venv/bin
 
 # copy the app
@@ -56,9 +58,12 @@ RUN curl -fsSLO "https://github.com/aptible/supercronic/releases/download/v0.2.4
 RUN useradd -u 1001 -g 0 wmo-resource-catalogue && \
     chgrp -R 0 /app && \
     chmod -R g=u /app && \
-    mkdir -p /data/source && \
+    mkdir -p /data/source/wis2-gdc && \
+    mkdir -p /data/source/wigos-gofc && \
     chmod 775 /data && \
-    chmod 775 /data/source
+    chmod 775 /data/source && \
+    chmod 775 /data/source/wis2-gdc && \
+    chmod 775 /data/source/wigos-gofc
 
 USER 1001
 

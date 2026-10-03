@@ -1,4 +1,5 @@
-0 0 * * * /venv/bin/wmo-resource-catalogue archive $WMO_RESOURCE_CATALOGUE_METADATA_ARCHIVE_ZIPFILE
-0 1 * * * /venv/bin/wmo-resource-catalogue metrics analyze
+0 0 * * * /venv/bin/wmo-resource-catalogue wis2-gdc archive $WMO_RESOURCE_CATALOGUE_WIS2_GDC_METADATA_ARCHIVE_ZIPFILE
+0 1 * * * /venv/bin/wmo-resource-catalogue wis2-gdc metrics analyze
+0 2 * * * /venv/bin/wmo-resource-catalogue wigos-gofc archive $WMO_RESOURCE_CATALOGUE_WIGOS_GOFC_METADATA_ARCHIVE_ZIPFILE
 30 * * * * /venv/bin/pywcmp bundle sync
 40 * * * * /venv/bin/pywmdr bundle sync

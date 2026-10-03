@@ -37,7 +37,7 @@ from pywiscat.wis2.metrics import (
 )
 
 from wmo_resource_catalogue.env import (
-    BROKER_URL, CENTRE_ID, METADATA_ARCHIVE_ZIPFILE, PUBLISH_REPORTS)
+    BROKER_URL, CENTRE_ID, WIS2_GDC_METADATA_ARCHIVE_ZIPFILE, PUBLISH_REPORTS)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -183,9 +183,9 @@ def metrics():
 def analyze(ctx, verbosity='NOTSET'):
     """Analyze WCMP2 metadata archive"""
 
-    click.echo(f'Analyzing {METADATA_ARCHIVE_ZIPFILE}')
+    click.echo(f'Analyzing {WIS2_GDC_METADATA_ARCHIVE_ZIPFILE}')
     with tempfile.TemporaryDirectory() as tmpdirname:
-        with zipfile.ZipFile(METADATA_ARCHIVE_ZIPFILE) as zfh:
+        with zipfile.ZipFile(WIS2_GDC_METADATA_ARCHIVE_ZIPFILE) as zfh:
             zfh.extractall(tmpdirname)
 
             archive_dir = list(Path(tmpdirname).iterdir())[0]

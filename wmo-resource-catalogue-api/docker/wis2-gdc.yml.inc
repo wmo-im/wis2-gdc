@@ -46,7 +46,7 @@
         providers:
             - type: record
               name: ${WMO_RESOURCE_CATALOGUE_BACKEND_TYPE:-Elasticsearch}
-              data: ${WMO_RESOURCE_CATALOGUE_BACKEND_CONNECTION:-http://wmo-resource-catalogue-backend:9200/wis2-discovery-metadata}
+              data: ${WMO_RESOURCE_CATALOGUE_BACKEND_CONNECTION:-http://wmo-resource-catalogue-backend:9200}/wis2-discovery-metadata
               id_field: id
               time_field: updated
               title_field: title

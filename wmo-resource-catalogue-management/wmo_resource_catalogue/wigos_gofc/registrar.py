@@ -19,7 +19,6 @@
 #
 ###############################################################################
 
-from copy import deepcopy
 import json
 import logging
 from pathlib import Path
@@ -29,25 +28,23 @@ import uuid
 import click
 import requests
 
-from pywcmp.wcmp2.ets import WMOCoreMetadataProfileTestSuite2
-from pywcmp.wcmp2.kpi import WMOCoreMetadataProfileKeyPerformanceIndicators
+from pywmdr.wmdr2.ets import WMDR2TestSuite
 from pywis_pubsub import cli_options
 from pywis_pubsub.mqtt import MQTTPubSubClient
 
 from wmo_resource_catalogue.backend import BACKENDS
 from wmo_resource_catalogue.env import (BACKEND_TYPE, BACKEND_CONNECTION,
                                         BROKER_URL, CENTRE_ID, EXPERIMENTAL,
-                                        GB_LINKS,
-                                        WIS2_GDC_METADATA_ARCHIVE_SOURCE,
-                                        PUBLISH_REPORTS, REJECT_ON_FAILING_ETS,
-                                        RUN_KPI)
+                                        METADATA_ARCHIVE_SOURCE,
+                                        PUBLISH_REPORTS, REJECT_ON_FAILING_ETS)
+
 from wmo_resource_catalogue.wme import generate_wme
 
 LOGGER = logging.getLogger(__name__)
 
 BACKEND_DEFS = {
     'connection': BACKEND_CONNECTION,
-    'collection': 'wis2-discovery-metadata'
+    'collection': 'wigos-observing-facility-metadata'
 }
 
 
@@ -56,7 +53,7 @@ class Registrar:
         """
         Initializer
 
-        :returns: `wmo_resource_catalogue.wis2_gdc.registrar.Registrar`
+        :returns: `wmo_resource_catalogue.wigos_gofc.registrar.Registrar`
         """
 
         self.broker = None
@@ -70,20 +67,20 @@ class Registrar:
 
     def get_record(self, wnm: dict, topic: str) -> Union[dict, None]:
         """
-        Helper function to fetch WCMP2 document from a WNM
+        Helper function to fetch WMDR2 document from a WNM
 
         :param wnm: `dict` of WNM
         :param topic: `str` of topic
 
-        :returns: `dict` of WCMP2 or `None`
+        :returns: `dict` of WMDR2 or `None`
         """
 
         message = {}
         message_failure_reason = None
 
         centre_id = topic.split('/')[3]
-        if centre_id.endswith('global-discovery-catalogue'):
-            msg = 'WCMP2 record republished from another GDC; not processing'
+        if centre_id.endswith('global-observing-facility-catalogue'):
+            msg = 'WMDR2 record republished from another GOFC; not processing'
             LOGGER.info(msg)
             return None
 
@@ -110,15 +107,15 @@ class Registrar:
             message_failure_reason = err
             LOGGER.warning(err)
 
-        LOGGER.debug(f'WCMP2 access failed: {message_failure_reason}')
+        LOGGER.debug(f'WMDR2 access failed: {message_failure_reason}')
 
         message['description'] = str(message_failure_reason)
 
         LOGGER.info('Publishing URL error report to broker')
         wme = generate_wme(centre_id, 'item.download',
-                           'ERROR', 'WCMP2 access failure',
+                           'ERROR', 'WMDR2 access failure',
                            message, [self._get_link()])
-        publish_report_topic = f'monitor/a/wis2/{centre_id}'
+        publish_report_topic = f'monitor/a/wigos/{centre_id}'
         self.broker.pub(publish_report_topic, json.dumps(wme))
 
         return None
@@ -147,7 +144,7 @@ class Registrar:
                 return
 
         self.centre_id = self.metadata['id'].split(':')[3]
-        publish_report_topic = f'monitor/a/wis2/{self.centre_id}'
+        publish_report_topic = f'monitor/a/wigos/{self.centre_id}'
 
         if topic is None:
             LOGGER.warning('No incoming topic defined')
@@ -201,7 +198,7 @@ class Registrar:
 
             LOGGER.info('Publishing ETS report to broker')
             wme = generate_wme(self.centre_id, 'wcmp2.ets',
-                               severity, 'WCMP2 ETS report',
+                               severity, 'WMDR2 ETS report',
                                ets_results, [self._get_link()])
             self.broker.pub(publish_report_topic, json.dumps(wme))
 
@@ -211,32 +208,16 @@ class Registrar:
                 return
 
         source_filename = f"{self.metadata['id']}.json"
-        source_filename = WIS2_GDC_METADATA_ARCHIVE_SOURCE / source_filename
+        source_filename = METADATA_ARCHIVE_SOURCE / source_filename
         LOGGER.debug(f'Saving source record to {source_filename}')
         with source_filename.open('wb') as fh:
             fh.write(self.source)
-
-        LOGGER.info('Updating links')
-        data_policy = self.metadata['properties'].get('wmo:dataPolicy')
-        self.metadata['links'] = self.update_record_links(data_policy)
 
         LOGGER.info('Adding centre-id property')
         self.metadata['properties']['centre-id'] = self.centre_id
 
         LOGGER.info('Publishing metadata to backend')
         self._publish()
-
-        if RUN_KPI:
-            LOGGER.info('Running KPI')
-            kpi_results = self._run_kpi()
-            kpi_results['report_by'] = CENTRE_ID
-            kpi_results['centre_id'] = self.centre_id
-
-            if PUBLISH_REPORTS and 'summary' in kpi_results:
-                LOGGER.info('Publishing KPI report to broker')
-                wme = generate_wme(self.centre_id, 'wcmp2.kpi', 'INFO',
-                                   'WCMP2 KPI report', kpi_results)
-                self.broker.pub(publish_report_topic, json.dumps(wme))
 
     def delete_record(self, topic: str, wnm: dict) -> None:
         """
@@ -249,7 +230,7 @@ class Registrar:
         """
 
         centre_id = topic.split('/')[3]
-        publish_report_topic = f'monitor/a/wis2/{centre_id}'
+        publish_report_topic = f'monitor/a/wigos/{centre_id}'
         severity = 'INFO'
 
         message = {}
@@ -269,13 +250,13 @@ class Registrar:
                 severity = 'ERROR'
 
             source_filename = f"{metadata_id}.json"
-            source_filename = WIS2_GDC_METADATA_ARCHIVE_SOURCE / source_filename  # noqa
+            source_filename = METADATA_ARCHIVE_SOURCE / source_filename
             LOGGER.debug(f'Deleting source record {source_filename}')
             source_filename.unlink(missing_ok=True)
 
         LOGGER.info('Publishing metadata deletion report to broker')
         wme = generate_wme(centre_id, 'item.download', severity,
-                           'WIS2 GDC WCMP2 deletion report', message)
+                           'WIGOS GOFC WMDR2 deletion report', message)
         self.broker.pub(publish_report_topic, json.dumps(wme))
 
         return
@@ -288,28 +269,15 @@ class Registrar:
         """
 
         try:
-            ts = WMOCoreMetadataProfileTestSuite2(self.metadata)
+            ts = WMDR2TestSuite(self.metadata)
             return ts.run_tests(fail_on_schema_validation=True,
                                 relax_centre_id_checks=EXPERIMENTAL)
         except ValueError as err:
             return {'message': f'Failed ETS: {err}'}
 
-    def _run_kpi(self) -> dict:
-        """
-        Helper function to run KPI
-
-        :returns: `dict` of KPI results
-        """
-
-        try:
-            kpis = WMOCoreMetadataProfileKeyPerformanceIndicators(self.metadata)  # noqa
-            return kpis.evaluate()
-        except Exception as err:
-            return {'message': f'Failed KPI: {err}'}
-
     def _publish(self):
         """
-        Publish metadata from `wis2_gdc.registrar:Registrar.metadata`
+        Publish metadata from `wigos_gofc.registrar:Registrar.metadata`
         to backend
 
         :returns: `None`
@@ -317,52 +285,6 @@ class Registrar:
 
         LOGGER.info(f'Saving to {BACKEND_TYPE} ({BACKEND_DEFS})')
         self.backend.save_record(self.metadata)
-
-    def update_record_links(self, data_policy: str) -> list:
-        """
-        Update Global Service links
-
-        :returns: `list` of links, updated accordingly
-        """
-
-        def is_wis2_mqtt_link(link) -> bool:
-            if link['href'].startswith(('mqtt', 'ws')):
-                if link.get('channel', '').startswith('origin/a/wis2'):
-                    LOGGER.debug('Found MQTT link')
-                    return True
-
-            return False
-
-        new_links = []
-
-        for link in self.metadata['links']:
-            new_link = deepcopy(link)
-
-            if is_wis2_mqtt_link(link):
-                LOGGER.debug('Adjusting MQTT link')
-                channel = link.get('channel', link.get('wmo:topic'))
-
-                _ = new_link.pop('wmo:topic', None)
-
-                if data_policy == 'core':
-                    LOGGER.debug('Adjusting channel origin to cache')
-                    new_link['channel'] = channel.replace('origin', 'cache')
-
-                new_link['rel'] = 'items'
-                new_link['type'] = 'application/geo+json'
-
-                for gb_link in GB_LINKS:
-                    gb_link_to_add = deepcopy(new_link)
-                    title = f'Notifications from {gb_link[2]} ({gb_link[0]})'
-                    gb_link_to_add['title'] = title
-                    gb_link_to_add['href'] = gb_link[1]
-
-                    LOGGER.debug(f'Adding new link: {gb_link_to_add}')
-                    new_links.append(gb_link_to_add)
-            else:
-                new_links.append(new_link)
-
-        return new_links
 
     def _get_link(self):
         """
@@ -374,7 +296,7 @@ class Registrar:
         link = {
             'rel': 'related',
             'type': 'application/geo+json',
-            'title': 'WCMP2 discovery metadata record',
+            'title': 'WMDRWCMP2 discovery metadata record',
             'href': self.record_url
         }
 

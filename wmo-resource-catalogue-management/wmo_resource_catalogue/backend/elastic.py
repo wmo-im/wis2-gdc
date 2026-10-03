@@ -45,8 +45,8 @@ class ElasticsearchBackend(BaseBackend):
         with WIS2_GDC_ES_SETTINGS.open() as fh:
             self.ES_SETTINGS = json.load(fh)
 
+        self.index_name = self.defs.get('collection')
         self.url_parsed = urlparse(self.defs.get('connection'))
-        self.index_name = self.url_parsed.path.lstrip('/')
 
         url2 = f'{self.url_parsed.scheme}://{self.url_parsed.netloc}'
 

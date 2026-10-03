@@ -21,25 +21,21 @@
 
 import click
 
-from wmo_resource_catalogue.wis2_gdc.registrar import (
+from wmo_resource_catalogue.wigos_gofc.registrar import (
    register, setup, teardown, unregister)
-from wmo_resource_catalogue.wis2_gdc.metrics import metrics
-from wmo_resource_catalogue.wis2_gdc.archive import archive, restore
-from wmo_resource_catalogue.wis2_gdc.sync import sync
+from wmo_resource_catalogue.wigos_gofc.archive import archive, restore
 
 
 @click.group()
-def wis2_gdc():
-    """WIS2 Global Discovery Catalogue management utilities"""
+def wigos_gofc():
+    """WIGOS Global Observing Facility Catalogue management utilities"""
 
     pass
 
 
-wis2_gdc.add_command(setup)
-wis2_gdc.add_command(teardown)
-wis2_gdc.add_command(unregister)
-wis2_gdc.add_command(register)
-wis2_gdc.add_command(sync)
-wis2_gdc.add_command(archive)
-wis2_gdc.add_command(restore)
-wis2_gdc.add_command(metrics)
+wigos_gofc.add_command(setup)
+wigos_gofc.add_command(teardown)
+wigos_gofc.add_command(unregister)
+wigos_gofc.add_command(register)
+wigos_gofc.add_command(archive)
+wigos_gofc.add_command(restore)
