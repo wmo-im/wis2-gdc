@@ -33,8 +33,11 @@ echo "Caching WCMP schemas"
 echo "Caching WMDR schemas"
 /venv/bin/pywmdr bundle sync
 
-echo "Setting up discovery metadata backend"
+echo "Setting up WIS2 GDC discovery metadata disobackend"
 /venv/bin/wmo-resource-catalogue wis2-gdc setup -y
+
+echo "Setting up WIGOS GOFC observing facility metadata backend"
+/venv/bin/wmo-resource-catalogue wigos-gofc setup -y
 
 echo "Starting cron"
 /usr/local/bin/supercronic /app/docker/wmo-resource-catalogue-management.cron &
