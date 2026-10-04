@@ -54,7 +54,7 @@ if [[ $WMO_RESOURCE_CATALOGUE_WIS2_GDC_ENABLED == "true" ]]; then
     cat /tmp/wis2-gdc.yml.inc >> $PYGEOAPI_CONFIG
 fi
 
-if [[ $WMO_RESOURCE_CATALOGUE_WIGOS_GSC_ENABLED == "true" ]]; then
+if [[ $WMO_RESOURCE_CATALOGUE_WIGOS_GOFC_ENABLED == "true" ]]; then
     cat /tmp/wigos-gofc.yml.inc >> $PYGEOAPI_CONFIG
 fi
 
