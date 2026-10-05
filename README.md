@@ -1,23 +1,27 @@
-[![flake8](https://github.com/wmo-im/wis2-gdc/workflows/flake8/badge.svg)](https://github.com/wmo-im/wis2-gdc/actions)
+[![flake8](https://github.com/wmo-im/wmo-resource-catalogue/workflows/flake8/badge.svg)](https://github.com/wmo-im/wmo-resource-catalogue/actions)
 
-# wis2-gdc
+# wmo-resource-catalogue
 
-wis2-gdc is a Reference Implementation of a WIS2 Global Discovery Catalogue.
+wmo-resource-catalogue is a Reference Implementation of a WIS2 Global Discovery Catalogue.
 
-<a href="docs/architecture/c4.container.png"><img alt="WIS2 GDC C4 component diagram" src="docs/architecture/c4.container.png" width="800"/></a>
+<a href="docs/architecture/c4.container.png"><img alt="WMO Resource Catalogue C4 component diagram" src="docs/architecture/c4.container.png" width="800"/></a>
 
 ## Workflow
 
 - connects to a WIS2 Global Broker, subscribed to the following topic:
   - `cache/a/wis2/+/metadata`
-- on discovery metadata notifications:
+  - `cache/a/wigos/+/metadata`
+- on discovery metadata and observing facility metadata notifications:
   - check for message duplication
-  - run the WCMP2 ETS and KPIs via [pywcmp](https://github.com/World-Meteorological-Organization/pywcmp)
-- publish ETS and KPI reports to local broker under `monitor/a/wis2/centre-id`
-- publish to a WIS2 GDC ([OGC API - Records](https://docs.ogc.org/is/20-004r1/20-004r1.html)) using one of the supported transaction backends:
+  - for WIS2, run the WCMP2 ETS and KPIs via [pywcmp](https://github.com/World-Meteorological-Organization/pywcmp)
+  - for WIGOS, run the WMDR2 ETS via [pywmdr](https://github.com/wmo-im/pywmdr)
+- publish ETS and KPI reports to local broker:
+  - for WIS2,  under `monitor/a/wis2/<centre-id>`
+  - for WIGOS,  under `monitor/a/wigos/<centre-id>`
+- publish to a WIS2 GDC or WIGOS GOFC ([OGC API - Records](https://docs.ogc.org/is/20-004r1/20-004r1.html)) using one of the supported transaction backends:
   - [OGC API - Features - Part 4: Create, Replace, Update and Delete](https://docs.ogc.org/DRAFTS/20-002.html)
   - Elasticsearch direct (default)
-- collect real-time and offline GDC metrics and make them available as [OpenMetrics](https://openmetrics.io)
+- collect real-time and offline GDC and GOFC metrics and make them available as [OpenMetrics](https://openmetrics.io)
 - provide analytics and visualization via [Prometheus](https://prometheus.io) and [Grafana](https://grafana.com)
 - produce a metadata zipfile archive for download (daily)
 
@@ -29,86 +33,40 @@ wis2-gdc is a Reference Implementation of a WIS2 Global Discovery Catalogue.
 ### Dependencies
 Dependencies are embedded in service definitions and orchestrated by Docker.
 
-### Installing wis2-gdc
+### Installing wmo-resource-catalogue
 
 ```bash
 # setup virtualenv
-python3 -m venv --system-site-packages wis2-gdc
-cd wis2-gdc
+python3 -m venv --system-site-packages wmo-resource-catalogue
+cd wmo-resource-catalogue
 source bin/activate
 
 # clone codebase and install
-git clone https://github.com/wmo-im/wis2-gdc.git
-cd wis2-gdc/wis2-gdc-management
-pip3 install .
+git clone https://github.com/wmo-im/wmo-resource-catalogue.git
+cd wmo-resource-catalogue/wmo-resource-catalogue-management
+make build
+make up
 ```
 
 ## Running
 
-```bash
-# setup environment and configuration
-cp wis2-gdc.env local.env
-vim local.env # update accordingly
-
-source local.env
-
-# setup pywis-pubsub - sync schemas and codelists bundle
-pywis-pubsub bundle sync
-
-# setup backend
-wis2-gdc setup
-
-# setup backend (force reinitialization of backend)
-wis2-gdc setup --force
-
-# teardown backend
-wis2-gdc teardown
-
-# connect to Global Broker
-# discovery metadata notifications will automatically trigger wis2-gdc to validate and publish
-# WCMP2 to the GDC identified in wis2-gdc.env (WIS2_GDC_GB)
-pywis-pubsub subscribe --config pywis-pubsub.yml
-
-# loading metadata manually (single file)
-wis2-gdc register /path/to/wcmp2-file.json
-
-# loading metadata manually (directory of .json files)
-wis2-gdc register /path/to/dir/of/wcmp2-files
-
-# loading metadata manually (from URL)
-wis2-gdc register https://example.org/wcmp2-file.json
-
-# deleting metadata by identifier
-wis2-gdc unregister "urn:wmo:md:ca-eccc-msc:id123"
-
-# loading metadata from a known harvest endpoint
-
-# load from wis2box known deployments (https://demo.wis2box.wis.wmo.int)
-wis2-gdc sync wis2box
-
-# create an archive of metadata records to a zipfile
-wis2-gdc archive foo.zip
-
-# restore an archive of metadata records from a zipfile
-wis2-gdc restore wis2-discovery-metadata.zip
-```
 
 ### Docker
 
 The Docker setup uses Docker and Docker Compose to manage the following services:
 
-- **wis2-gdc-api**: API powered by [pygeoapi](https://pygeoapi.io)
-- **wis2-gdc-monitoring**: monitoring
-  - **wis2-gdc-metrics-collector**: metrics collector
-  - **wis2-gdc-prometheus**: metrics scraper
-  - **wis2-gdc-grafana**: analytics and visualization
-- **wis2-gdc-broker**: MQTT broker
-- **wis2-gdc-management**: management service to ingest, validate and publish discovery metadata published from a WIS2 Global Broker instance
-  - the default Global Broker connection is to NOAA.  This can be modified in `wis2-gdc.env` to point to a different Global Broker
-- **wis2-gdc-backend**: API search engine backend (default Elasticsearch)
-- **wis2-gdc-cache**: message cache (default Redis)
+- **wmo-resource-catalogue-api**: API powered by [pygeoapi](https://pygeoapi.io)
+- **wmo-resource-catalogue-monitoring**: monitoring
+  - **wmo-resource-catalogue-metrics-collector**: metrics collector
+  - **wmo-resource-catalogue-prometheus**: metrics scraper
+  - **wmo-resource-catalogue-grafana**: analytics and visualization
+- **wmo-resource-catalogue-broker**: MQTT broker
+- **wmo-resource-catalogue-management**: management service to ingest, validate and publish discovery metadata published from a WIS2 Global Broker instance
+  - the default Global Broker connection is to MétéoFrance.  This can be modified in `wmo-resource-catalogue.env` to point to a different Global Broker
+- **wmo-resource-catalogue-backend**: API search engine backend (default Elasticsearch)
+- **wmo-resource-catalogue-cache**: message cache (default Redis)
 
-See [`wis2-gdc.env`](wis2-gdc.env) for default environment variable settings.
+See [`wmo-resource-catalogue.env`](wmo-resource-catalogue.env) for default environment variable settings.
 
 To adjust service ports, edit [`docker-compose.override.yml`](docker-compose.override.yml) accordingly.
 
@@ -133,7 +91,7 @@ make dev
 # view all container logs in realtime
 make logs
 
-# login to the wis2-gdc-management container
+# login to the wmo-resource-catalogue-management container
 make login
 
 # restart all containers
@@ -144,22 +102,16 @@ make down
 
 # remove all volumes
 make rm
+
+# monitor running containers
+make ps
 ```
 
 ## Development
 
 ### Running Tests
 
-```bash
-# install dev requirements
-pip3 install -r requirements-dev.txt
-
-# run tests like this:
-python3 tests/run_tests.py
-
-# or this:
-python3 setup.py test
-```
+TODO
 
 ### Code Conventions
 
@@ -167,7 +119,7 @@ python3 setup.py test
 
 ### Bugs and Issues
 
-All bugs, enhancements and issues are managed on [GitHub](https://github.com/wmo-im/wis2-gdc/issues).
+All bugs, enhancements and issues are managed on [GitHub](https://github.com/wmo-im/wmo-resource-catalogue/issues).
 
 ## Contact
 
