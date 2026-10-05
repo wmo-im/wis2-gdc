@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         # NOTE: other containers tested upstream
-        image: [ {tag: 'wis2-gdc-broker', build: 'wis2-gdc-broker'}, {tag: 'wis2-gdc-metrics-collector', build: 'wis2-gdc-monitoring/metrics-collector'}, {tag: 'wis2-gdc-management', build: 'wis2-gdc-management'}, {tag: 'wis2-gdc-api', build: 'wis2-gdc-api'} ]
+        image: [ {tag: 'wmo-resource-catalogue-broker', build: 'wmo-resource-catalogue-broker'}, {tag: 'wmo-resource-catalogue-metrics-collector', build: 'wmo-resource-catalogue-monitoring/metrics-collector'}, {tag: 'wmo-resource-catalogue-management', build: 'wmo-resource-catalogue-management'}, {tag: 'wmo-resource-catalogue-api', build: 'wmo-resource-catalogue-api'} ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2

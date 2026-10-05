@@ -17,7 +17,7 @@ jobs:
         name: setup Python
         with:
           python-version: '3.14'
-      - name: Checkout wis2-gdc
+      - name: Checkout wmo-resource-catalogue
         uses: actions/checkout@master
       - name: Install flake8
         run: pip3 install flake8
