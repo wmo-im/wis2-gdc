@@ -62,7 +62,7 @@ def wigos_gofc_archive():
 @app.route('/wis2-gdc-metrics.txt')
 def metrics():
 
-    collector_url = os.environ.get('WIS2_GDC_COLLECTOR_URL')
+    collector_url = os.environ.get('WMO_RESOURCE_CATALOGUE_COLLECTOR_URL')
 
     try:
         response = requests.get(collector_url).text
@@ -71,12 +71,12 @@ def metrics():
         return 'Internal Server Error', 500
 
 
-@app.route('/wmo-resource-catalogue-wis2-gdc-all-channels-latest.txt')
+@app.route('/wis2-gdc-all-channels-latest.txt')
 def wis2_gdc_all_channels_latest():
 
     LIVE_CHANNELS = []
 
-    URL = os.environ.get('WIS2_GDC_BACKEND_CONNECTION')
+    URL = os.environ.get('WMO_RESOURCE_CATALOGUE_BACKEND_CONNECTION')
     URL = f'{URL}/wis2-discovery-metadata/_search'
 
     PARAMS = {

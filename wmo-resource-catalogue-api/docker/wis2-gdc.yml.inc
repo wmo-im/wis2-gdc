@@ -22,12 +22,12 @@
             - type: text/plain
               rel: related
               title: OpenMetrics
-              href: ${WMO_RESOURCE_CATALOGUE_API_URL:-http://localhost}/wmo-resource-catalogue-metrics.txt
+              href: ${WMO_RESOURCE_CATALOGUE_API_URL:-http://localhost}/wis2-gdc-metrics.txt
               hreflang: en-US
             - type: text/plain
               rel: related
               title: WIS2 live channel list
-              href: ${WMO_RESOURCE_CATALOGUE_API_URL:-http://localhost}/wmo-resource-catalogue-wis2-gdc-all-channels-latest.txt
+              href: ${WMO_RESOURCE_CATALOGUE_API_URL:-http://localhost}/wis2-gdc-all-channels-latest.txt
               hreflang: en-US
             - type: text/html
               rel: related
