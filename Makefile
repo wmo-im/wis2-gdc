@@ -19,13 +19,13 @@
 #
 ###############################################################################
 
-DOCKER_COMPOSE_ARGS=--project-name wis2-gdc --file docker-compose.yml --file docker-compose.override.yml
+DOCKER_COMPOSE_ARGS=--project-name wmo-resource-catalogue --file docker-compose.yml --file docker-compose.override.yml
 
 build:
 	docker compose $(DOCKER_COMPOSE_ARGS) build
 
 build-management:
-	docker compose $(DOCKER_COMPOSE_ARGS) build wis2-gdc-management
+	docker compose $(DOCKER_COMPOSE_ARGS) build wmo-resource-catalogue-management
 
 force-build:
 	docker compose $(DOCKER_COMPOSE_ARGS) build --no-cache --pull
@@ -39,13 +39,11 @@ down:
 restart: down up
 
 login:
-	docker exec -it wis2-gdc-management /bin/bash
+	docker exec -it wmo-resource-catalogue-management /bin/bash
 
-dev:
-	docker compose $(DOCKER_COMPOSE_ARGS) --file docker-compose.dev.yml up
-
-reinit-backend:
-	docker exec -it wis2-gdc-management sh -c "/venv/bin/wis2-gdc setup --force"
+reinit-backends:
+	docker exec -it wmo-resource-catalogue-management sh -c "/venv/bin/wmo-resource-catalogue wis2-gdc setup --force"
+	docker exec -it wmo-resource-catalogue-management sh -c "/venv/bin/wmo-resource-catalogue wigos-gofc setup --force"
 
 logs:
 	docker compose $(DOCKER_COMPOSE_ARGS) logs --follow
@@ -54,7 +52,10 @@ clean:
 	docker system prune -f
 	docker volume prune -f
 
-rm:
-	docker volume rm $(shell docker volume ls --filter name=wis2-gdc -q)
+ps:
+	docker compose $(DOCKER_COMPOSE_ARGS) ps
 
-.PHONY: build build-management up dev login down restart reinit-backend force-build logs rm clean
+rm:
+	docker volume rm $(shell docker volume ls --filter name=wmo-resource-catalogue -q)
+
+.PHONY: build build-management up login down restart reinit-backend force-build logs rm clean ps

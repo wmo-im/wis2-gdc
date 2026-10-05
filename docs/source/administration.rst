@@ -6,7 +6,7 @@ Administration
 Docker Compose
 --------------
 
-As a Docker Compose based application, ``wis2-gdc`` uses the ``docker compose`` command to manage services.  The Docker Compose setups are defined in the following configurations:
+As a Docker Compose based application, ``wmo-resource-catalogue`` uses the ``docker compose`` command to manage services.  The Docker Compose setups are defined in the following configurations:
 
 - ``docker-compose.yml``
 - ``docker-compose.override.yml``
@@ -26,16 +26,13 @@ As a convenience, the ``Makefile`` in the root directory provides shortcuts to m
    # start all containers
    make up
 
-   # reinitialize backend
-   make reinit-backend
-
-   # start all containers in dev mode
-   make dev
+   # reinitialize backends
+   make reinit-backends
 
    # view all container logs in realtime
    make logs
 
-   # login to the wis2-gdc-management container
+   # login to the wmo-resource-catalogue-management container
    make login
 
    # restart all containers
@@ -48,4 +45,7 @@ As a convenience, the ``Makefile`` in the root directory provides shortcuts to m
    make rm
 
    # perform pruning of Docker system artifacts
-   make rm
+   make clean
+
+   # monitor running containers
+   make ps

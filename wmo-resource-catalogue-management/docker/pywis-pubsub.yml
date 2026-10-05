@@ -1,0 +1,13 @@
+broker: ${WMO_RESOURCE_CATALOGUE_GB}
+
+subscribe_topics:
+    - ${WMO_RESOURCE_CATALOGUE_WIS2_GDC_GB_TOPIC}
+    - ${WMO_RESOURCE_CATALOGUE_WIGOS_GOFC_GB_TOPIC}
+
+qos: 1
+
+verify_data: false
+
+validate_message: false
+
+hook: wmo_resource_catalogue.hook.DiscoveryMetadataHook
