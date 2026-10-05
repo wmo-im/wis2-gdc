@@ -66,7 +66,7 @@ def archive_metadata(archive_zipfile: str) -> None:
         return None
 
     end = False
-    gdc_items_url = f'{API_URL_DOCKER}/collections/wigos-observing-facility-discovery-metadata/items'  # noqa
+    gdc_items_url = f'{API_URL_DOCKER}/collections/wigos-observing-facility-metadata/items'  # noqa
     response = None
 
     with zipfile.ZipFile(archive_zipfile, 'w') as zf:
