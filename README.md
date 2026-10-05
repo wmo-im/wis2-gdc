@@ -2,7 +2,7 @@
 
 # wmo-resource-catalogue
 
-wmo-resource-catalogue is a Reference Implementation of a WIS2 Global Discovery Catalogue.
+wmo-resource-catalogue is a Reference Implementation of a WIS2 Global Discovery Catalogue and WIGOS Global Observing Facility Catalogue.
 
 <a href="docs/architecture/c4.container.png"><img alt="WMO Resource Catalogue C4 component diagram" src="docs/architecture/c4.container.png" width="800"/></a>
 
