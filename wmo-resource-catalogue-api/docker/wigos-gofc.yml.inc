@@ -46,6 +46,16 @@
               time_field: updated
               title_field: title
               include_extra_query_parameters: true
+            - type: tile
+              name: MVT-elastic
+              data: ${WMO_RESOURCE_CATALOGUE_BACKEND_CONNECTION:-http://wmo-resource-catalogue-backend:9200}/wigos-observing-facility-metadata/_mvt/geometry/{z}/{x}/{y}?grid_precision=0
+              options:
+                  zoom:
+                      min: 0
+                      max: 5
+              format:
+                  name: pbf
+                  mimetype: application/vnd.mapbox-vector-tile
 
     pywmdr-wigos-wmdr2-ets:
         type: process
