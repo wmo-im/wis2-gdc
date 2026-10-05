@@ -74,7 +74,7 @@ WIS2 Global Broker environment variables are defined as comma-separated values (
 
 .. note::
 
-   - the naming convention is ``WIS_GDC_GB_LINK_<LABEL>``, where ``<LABEL>`` can be named as desired to identify the GB
+   - the naming convention is ``WMO_RESOURCE_CATALOGUE_GB_LINK_<LABEL>``, where ``<LABEL>`` can be named as desired to identify the GB
    - at least one Global Broker environment variable is required
    - the centre name may contain commas
 
