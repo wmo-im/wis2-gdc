@@ -52,7 +52,10 @@ clean:
 	docker system prune -f
 	docker volume prune -f
 
+ps:
+	docker compose $(DOCKER_COMPOSE_ARGS) ps
+
 rm:
 	docker volume rm $(shell docker volume ls --filter name=wmo-resource-catalogue -q)
 
-.PHONY: build build-management up login down restart reinit-backend force-build logs rm clean
+.PHONY: build build-management up login down restart reinit-backend force-build logs rm clean ps
