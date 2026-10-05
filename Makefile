@@ -41,8 +41,9 @@ restart: down up
 login:
 	docker exec -it wmo-resource-catalogue-management /bin/bash
 
-reinit-backend:
-	docker exec -it wmo-resource-catalogue-management sh -c "/venv/bin/wmo-resource-catalogue setup --force"
+reinit-backends:
+	docker exec -it wmo-resource-catalogue-management sh -c "/venv/bin/wmo-resource-catalogue wis2-gdc setup --force"
+	docker exec -it wmo-resource-catalogue-management sh -c "/venv/bin/wmo-resource-catalogue wigos-gofc setup --force"
 
 logs:
 	docker compose $(DOCKER_COMPOSE_ARGS) logs --follow
