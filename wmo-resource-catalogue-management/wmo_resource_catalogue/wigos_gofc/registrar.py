@@ -113,7 +113,7 @@ class Registrar:
         message['description'] = str(message_failure_reason)
 
         LOGGER.info('Publishing URL error report to broker')
-        wme = generate_wme(centre_id, 'item.download',
+        wme = generate_wme(WIGOS_GOFC_CENTRE_ID, centre_id, 'item.download',
                            'ERROR', 'WMDR2 access failure',
                            message, [self._get_link()])
         publish_report_topic = f'monitor/a/wigos/{centre_id}'
@@ -162,8 +162,9 @@ class Registrar:
                     'description': f'Topic mismatch ({incoming_topic_centre_id} != {self.centre_id})'  # noqa
                 }
 
-                wme = generate_wme(self.centre_id, 'wmdr2.ets', 'ERROR',
-                                   message, [self._get_link()])
+                wme = generate_wme(WIGOS_GOFC_CENTRE_ID, self.centre_id,
+                                   'wmdr2.ets', 'ERROR', message,
+                                   [self._get_link()])
 
                 self.broker.pub(publish_report_topic, json.dumps(wme))
 
@@ -198,8 +199,8 @@ class Registrar:
                 severity = 'ERROR'
 
             LOGGER.info('Publishing ETS report to broker')
-            wme = generate_wme(self.centre_id, 'wmdr2.ets',
-                               severity, 'WMDR2 ETS report',
+            wme = generate_wme(WIGOS_GOFC_CENTRE_ID, self.centre_id,
+                               'wmdr2.ets', severity, 'WMDR2 ETS report',
                                ets_results, [self._get_link()])
             self.broker.pub(publish_report_topic, json.dumps(wme))
 
@@ -256,8 +257,9 @@ class Registrar:
             source_filename.unlink(missing_ok=True)
 
         LOGGER.info('Publishing metadata deletion report to broker')
-        wme = generate_wme(centre_id, 'item.download', severity,
-                           'WIGOS GOFC WMDR2 deletion report', message)
+        wme = generate_wme(WIGOS_GOFC_CENTRE_ID, centre_id, 'item.download',
+                           severity, 'WIGOS GOFC WMDR2 deletion report',
+                           message)
         self.broker.pub(publish_report_topic, json.dumps(wme))
 
         return

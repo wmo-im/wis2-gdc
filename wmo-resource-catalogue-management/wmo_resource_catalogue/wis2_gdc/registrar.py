@@ -114,7 +114,7 @@ class Registrar:
         message['description'] = str(message_failure_reason)
 
         LOGGER.info('Publishing URL error report to broker')
-        wme = generate_wme(centre_id, 'item.download',
+        wme = generate_wme(WIS2_GDC_CENTRE_ID, centre_id, 'item.download',
                            'ERROR', 'WCMP2 access failure',
                            message, [self._get_link()])
         publish_report_topic = f'monitor/a/wis2/{centre_id}'
@@ -163,8 +163,9 @@ class Registrar:
                     'description': f'Topic mismatch ({incoming_topic_centre_id} != {self.centre_id})'  # noqa
                 }
 
-                wme = generate_wme(self.centre_id, 'wcmp2.ets', 'ERROR',
-                                   message, [self._get_link()])
+                wme = generate_wme(WIS2_GDC_CENTRE_ID, self.centre_id,
+                                   'wcmp2.ets', 'ERROR', message,
+                                   [self._get_link()])
 
                 self.broker.pub(publish_report_topic, json.dumps(wme))
 
@@ -199,7 +200,7 @@ class Registrar:
                 severity = 'ERROR'
 
             LOGGER.info('Publishing ETS report to broker')
-            wme = generate_wme(self.centre_id, 'wcmp2.ets',
+            wme = generate_wme(WIS2_GDC_CENTRE_ID, self.centre_id, 'wcmp2.ets',
                                severity, 'WCMP2 ETS report',
                                ets_results, [self._get_link()])
             self.broker.pub(publish_report_topic, json.dumps(wme))
