@@ -61,3 +61,8 @@
         type: process
         processor:
             name: pywmdr.pygeoapi_plugin.WMDR2ETSProcessor
+
+    pywmdr-wmdr2-migrate:
+        type: process
+        processor:
+            name: pywmdr.pygeoapi_plugin.WMDR2MigrateProcessor
