@@ -10,4 +10,4 @@ verify_data: false
 
 validate_message: false
 
-hook: wmo_resource_catalogue.hook.DiscoveryMetadataHook
+hook: wmo_resource_catalogue.hook.MetadataHook
