@@ -53,7 +53,7 @@ clean:
 	docker volume prune -f
 
 ps:
-	docker compose $(DOCKER_COMPOSE_ARGS) ps
+	docker compose $(DOCKER_COMPOSE_ARGS) ps --format "table {{.ID}}\t{{.Image}}\t{{.Command}}\t{{.RunningFor}}\t{{.Status}}\t{{.Ports}}\t{{.Name}}"
 
 rm:
 	docker volume rm $(shell docker volume ls --filter name=wmo-resource-catalogue -q)
