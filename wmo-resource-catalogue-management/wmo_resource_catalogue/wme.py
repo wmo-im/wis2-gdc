@@ -28,7 +28,7 @@ LOGGER = logging.getLogger(__name__)
 WME_DATA_SCHEMA = 'https://schemas.wmo.int/wme/1.0.0/schemas/wis2-event-message-bundled.json'  # noqa
 
 
-def generate_wme(source: str, subject: str, type_: str, severity,
+def generate_wme(source: str, subject: str, type_: str, severity: str,
                  title: str, data: dict, links: list = []) -> dict:
     """
     Generate WIS2 Monitoring Event Message of WCMP2 report

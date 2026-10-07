@@ -34,7 +34,7 @@ from pywis_pubsub.mqtt import MQTTPubSubClient
 
 from wmo_resource_catalogue.backend import BACKENDS
 from wmo_resource_catalogue.env import (BACKEND_TYPE, BACKEND_CONNECTION,
-                                        BROKER_URL, EXPERIMENTAL,
+                                        BROKER_URL,
                                         WIGOS_GOFC_METADATA_ARCHIVE_SOURCE,
                                         PUBLISH_REPORTS, REJECT_ON_FAILING_ETS,
                                         WIGOS_GOFC_CENTRE_ID)
@@ -144,7 +144,10 @@ class Registrar:
                 LOGGER.warning(err)
                 return
 
-        self.centre_id = self.metadata['id'].split(':')[3]
+        # FIXME: bypassing centre-id detection until centre-id
+        # workflow is established
+        self.centre_id = topic.split('/')[3]
+        # self.centre_id = self.metadata['id'].split('-')[3]
         publish_report_topic = f'monitor/a/wigos/{self.centre_id}'
 
         if topic is None:
@@ -163,8 +166,8 @@ class Registrar:
                 }
 
                 wme = generate_wme(WIGOS_GOFC_CENTRE_ID, self.centre_id,
-                                   'wmdr2.ets', 'ERROR', message,
-                                   [self._get_link()])
+                                   'wmdr2.ets', 'ERROR', 'Topic mismatch',
+                                   message, [self._get_link()])
 
                 self.broker.pub(publish_report_topic, json.dumps(wme))
 
@@ -173,16 +176,28 @@ class Registrar:
         LOGGER.debug(f'Metadata: {json.dumps(self.metadata, indent=4)}')
 
         LOGGER.info('Running ETS')
-        ets_results = self._run_ets()
         failed_ets = False
 
         try:
-            if ets_results['summary']['FAILED'] > 0:
-                LOGGER.warning('ETS errors; metadata not published')
-                failed_ets = True
-        except KeyError:
-            LOGGER.debug('Validation errors; metadata not published')
-            ets_results['id'] = str(uuid.uuid4())
+            ts = WMDR2TestSuite(metadata)
+            ets_results = ts.run_tests()
+        except ValueError as err:
+            LOGGER.info('Validation errors; metadata not published')
+            ets_results = {
+                'id': str(uuid.uuid4()),
+                'report_type': 'ets',
+                'summary': {
+                    'FAILED': 1
+                },
+                'tests': [{
+                    'id': 'http://wigos.wmo.int/spec/wmdr/2/conf/core/conformance',  # noqa
+                    'code': 'FAILED',
+                    'message': str(err)
+                }]
+            }
+
+        if ets_results['summary']['FAILED'] > 0:
+            LOGGER.warning('ETS errors; metadata not published')
             failed_ets = True
 
         ets_results['report_by'] = WIGOS_GOFC_CENTRE_ID
@@ -263,20 +278,6 @@ class Registrar:
         self.broker.pub(publish_report_topic, json.dumps(wme))
 
         return
-
-    def _run_ets(self) -> dict:
-        """
-        Helper function to run ETS
-
-        :returns: `dict` of ETS results
-        """
-
-        try:
-            ts = WMDR2TestSuite(self.metadata)
-            return ts.run_tests(fail_on_schema_validation=True,
-                                relax_centre_id_checks=EXPERIMENTAL)
-        except ValueError as err:
-            return {'message': f'Failed ETS: {err}'}
 
     def _publish(self):
         """

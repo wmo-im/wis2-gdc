@@ -164,8 +164,8 @@ class Registrar:
                 }
 
                 wme = generate_wme(WIS2_GDC_CENTRE_ID, self.centre_id,
-                                   'wcmp2.ets', 'ERROR', message,
-                                   [self._get_link()])
+                                   'wcmp2.ets', 'ERROR', 'Topic mismatch',
+                                   message, [self._get_link()])
 
                 self.broker.pub(publish_report_topic, json.dumps(wme))
 
@@ -174,16 +174,29 @@ class Registrar:
         LOGGER.debug(f'Metadata: {json.dumps(self.metadata, indent=4)}')
 
         LOGGER.info('Running ETS')
-        ets_results = self._run_ets()
         failed_ets = False
 
         try:
-            if ets_results['summary']['FAILED'] > 0:
-                LOGGER.warning('ETS errors; metadata not published')
-                failed_ets = True
-        except KeyError:
-            LOGGER.debug('Validation errors; metadata not published')
-            ets_results['id'] = str(uuid.uuid4())
+            ts = WMOCoreMetadataProfileTestSuite2(metadata)
+            ets_results = ts.run_tests(fail_on_schema_validation=True,
+                                       relax_centre_id_checks=EXPERIMENTAL)
+        except ValueError as err:
+            LOGGER.info('Validation errors; metadata not published')
+            ets_results = {
+                'id': str(uuid.uuid4()),
+                'report_type': 'ets',
+                'summary': {
+                    'FAILED': 1
+                },
+                'tests': [{
+                    'id': 'http://wis.wmo.int/spec/wcmp/2/conf/core/conformance',  # noqa
+                    'code': 'FAILED',
+                    'message': str(err)
+                }]
+            }
+
+        if ets_results['summary']['FAILED'] > 0:
+            LOGGER.warning('ETS errors; metadata not published')
             failed_ets = True
 
         ets_results['report_by'] = WIS2_GDC_CENTRE_ID
@@ -280,20 +293,6 @@ class Registrar:
         self.broker.pub(publish_report_topic, json.dumps(wme))
 
         return
-
-    def _run_ets(self) -> dict:
-        """
-        Helper function to run ETS
-
-        :returns: `dict` of ETS results
-        """
-
-        try:
-            ts = WMOCoreMetadataProfileTestSuite2(self.metadata)
-            return ts.run_tests(fail_on_schema_validation=True,
-                                relax_centre_id_checks=EXPERIMENTAL)
-        except ValueError as err:
-            return {'message': f'Failed ETS: {err}'}
 
     def _run_kpi(self) -> dict:
         """

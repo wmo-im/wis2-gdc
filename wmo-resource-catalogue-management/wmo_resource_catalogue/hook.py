@@ -53,6 +53,7 @@ class MetadataHook(Hook):
             )
 
         LOGGER.debug('Metadata hook execution begin')
+        LOGGER.debug(f'Topic: {topic}')
         if '/wis2/' in topic:
             r = R2()
         elif '/wigos/' in topic:
